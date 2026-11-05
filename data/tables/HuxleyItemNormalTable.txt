@@ -1,0 +1,373 @@
+=== HuxleyItemNormalTable.upk ===
+Class histogram:
+  HuxleyCityItemData_ItemColorSpray: 23
+  HuxleyDataTable: 1
+  HuxleyBattleItemData: 1
+
+// --- HuxleyDataTable :: ItemNormal ---
+// Reference: HuxleyDataTable'HuxleyItemNormalTable.ItemNormal'
+begin object name="ItemNormal" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyInventoryData'
+	Table=/* Array type was not detected. */
+	MasterIndex=90100000
+end object
+
+// --- HuxleyBattleItemData :: HuxleyBattleItemData ---
+// Reference: HuxleyBattleItemData'HuxleyItemNormalTable.ItemNormal.HuxleyBattleItemData'
+begin object name="HuxleyBattleItemData" class=HuxleyGame.HuxleyBattleItemData
+	ItemName="90110100_name"
+	Description="90110100_description"
+	Summary="90110100_summary"
+	SellPrice=300
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.LunaIcon'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	MaxCollapseCount=500
+	EntryIndex=10100
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray'
+begin object name="HuxleyCityItemData_ItemColorSpray" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=35,G=238,B=63,A=201)
+	ItemName="90110008_name"
+	Description="90110008_discription"
+	Summary="90110008_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10008
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_1 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_1'
+begin object name="HuxleyCityItemData_ItemColorSpray_1" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=34,G=76,B=231,A=201)
+	ItemName="90110001_name"
+	Description="90110001_discription"
+	Summary="90110001_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10001
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_10 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_10'
+begin object name="HuxleyCityItemData_ItemColorSpray_10" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=210,G=236,B=103,A=201)
+	ItemName="90110011_name"
+	Description="90110011_discription"
+	Summary="90110011_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10011
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_11 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_11'
+begin object name="HuxleyCityItemData_ItemColorSpray_11" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=91,G=138,B=31,A=201)
+	ItemName="90110012_name"
+	Description="90110012_discription"
+	Summary="90110012_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10012
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_12 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_12'
+begin object name="HuxleyCityItemData_ItemColorSpray_12" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=1,G=244,B=179,A=201)
+	ItemName="90110013_name"
+	Description="90110013_discription"
+	Summary="90110013_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10013
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_13 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_13'
+begin object name="HuxleyCityItemData_ItemColorSpray_13" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=48,G=210,B=116,A=201)
+	ItemName="90110014_name"
+	Description="90110014_discription"
+	Summary="90110014_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10014
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_14 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_14'
+begin object name="HuxleyCityItemData_ItemColorSpray_14" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=30,G=17,B=216,A=201)
+	ItemName="90110015_name"
+	Description="90110015_discription"
+	Summary="90110015_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10015
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_16 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_16'
+begin object name="HuxleyCityItemData_ItemColorSpray_16" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=164,G=177,B=108,A=201)
+	ItemName="90110016_name"
+	Description="90110016_discription"
+	Summary="90110016_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10016
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_17 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_17'
+begin object name="HuxleyCityItemData_ItemColorSpray_17" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=180,G=31,B=181,A=201)
+	ItemName="90110017_name"
+	Description="90110017_discription"
+	Summary="90110017_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10017
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_18 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_18'
+begin object name="HuxleyCityItemData_ItemColorSpray_18" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=115,G=37,B=34,A=201)
+	ItemName="90110018_name"
+	Description="90110018_discription"
+	Summary="90110018_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10018
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_19 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_19'
+begin object name="HuxleyCityItemData_ItemColorSpray_19" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=80,G=12,B=57,A=201)
+	ItemName="90110019_name"
+	Description="90110019_discription"
+	Summary="90110019_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10019
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_2 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_2'
+begin object name="HuxleyCityItemData_ItemColorSpray_2" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=146,G=221,B=4,A=201)
+	ItemName="90110002_name"
+	Description="90110002_discription"
+	Summary="90110002_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10002
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_20 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_20'
+begin object name="HuxleyCityItemData_ItemColorSpray_20" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=109,G=218,B=121,A=201)
+	ItemName="90110020_name"
+	Description="90110020_discription"
+	Summary="90110020_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10020
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_21 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_21'
+begin object name="HuxleyCityItemData_ItemColorSpray_21" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=237,G=71,B=184,A=201)
+	ItemName="90110021_name"
+	Description="90110021_discription"
+	Summary="90110021_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10021
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_22 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_22'
+begin object name="HuxleyCityItemData_ItemColorSpray_22" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=143,G=62,B=165,A=201)
+	ItemName="90110022_name"
+	Description="90110022_discription"
+	Summary="90110022_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10022
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_23 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_23'
+begin object name="HuxleyCityItemData_ItemColorSpray_23" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=180,G=76,B=204,A=201)
+	ItemName="90110023_name"
+	Description="90110023_discription"
+	Summary="90110023_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10023
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_3 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_3'
+begin object name="HuxleyCityItemData_ItemColorSpray_3" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=39,G=203,B=207,A=201)
+	ItemName="90110003_name"
+	Description="90110003_discription"
+	Summary="90110003_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10003
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_4 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_4'
+begin object name="HuxleyCityItemData_ItemColorSpray_4" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=91,G=196,B=229,A=201)
+	ItemName="90110004_name"
+	Description="90110004_discription"
+	Summary="90110004_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10004
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_5 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_5'
+begin object name="HuxleyCityItemData_ItemColorSpray_5" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=4,G=40,B=92,A=201)
+	ItemName="90110005_name"
+	Description="90110005_discription"
+	Summary="90110005_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10005
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_6 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_6'
+begin object name="HuxleyCityItemData_ItemColorSpray_6" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=35,G=129,B=26,A=201)
+	ItemName="90110006_name"
+	Description="90110006_discription"
+	Summary="90110006_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10006
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_7 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_7'
+begin object name="HuxleyCityItemData_ItemColorSpray_7" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=152,G=57,B=201,A=201)
+	ItemName="90110007_name"
+	Description="90110007_discription"
+	Summary="90110007_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10007
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_8 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_8'
+begin object name="HuxleyCityItemData_ItemColorSpray_8" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=117,G=97,B=234,A=201)
+	ItemName="90110009_name"
+	Description="90110009_discription"
+	Summary="90110009_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10009
+end object
+
+// --- HuxleyCityItemData_ItemColorSpray :: HuxleyCityItemData_ItemColorSpray_9 ---
+// Reference: HuxleyCityItemData_ItemColorSpray'HuxleyItemNormalTable.ItemNormal.HuxleyCityItemData_ItemColorSpray_9'
+begin object name="HuxleyCityItemData_ItemColorSpray_9" class=HuxleyGame.HuxleyCityItemData_ItemColorSpray
+	ItemColor=(R=0,G=77,B=146,A=201)
+	ItemName="90110010_name"
+	Description="90110010_discription"
+	Summary="90110010_summary"
+	Price=1800
+	SellPrice=450
+	EquipLevel=1
+	IconTexture=Texture2D'TextureIconItem.NormalItem'
+	IconCoordinates=(UL=64.0000000,VL=64.0000000)
+	EntryIndex=10010
+end object
+

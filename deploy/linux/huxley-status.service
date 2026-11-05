@@ -1,0 +1,6 @@
+[Unit]
+Description=Refresh the Discord status message (players online)
+
+[Service]
+Type=oneshot
+ExecStart=/opt/huxley/repo/deploy/linux/alert.sh refresh

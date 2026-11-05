@@ -1,0 +1,6 @@
+[Unit]
+Description=Discord alert: %i failed
+
+[Service]
+Type=oneshot
+ExecStart=/opt/huxley/repo/deploy/linux/alert.sh failed %i

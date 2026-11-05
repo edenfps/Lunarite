@@ -1,0 +1,627 @@
+=== HuxleyCityTable.upk ===
+Class histogram:
+  HuxleyCityZoneData: 36
+  HuxleyCityTransportData: 4
+  HuxleyDataTable: 3
+
+// --- HuxleyDataTable :: Transports ---
+// Reference: HuxleyDataTable'HuxleyCityTable.Transports'
+begin object name="Transports" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyCityTransportData'
+	Table=/* Array type was not detected. */
+	Description="City Transportations Info"
+end object
+
+// --- HuxleyCityTransportData :: HuxleyCityTransportData_1 ---
+// Reference: HuxleyCityTransportData'HuxleyCityTable.Transports.HuxleyCityTransportData_1'
+begin object name="HuxleyCityTransportData_1" class=HuxleyGame.HuxleyCityTransportData
+	RouteName="Arima_Tram"
+	UseFee=100
+	ButtonPrefix="Line_1_0"
+	RouteScene=UIScene'UIMMOSystem.ArimaTramScene'
+end object
+
+// --- HuxleyCityTransportData :: HuxleyCityTransportData_2 ---
+// Reference: HuxleyCityTransportData'HuxleyCityTable.Transports.HuxleyCityTransportData_2'
+begin object name="HuxleyCityTransportData_2" class=HuxleyGame.HuxleyCityTransportData
+	RouteName="Eska_Tram"
+	UseFee=100
+	ButtonPrefix="Line_2_0"
+	RouteScene=UIScene'UIMMOSystem.EskaTramScene'
+	EntryIndex=1
+end object
+
+// --- HuxleyCityTransportData :: HuxleyCityTransportData_3 ---
+// Reference: HuxleyCityTransportData'HuxleyCityTable.Transports.HuxleyCityTransportData_3'
+begin object name="HuxleyCityTransportData_3" class=HuxleyGame.HuxleyCityTransportData
+	RouteName="Nos_Tram"
+	UseFee=100
+	ButtonPrefix="Line_1_0"
+	RouteScene=UIScene'UIMMOSystem.NosTramScene'
+	EntryIndex=3
+end object
+
+// --- HuxleyCityTransportData :: HuxleyCityTransportData_4 ---
+// Reference: HuxleyCityTransportData'HuxleyCityTable.Transports.HuxleyCityTransportData_4'
+begin object name="HuxleyCityTransportData_4" class=HuxleyGame.HuxleyCityTransportData
+	RouteName="Lanox_Tram"
+	UseFee=100
+	ButtonPrefix="Line_1_0"
+	RouteScene=UIScene'UIMMOSystem.LanoxTramScene'
+	EntryIndex=2
+end object
+
+// --- HuxleyDataTable :: AlternativesCityZones ---
+// Reference: HuxleyDataTable'HuxleyCityTable.AlternativesCityZones'
+begin object name="AlternativesCityZones" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyCityZoneData'
+	Table=/* Array type was not detected. */
+	AutoSortEnable=true
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData'
+begin object name="HuxleyCityZoneData" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="Eska_A"
+	Level="City-AT-Eska_A"
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="ESKA_GT_01")
+	Areas[1]=(AreaName="ESKA_GT_02")
+	Areas[2]=(AreaName="ESKA_GT_02_1")
+	Areas[3]=(AreaName="ESKA_GT_03")
+	Areas[4]=(AreaName="ESKA_GT_04")
+	Areas[5]=(AreaName="ESKA_GT_04_1")
+	Areas[6]=(AreaName="ESKA_GT_05")
+	Areas[7]=(AreaName="ESKA_GT_06")
+	Areas[8]=(AreaName="ESKA_GT_07")
+	Areas[9]=(AreaName="ESKA_GT_08")
+	Areas[10]=(AreaName="ESKA_GT_09")
+	Areas[11]=(AreaName="ESKA_GT_10")
+	Areas[12]=(AreaName="ESKA_RS_01")
+	Areas[13]=(AreaName="ESKA_RS_02")
+	Areas[14]=(AreaName="ESKA_RS_03")
+	Areas[15]=(AreaName="ESKA_RS_04")
+	Areas[16]=(AreaName="ESKA_RS_02_1")
+	Areas[17]=(AreaName="ESKA_RS_03_1")
+	Areas[18]=(AreaName="ESKA_RS_04_1")
+	Areas[19]=(AreaName="ESKA_RS_02_2")
+	Areas[20]=(AreaName="ESKA_RS_03_2")
+	Areas[21]=(AreaName="ESKA_RS_04_2")
+	Areas[22]=(AreaName="ESKA_RS_05")
+	Areas[23]=(AreaName="ESKA_RS_05_1")
+	Areas[24]=(AreaName="ESKA_RS_06")
+	Areas[25]=(AreaName="ESKA_RS_06_1")
+	Areas[26]=(AreaName="ESKA_RS_06_2")
+	Areas[27]=(AreaName="ESKA_RS_07")
+	Areas[28]=(AreaName="ESKA_RS_08")
+	Areas[29]=(AreaName="ESKA_RS_09")
+	Areas[30]=(AreaName="ESKA_RS_09_1")
+	Areas[31]=(AreaName="ESKA_DT_01")
+	Areas[32]=(AreaName="ESKA_DT_01_1")
+	Areas[33]=(AreaName="ESKA_DT_02")
+	Areas[34]=(AreaName="ESKA_DT_02_1")
+	Areas[35]=(AreaName="ESKA_DT_02_2")
+	Areas[36]=(AreaName="ESKA_DT_03")
+	Areas[37]=(AreaName="ESKA_DT_04")
+	Areas[38]=(AreaName="ESKA_DT_05")
+	Areas[39]=(AreaName="ESKA_DT_06")
+	Areas[40]=(AreaName="ESKA_DT_07")
+	Areas[41]=(AreaName="ESKA_HQ_04")
+	EntryIndex=100
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_1 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_1'
+begin object name="HuxleyCityZoneData_1" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="AT-HQ-Lobby"
+	Level="City-Eska_HQ_Lobby"
+	ZoneType=Zone_Building
+	EntryIndex=107
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_10 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_10'
+begin object name="HuxleyCityZoneData_10" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_3"
+	Level="City-AT-TrCenter_3"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_03")
+	Areas[1]=(AreaName="AT_Tr_Frq_03")
+	Areas[2]=(AreaName="AT_Tr_main_03")
+	Areas[3]=(AreaName="AT_Tr_Sim_03")
+	Areas[4]=(AreaName="AT_Tr_Trn_03")
+	Areas[5]=(AreaName="AT_Tr_Air_03")
+	EntryIndex=112
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_11 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_11'
+begin object name="HuxleyCityZoneData_11" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_4"
+	Level="City-AT-TrCenter_4"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_04")
+	Areas[1]=(AreaName="AT_Tr_Frq_04")
+	Areas[2]=(AreaName="AT_Tr_main_04")
+	Areas[3]=(AreaName="AT_Tr_Sim_04")
+	Areas[4]=(AreaName="AT_Tr_Trn_04")
+	Areas[5]=(AreaName="AT_Tr_Air_04")
+	EntryIndex=113
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_12 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_12'
+begin object name="HuxleyCityZoneData_12" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_5"
+	Level="City-AT-TrCenter_5"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_05")
+	Areas[1]=(AreaName="AT_Tr_Frq_05")
+	Areas[2]=(AreaName="AT_Tr_main_05")
+	Areas[3]=(AreaName="AT_Tr_Sim_05")
+	Areas[4]=(AreaName="AT_Tr_Trn_05")
+	Areas[5]=(AreaName="AT_Tr_Air_05")
+	EntryIndex=114
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_13 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_13'
+begin object name="HuxleyCityZoneData_13" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_6"
+	Level="City-AT-TrCenter_6"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_06")
+	Areas[1]=(AreaName="AT_Tr_Frq_06")
+	Areas[2]=(AreaName="AT_Tr_main_06")
+	Areas[3]=(AreaName="AT_Tr_Sim_06")
+	Areas[4]=(AreaName="AT_Tr_Trn_06")
+	Areas[5]=(AreaName="AT_Tr_Air_06")
+	EntryIndex=115
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_14 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_14'
+begin object name="HuxleyCityZoneData_14" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_7"
+	Level="City-AT-TrCenter_7"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_07")
+	Areas[1]=(AreaName="AT_Tr_Frq_07")
+	Areas[2]=(AreaName="AT_Tr_main_07")
+	Areas[3]=(AreaName="AT_Tr_Sim_07")
+	Areas[4]=(AreaName="AT_Tr_Trn_07")
+	Areas[5]=(AreaName="AT_Tr_Air_07")
+	EntryIndex=116
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_15 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_15'
+begin object name="HuxleyCityZoneData_15" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-SimulationCenter"
+	Level="City-AT-SimulationCenter"
+	ZoneType=Zone_TutorialQuest
+	EntryIndex=118
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_16 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_16'
+begin object name="HuxleyCityZoneData_16" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="QuestTruck"
+	Level="City-Truck-Interior"
+	ZoneType=Zone_QuestRoom
+	EntryIndex=119
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_2 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_2'
+begin object name="HuxleyCityZoneData_2" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="Eska_B"
+	Level="City-AT-Eska_B"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="ESKA_HQ_01")
+	Areas[1]=(AreaName="ESKA_HQ_01_1")
+	Areas[2]=(AreaName="ESKA_HQ_01_2")
+	Areas[3]=(AreaName="ESKA_HQ_02")
+	Areas[4]=(AreaName="ESKA_HQ_03")
+	Areas[5]=(AreaName="ESKA_HQ_05")
+	Areas[6]=(AreaName="ESKA_SQ_01")
+	Areas[7]=(AreaName="ESKA_SQ_01_1")
+	Areas[8]=(AreaName="ESKA_SQ_02")
+	Areas[9]=(AreaName="ESKA_SQ_03")
+	Areas[10]=(AreaName="ESKA_SQ_04")
+	Areas[11]=(AreaName="ESKA_SQ_05")
+	Areas[12]=(AreaName="ESKA_SQ_06")
+	Areas[13]=(AreaName="ESKA_SQ_07")
+	EntryIndex=101
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_20 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_20'
+begin object name="HuxleyCityZoneData_20" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="AT-Camptown"
+	Level="City-AT-Camptown"
+	ZoneType=Zone_Building
+	EntryIndex=109
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_23 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_23'
+begin object name="HuxleyCityZoneData_23" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="AT-InDoorarea01"
+	Level="City-AT-InDoorarea01"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="city-eska-HQ")
+	Areas[1]=(AreaName="city-eska-ShoppingMall")
+	EntryIndex=102
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_3 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_3'
+begin object name="HuxleyCityZoneData_3" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="QuestAPC"
+	Level="City-APC-Interior"
+	ZoneType=Zone_QuestRoom
+	EntryIndex=117
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_4 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_4'
+begin object name="HuxleyCityZoneData_4" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="AT_Tu-Quest"
+	Level="860101"
+	ZoneType=Zone_TutorialQuest
+	EntryIndex=108
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_8 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_8'
+begin object name="HuxleyCityZoneData_8" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_1"
+	Level="City-AT-TrCenter_1"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_01")
+	Areas[1]=(AreaName="AT_Tr_Frq_01")
+	Areas[2]=(AreaName="AT_Tr_main_01")
+	Areas[3]=(AreaName="AT_Tr_Sim_01")
+	Areas[4]=(AreaName="AT_Tr_Trn_01")
+	Areas[5]=(AreaName="AT_Tr_Air_01")
+	EntryIndex=110
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_9 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.AlternativesCityZones.HuxleyCityZoneData_9'
+begin object name="HuxleyCityZoneData_9" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-AT-TrCenter_2"
+	Level="City-AT-TrCenter_2"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(V=128.0000000,UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="AT_Tr_Str_02")
+	Areas[1]=(AreaName="AT_Tr_Frq_02")
+	Areas[2]=(AreaName="AT_Tr_main_02")
+	Areas[3]=(AreaName="AT_Tr_Sim_02")
+	Areas[4]=(AreaName="AT_Tr_Trn_02")
+	Areas[5]=(AreaName="AT_Tr_Air_02")
+	EntryIndex=111
+end object
+
+// --- HuxleyDataTable :: SapiensCityZones ---
+// Reference: HuxleyDataTable'HuxleyCityTable.SapiensCityZones'
+begin object name="SapiensCityZones" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyCityZoneData'
+	Table=/* Array type was not detected. */
+	AutoSortEnable=true
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData'
+begin object name="HuxleyCityZoneData" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="Nostalonia_A"
+	Level="City-SP-Nostalonia_A"
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="NOS_GT_01")
+	Areas[1]=(AreaName="NOS_GT_02")
+	Areas[2]=(AreaName="NOS_GT_03")
+	Areas[3]=(AreaName="NOS_GT_04")
+	Areas[4]=(AreaName="NOS_GT_05")
+	Areas[5]=(AreaName="NOS_GT_06")
+	Areas[6]=(AreaName="NOS_GT_06_1")
+	Areas[7]=(AreaName="NOS_GT_07")
+	Areas[8]=(AreaName="NOS_GT_08")
+	Areas[9]=(AreaName="NOS_GT_09")
+	Areas[10]=(AreaName="NOS_GT_10")
+	Areas[11]=(AreaName="NOS_GT_11")
+	Areas[12]=(AreaName="NOS_GT_12")
+	Areas[13]=(AreaName="NOS_GT_13")
+	Areas[14]=(AreaName="NOS_RS_01")
+	Areas[15]=(AreaName="NOS_RS_02")
+	Areas[16]=(AreaName="NOS_RS_03")
+	Areas[17]=(AreaName="NOS_RS_04")
+	Areas[18]=(AreaName="NOS_RS_02_1")
+	Areas[19]=(AreaName="NOS_RS_02_2")
+	Areas[20]=(AreaName="NOS_RS_03_1")
+	Areas[21]=(AreaName="NOS_RS_03_2")
+	Areas[22]=(AreaName="NOS_RS_04_1")
+	Areas[23]=(AreaName="NOS_RS_04_2")
+	Areas[24]=(AreaName="NOS_RS_05")
+	Areas[25]=(AreaName="NOS_RS_05_1")
+	Areas[26]=(AreaName="NOS_RS_05_2")
+	Areas[27]=(AreaName="NOS_RS_06")
+	Areas[28]=(AreaName="NOS_RS_06_1")
+	Areas[29]=(AreaName="NOS_RS_06_2")
+	Areas[30]=(AreaName="NOS_RS_07")
+	Areas[31]=(AreaName="NOS_RS_08")
+	Areas[32]=(AreaName="NOS_RS_08_1")
+	Areas[33]=(AreaName="NOS_RS_09")
+	Areas[34]=(AreaName="NOS_RS_09_1")
+	Areas[35]=(AreaName="NOS_RS_09_2")
+	Areas[36]=(AreaName="NOS_RS_10")
+	Areas[37]=(AreaName="NOS_DT_01")
+	Areas[38]=(AreaName="NOS_HQ_05")
+	Areas[39]=(AreaName="NOS_RS_05_3")
+	Areas[40]=(AreaName="NOS_RS_08_2")
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_1 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_1'
+begin object name="HuxleyCityZoneData_1" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="BRTTransfer"
+	Level="City-APC-Interior"
+	ZoneType=Zone_BRTRoom
+	EntryIndex=97
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_10 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_10'
+begin object name="HuxleyCityZoneData_10" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="QuestTruck"
+	Level="City-Truck-Interior"
+	ZoneType=Zone_QuestRoom
+	EntryIndex=19
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_11 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_11'
+begin object name="HuxleyCityZoneData_11" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="House"
+	Level="City-Room-Interior_001"
+	ZoneType=Zone_Building
+	Areas[0]=(AreaName="NOS_H_001")
+	EntryIndex=20
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_12 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_12'
+begin object name="HuxleyCityZoneData_12" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="Nostalonia_B"
+	Level="City-SP-Nostalonia_B"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="NOS_HQ_01")
+	Areas[1]=(AreaName="NOS_HQ_02")
+	Areas[2]=(AreaName="NOS_HQ_03")
+	Areas[3]=(AreaName="NOS_HQ_04")
+	Areas[4]=(AreaName="NOS_HQ_06")
+	Areas[5]=(AreaName="NOS_HQ_07")
+	Areas[6]=(AreaName="NOS_HQ_08")
+	Areas[7]=(AreaName="NOS_SQ_01")
+	Areas[8]=(AreaName="NOS_SQ_01_1")
+	Areas[9]=(AreaName="NOS_SQ_02")
+	Areas[10]=(AreaName="NOS_SQ_03")
+	Areas[11]=(AreaName="NOS_SQ_04")
+	Areas[12]=(AreaName="NOS_SQ_05")
+	Areas[13]=(AreaName="NOS_SQ_06")
+	Areas[14]=(AreaName="NOS_SQ_07")
+	Areas[15]=(AreaName="NOS_ST_01")
+	Areas[16]=(AreaName="NOS_ST_01_1")
+	Areas[17]=(AreaName="NOS_ST_01_2")
+	Areas[18]=(AreaName="NOS_ST_01_3")
+	Areas[19]=(AreaName="NOS_ST_02")
+	Areas[20]=(AreaName="NOS_ST_02_1")
+	Areas[21]=(AreaName="NOS_ST_02_2")
+	Areas[22]=(AreaName="NOS_HQ_08_1")
+	EntryIndex=1
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_15 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_15'
+begin object name="HuxleyCityZoneData_15" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_1"
+	Level="City-SP-TrCenter_1"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_01")
+	Areas[1]=(AreaName="SP_Tr_Frq_01")
+	Areas[2]=(AreaName="SP_Tr_main_01")
+	Areas[3]=(AreaName="SP_Tr_Sim_01")
+	Areas[4]=(AreaName="SP_Tr_Trn_01")
+	Areas[5]=(AreaName="SP_Tr_Air_01")
+	EntryIndex=10
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_16 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_16'
+begin object name="HuxleyCityZoneData_16" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_2"
+	Level="City-SP-TrCenter_2"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_02")
+	Areas[1]=(AreaName="SP_Tr_Frq_02")
+	Areas[2]=(AreaName="SP_Tr_main_02")
+	Areas[3]=(AreaName="SP_Tr_Sim_02")
+	Areas[4]=(AreaName="SP_Tr_Trn_02")
+	Areas[5]=(AreaName="SP_Tr_Air_02")
+	EntryIndex=11
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_17 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_17'
+begin object name="HuxleyCityZoneData_17" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_3"
+	Level="City-SP-TrCenter_3"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_03")
+	Areas[1]=(AreaName="SP_Tr_Frq_03")
+	Areas[2]=(AreaName="SP_Tr_main_03")
+	Areas[3]=(AreaName="SP_Tr_Sim_03")
+	Areas[4]=(AreaName="SP_Tr_Trn_03")
+	Areas[5]=(AreaName="SP_Tr_Air_03")
+	EntryIndex=12
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_18 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_18'
+begin object name="HuxleyCityZoneData_18" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_4"
+	Level="City-SP-TrCenter_4"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_04")
+	Areas[1]=(AreaName="SP_Tr_Frq_04")
+	Areas[2]=(AreaName="SP_Tr_main_04")
+	Areas[3]=(AreaName="SP_Tr_Sim_04")
+	Areas[4]=(AreaName="SP_Tr_Trn_04")
+	Areas[5]=(AreaName="SP_Tr_Air_04")
+	EntryIndex=13
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_19 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_19'
+begin object name="HuxleyCityZoneData_19" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_5"
+	Level="City-SP-TrCenter_5"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_05")
+	Areas[1]=(AreaName="SP_Tr_Frq_05")
+	Areas[2]=(AreaName="SP_Tr_main_05")
+	Areas[3]=(AreaName="SP_Tr_Sim_05")
+	Areas[4]=(AreaName="SP_Tr_Trn_05")
+	Areas[5]=(AreaName="SP_Tr_Air_05")
+	EntryIndex=14
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_2 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_2'
+begin object name="HuxleyCityZoneData_2" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="SP_Tu-Quest"
+	Level="810101"
+	ZoneType=Zone_TutorialQuest
+	EntryIndex=8
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_20 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_20'
+begin object name="HuxleyCityZoneData_20" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_6"
+	Level="City-SP-TrCenter_6"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_06")
+	Areas[1]=(AreaName="SP_Tr_Frq_06")
+	Areas[2]=(AreaName="SP_Tr_main_06")
+	Areas[3]=(AreaName="SP_Tr_Sim_06")
+	Areas[4]=(AreaName="SP_Tr_Trn_06")
+	Areas[5]=(AreaName="SP_Tr_Air_06")
+	EntryIndex=15
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_21 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_21'
+begin object name="HuxleyCityZoneData_21" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_7"
+	Level="City-SP-TrCenter_7"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="SP_Tr_Str_07")
+	Areas[1]=(AreaName="SP_Tr_Frq_07")
+	Areas[2]=(AreaName="SP_Tr_main_07")
+	Areas[3]=(AreaName="SP_Tr_Sim_07")
+	Areas[4]=(AreaName="SP_Tr_Trn_07")
+	Areas[5]=(AreaName="SP_Tr_Air_07")
+	EntryIndex=16
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_3 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_3'
+begin object name="HuxleyCityZoneData_3" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-TrCenter_8"
+	Level="City-SP-TrCenter_8"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="NoneSP_Tr_Str_08")
+	Areas[1]=(AreaName="SP_Tr_Frq_08")
+	Areas[2]=(AreaName="SP_Tr_main_08")
+	Areas[3]=(AreaName="SP_Tr_Sim_08")
+	Areas[4]=(AreaName="SP_Tr_Air_08")
+	EntryIndex=9
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_4 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_4'
+begin object name="HuxleyCityZoneData_4" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="SP-Motorbike"
+	Level="City-SP-motorbike"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	EntryIndex=98
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_5 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_5'
+begin object name="HuxleyCityZoneData_5" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="QuestElevator"
+	Level="City-Elevator-Interior"
+	ZoneType=Zone_QuestRoom
+	EntryIndex=7
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_6 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_6'
+begin object name="HuxleyCityZoneData_6" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="SP-Camptown"
+	Level="City-SP-Camptown"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	EntryIndex=99
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_7 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_7'
+begin object name="HuxleyCityZoneData_7" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="SP-InDoorarea01"
+	Level="City-SP-InDoorarea01"
+	ZoneType=Zone_Building
+	LogoImage=(Texture=Texture2D'TextureMMOSystem.CityName_texture',Coordinates=(UL=351.0000000,VL=128.0000000))
+	Areas[0]=(AreaName="city-nos-HQ")
+	Areas[1]=(AreaName="city-nos-ShoppingMall")
+	EntryIndex=2
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_8 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_8'
+begin object name="HuxleyCityZoneData_8" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="QuestAPC"
+	Level="City-APC-Interior"
+	ZoneType=Zone_QuestRoom
+	EntryIndex=17
+end object
+
+// --- HuxleyCityZoneData :: HuxleyCityZoneData_9 ---
+// Reference: HuxleyCityZoneData'HuxleyCityTable.SapiensCityZones.HuxleyCityZoneData_9'
+begin object name="HuxleyCityZoneData_9" class=HuxleyGame.HuxleyCityZoneData
+	ZoneName="City-SP-SimulationCenter"
+	Level="City-SP-SimulationCenter"
+	ZoneType=Zone_TutorialQuest
+	EntryIndex=18
+end object
+

@@ -1,0 +1,9 @@
+# Files a Korean launcher (Accept-Language: ko, a Korean Windows) gets from the clean client
+# (HUXLEY_PATCH_BASE) instead of the payload: Webzen's own Korean text and the Korean UI skin.
+# A path ending in \ covers everything under it. A path here that the payload manifest does not
+# list goes only to Korean launchers (English ones delete the _kor skin before starting the game).
+
+Engine\Localization\KOR\
+HuxleyGame\Localization\KOR\
+HuxleyMMOGame\Localization\KOR\
+HuxleyMMOGame\Content\UI\HuxleyMMOUISkin_kor.upk

@@ -1,0 +1,133 @@
+# Huxley server settings. Copy to huxley.conf (next to this file, or anywhere above the server's
+# build folder, or point HUXLEY_CONFIG at it) and change what you need. Every line is optional:
+# a commented-out setting shows its default. KEY=VALUE, no spaces around "=". An environment
+# variable with the same name overrides the file. On Linux the same file works as the systemd
+# EnvironmentFile (/etc/huxley/huxley.env).
+
+# --- Server identity and addresses ---------------------------------------------------------------
+
+# Server list entry: name, and the player count shown as 100% load (the client labels under 40%
+# <Normal>, under 90% <Crowded>, else <Congested>). The faction after the label is whichever holds
+# more of the war front. At 100% server select refuses non-GM accounts ("maximum capacity").
+# The client pings the server on UDP 56983 for its signal bars (0 = off).
+# HUXLEY_SERVER_NAME=Huxley
+# HUXLEY_SERVER_CAPACITY=200
+# HUXLEY_SERVER_PING_PORT=56983
+
+# The IPv4 address players reach this machine at (a VPS's public IP). Unset: the address of the
+# interface each player connected to, which only works on a LAN or the same machine.
+# HUXLEY_GAME_PUBLIC_IP=
+
+# --- Client install on the server machine --------------------------------------------------------
+
+# The Huxley client: the server reads its map list and item names, and runs every battlefield as
+# its dedicated-server mode. No spaces in the path (UE3 splits command-line paths at spaces).
+# Default C:\Games\Huxley on Windows, /opt/huxley/client on Linux.
+# HUXLEY_CLIENT_ROOT=
+
+# --- Accounts and characters ---------------------------------------------------------------------
+
+# Logins with GM rights (client admin mode in the city, !notice, !kick, !ban, !give, ...).
+# New accounts cannot be registered under these names; create them with the reset below.
+# HUXLEY_GM_LOGINS=
+
+# Character names only one account may create, as Name=login pairs (any case), e.g. Nova=nova.
+# Anyone else creating one is told the name is taken. Existing characters are not changed.
+# HUXLEY_RESERVED_NAMES=
+
+# The first login on an empty database creates its account. 0 turns that off.
+# HUXLEY_PROVISION_FIRST_ACCOUNT=1
+
+# One-off: create or reset this account's password at start-up (remove both lines afterwards).
+# HUXLEY_RESET_ACCOUNT=
+# HUXLEY_RESET_PASSWORD=
+
+# CR a new character starts with.
+# HUXLEY_STARTING_MONEY=10000
+
+# Minutes before a deleted character is gone (1-255).
+# CHARACTER_DELETE_MINUTES=5
+
+# --- Storage, backups and logs ---------------------------------------------------------------------
+
+# The SQLite database. Default huxley.db next to Lunarite.Server.dll.
+# HUXLEY_DB_PATH=
+
+# Hourly verified snapshots: folder (default "backups" next to the database; "off" disables them)
+# and how many to keep.
+# HUXLEY_BACKUP_DIR=
+# HUXLEY_BACKUP_RETENTION=168
+
+# Folder for a log file in addition to the console.
+# HUXLEY_LOG_DIR=
+
+# --- Co-op missions and Skirmish (hosted by players, peer to peer) -------------------------------
+
+# Several players behind one NAT (a LAN party) report their local addresses; only for players you
+# trust. 1 turns it on.
+# HUXLEY_TRUST_NAT_LOCAL_IP=0
+
+# The two UDP ports of the NAT test the client runs at login (open them in the firewall), and the
+# address it is told to probe (default HUXLEY_GAME_PUBLIC_IP).
+# HUXLEY_NAT_TEST_PORTS=45407,45408
+# HUXLEY_P2P_TEST_PUBLIC_IP=
+
+# Address players are sent to for a host's mission or Skirmish room. Unset: the host's own address
+# as the server sees it. Only for hosts behind a port-forwarded NAT.
+# QUEST_HOST_IP=
+# SIMULATION_HOST_IP=
+
+# Timings: hole-punch wait before guests join (ms), seconds the squad has to accept a mission, and
+# seconds a guest has to arrive in the host's mission.
+# QUEST_HOLEPUNCH_WAIT_MS=3000
+# QUEST_DECISION_TIMEOUT_SECONDS=30
+# QUEST_GUEST_ARRIVAL_TIMEOUT_SECONDS=120
+
+# Drops above this item level are left out of mission loot. Unset: no limit.
+# QUEST_MAX_ITEM_LEVEL=
+
+# 0 turns on the experimental quest gateway. Off by default; missions play fully without it.
+# QUEST_GATEWAY_DISABLED=1
+
+# --- Battlefields (dedicated instances on this machine) ------------------------------------------
+
+# Address the instances advertise and where they send results (keep 127.0.0.1 unless the
+# instances run on another machine), and the results port.
+# BATTLE_HOST_IP=127.0.0.1
+# BATTLE_BACKEND_IP=127.0.0.1
+# BATTLE_BACKEND_PORT=55902
+
+# Seconds an instance gets to start: 30 on Windows, 120 on Linux (the first one under Wine takes
+# about 95 s, later ones about 12 s).
+# HUXLEY_BATTLE_START_SECONDS=
+
+# Linux only: how an instance starts. It needs a display, so a virtual one by default.
+# HUXLEY_WINE=xvfb-run -a wine
+
+# --- Launcher patch server -------------------------------------------------------------------------
+
+# HTTP port the client launcher patches from (0 turns it off).
+# HUXLEY_PATCH_PORT=8090
+
+# Folder holding exactly the files players should get; never your own play client.
+# Default C:\Games\Huxley_PatchPayload.
+# HUXLEY_PATCH_ROOT=
+
+# The list of files served. Default patch/manifest.txt, found by searching up from the server.
+# HUXLEY_PATCH_MANIFEST=
+
+# A clean US client (October 2010) served under the payload, so the launcher installs the whole game
+# (about 22 GB) into an empty folder and players need no install of their own. Unset = payload only,
+# for players who start from their own clean install.
+# HUXLEY_PATCH_BASE=
+
+# Korean players: a launcher on a Korean Windows gets the base client's Korean files (patch/korean.txt)
+# and the server's own messages in Korean. Players the launcher has not reported since a restart are
+# matched by address against APNIC's list of Korean blocks, downloaded weekly to
+# korean-addresses.txt. 0 turns that address lookup off.
+# HUXLEY_KOREAN_ADDRESSES=1
+
+# --- Development and diagnostics (leave unset) ----------------------------------------------------
+# DEBUG_LOOT, ENEMY_BITS, OP42_PROBE, QUEST_CATALOG_AUDIT, QUEST_P2P_BACKUP_PATCH, DEDICATED_QUEST,
+# QUEST_SERVER_IP, QUEST_GATEWAY_IP, GATEWAY_CAPTURE, GATEWAY_PROXY, GATEWAY_TEST,
+# and REPAIR_TYPE4_DURABILITY_ONCE switch on research probes and one-off migrations.

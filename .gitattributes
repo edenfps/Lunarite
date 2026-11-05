@@ -1,0 +1,3 @@
+
+# Linux deploy files must keep LF line endings.
+deploy/linux/* text eol=lf

@@ -1,0 +1,1128 @@
+=== HuxleyBattleZoneTable.upk ===
+Class histogram:
+  HuxleyBattleZoneData: 68
+  HuxleyBattleZoneBandwidthData: 4
+  HuxleyDataTable: 3
+  HuxleyBRTData: 1
+  ObjectRedirector: 1
+
+// --- HuxleyDataTable :: BattleZoneBandwidths ---
+// Reference: HuxleyDataTable'HuxleyBattleZoneTable.BattleZoneBandwidths'
+begin object name="BattleZoneBandwidths" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyBattleZoneBandwidthData'
+	Table=/* Array type was not detected. */
+end object
+
+// --- HuxleyBattleZoneBandwidthData :: HuxleyBattleZoneBandwidthData ---
+// Reference: HuxleyBattleZoneBandwidthData'HuxleyBattleZoneTable.BattleZoneBandwidths.HuxleyBattleZoneBandwidthData'
+begin object name="HuxleyBattleZoneBandwidthData" class=HuxleyGame.HuxleyBattleZoneBandwidthData
+	BattleZoneCategory_Editor=BattleZoneCategory_DM
+	BattleZoneCategory=1
+	RecommendedBandwidths=/* Array type was not detected. */
+end object
+
+// --- HuxleyBattleZoneBandwidthData :: HuxleyBattleZoneBandwidthData_1 ---
+// Reference: HuxleyBattleZoneBandwidthData'HuxleyBattleZoneTable.BattleZoneBandwidths.HuxleyBattleZoneBandwidthData_1'
+begin object name="HuxleyBattleZoneBandwidthData_1" class=HuxleyGame.HuxleyBattleZoneBandwidthData
+	RecommendedBandwidths=/* Array type was not detected. */
+	EntryIndex=1
+end object
+
+// --- HuxleyBattleZoneBandwidthData :: HuxleyBattleZoneBandwidthData_2 ---
+// Reference: HuxleyBattleZoneBandwidthData'HuxleyBattleZoneTable.BattleZoneBandwidths.HuxleyBattleZoneBandwidthData_2'
+begin object name="HuxleyBattleZoneBandwidthData_2" class=HuxleyGame.HuxleyBattleZoneBandwidthData
+	BattleZoneCategory_Editor=BattleZoneCategory_RADAR
+	BattleZoneCategory=3
+	RecommendedBandwidths=/* Array type was not detected. */
+	EntryIndex=2
+end object
+
+// --- HuxleyBattleZoneBandwidthData :: HuxleyBattleZoneBandwidthData_3 ---
+// Reference: HuxleyBattleZoneBandwidthData'HuxleyBattleZoneTable.BattleZoneBandwidths.HuxleyBattleZoneBandwidthData_3'
+begin object name="HuxleyBattleZoneBandwidthData_3" class=HuxleyGame.HuxleyBattleZoneBandwidthData
+	BattleZoneCategory_Editor=BattleZoneCategory_CTF
+	BattleZoneCategory=4
+	RecommendedBandwidths=/* Array type was not detected. */
+	EntryIndex=3
+end object
+
+// --- HuxleyDataTable :: BattleZones ---
+// Reference: HuxleyDataTable'HuxleyBattleZoneTable.BattleZones'
+begin object name="BattleZones" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyBattleZoneData'
+	Table=/* Array type was not detected. */
+	Description="Battle Zones definition"
+	AutoSortEnable=true
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData'
+begin object name="HuxleyBattleZoneData" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZP-010-Impact"
+	LevelName="BZP-010-Impact"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZP-010-Impact'
+	bEnabled=false
+	EntryIndex=190
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_1 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_1'
+begin object name="HuxleyBattleZoneData_1" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-028-Floodland"
+	LevelName="BZT-028-Floodland"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-028-Floodland'
+	bEnabled=false
+	EntryIndex=128
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_10 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_10'
+begin object name="HuxleyBattleZoneData_10" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-014-BStar"
+	LevelName="BZT-014-BStar"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-013-BStar'
+	bEnabled=false
+	EntryIndex=114
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_11 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_11'
+begin object name="HuxleyBattleZoneData_11" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-016-HarborW"
+	LevelName="BZT-016-HarborW"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-012-Harbor'
+	bEnabled=false
+	EntryIndex=116
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_12 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_12'
+begin object name="HuxleyBattleZoneData_12" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-001-TrainingCenterB"
+	LevelName="BZT-001-TrainingCenterB"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-001-TrainingCenterB'
+	bEnabled=false
+	EntryIndex=101
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_13 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_13'
+begin object name="HuxleyBattleZoneData_13" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-002-Pipes"
+	LevelName="BZC-002-Pipes"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-002-Pipes'
+	EntryIndex=162
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_14 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_14'
+begin object name="HuxleyBattleZoneData_14" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-003-High"
+	LevelName="BZT-003-High"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-003-High'
+	bEnabled=false
+	EntryIndex=103
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_15 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_15'
+begin object name="HuxleyBattleZoneData_15" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-005-Harbor"
+	LevelName="BZR-005-Harbor"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-005-Harbor'
+	bEnabled=false
+	EntryIndex=145
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_16 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_16'
+begin object name="HuxleyBattleZoneData_16" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-006-Tears"
+	LevelName="BZC-006-Tears"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-006-Tears'
+	EntryIndex=166
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_17 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_17'
+begin object name="HuxleyBattleZoneData_17" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-011-Crater"
+	LevelName="BZC-011-Crater"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-011-Crater'
+	bEnabled=false
+	EntryIndex=171
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_18 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_18'
+begin object name="HuxleyBattleZoneData_18" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-001-quakeS"
+	LevelName="BZC-001-quakeS"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-001-quakeS'
+	bRookie=true
+	EntryIndex=161
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_19 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_19'
+begin object name="HuxleyBattleZoneData_19" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-001-TrainingCenter"
+	LevelName="BZT-001-TrainingCenter"
+	ActiveGameTypes=/* Array type was not detected. */
+	BattleRegisterFee=2
+	IconTexture=TextureMovie'TextureMovieStream.BZT-001-TrainingCenter'
+	GameType=0
+	bRookie=true
+	EntryIndex=100
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_2 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_2'
+begin object name="HuxleyBattleZoneData_2" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-008-Islands"
+	LevelName="BZR-008-Islands"
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=214
+	GameType=2
+	MaxPlayers=44
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	LinkedBattleServers[0]=211
+	LinkedBattleServers[1]=212
+	AxisID=1
+	AxisStart=true
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=200
+	SapiWinRewardItems[0]=(ItemId=609101,Count=6)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=12)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=2)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=6)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=12)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=2)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AdvantageAmount=0
+	bEnabled=false
+	EntryIndex=214
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_20 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_20'
+begin object name="HuxleyBattleZoneData_20" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-019-Transponder"
+	LevelName="BZT-019-Transponder"
+	GameType_Editor=EBZType_TDM
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	AdvantageTeam=1
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=217
+	MaxPlayers=40
+	GoalScore=400
+	TimeLimit=20.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=4
+	LinkedBattleServers[0]=216
+	LinkedBattleServers[1]=218
+	AxisID=2
+	bRookie=true
+	RecessMinutes=10
+	SapiWinRewardItems[0]=(ItemId=609101,Count=4)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=8)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=1)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=3)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=6)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=1)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AdvantageAmount=30
+	EntryIndex=217
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_21 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_21'
+begin object name="HuxleyBattleZoneData_21" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-020-Tower"
+	LevelName="BZT-020-Tower"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-041-Tower'
+	GameType=0
+	bEnabled=false
+	EntryIndex=120
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_22 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_22'
+begin object name="HuxleyBattleZoneData_22" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-012-Harbor"
+	LevelName="BZT-012-Harbor"
+	GameType_Editor=EBZType_TDM
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_SAPIENS
+	AdvantageTeam=0
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=216
+	MaxPlayers=40
+	GoalScore=400
+	TimeLimit=20.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=3
+	LinkedBattleServers[0]=215
+	LinkedBattleServers[1]=217
+	AxisID=2
+	AxisStart=true
+	bRookie=true
+	RecessMinutes=10
+	SapiWinRewardItems[0]=(ItemId=609101,Count=3)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=6)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=2)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=0)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=4)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=8)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=1)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AdvantageAmount=30
+	EntryIndex=216
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_23 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_23'
+begin object name="HuxleyBattleZoneData_23" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-033-Oilrig"
+	LevelName="BZT-033-Oilrig"
+	Level=BZLevel_N
+	ActiveGameTypes=/* Array type was not detected. */
+	BattleRegisterFee=3
+	IconTexture=TextureMovie'TextureMovieStream.BZT-033-Oilrig'
+	GameType=0
+	TimeLimit=8.0000000
+	bEnabled=false
+	EntryIndex=133
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_24 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_24'
+begin object name="HuxleyBattleZoneData_24" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-010-Junkyard"
+	LevelName="BZT-010-Junkyard"
+	GameType_Editor=EBZType_TDM
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_SAPIENS
+	AdvantageTeam=0
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=215
+	MaxPlayers=40
+	GoalScore=400
+	TimeLimit=20.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=3
+	LinkedBattleServers[0]=0
+	LinkedBattleServers[1]=216
+	AxisID=2
+	bRookie=true
+	RecessMinutes=10
+	SapiWinRewardItems[0]=(ItemId=609101,Count=2)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=4)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=1)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=5)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=10)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=2)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=2)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=4)
+	EntryIndex=215
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_25 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_25'
+begin object name="HuxleyBattleZoneData_25" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-038-Crevines"
+	LevelName="BZT-038-Crevines"
+	Level=BZLevel_N
+	ActiveGameTypes=/* Array type was not detected. */
+	BattleRegisterFee=3
+	IconTexture=TextureMovie'TextureMovieStream.BZT-038-Crevines'
+	GameType=0
+	MaxPlayers=32
+	GoalScore=10
+	bEnabled=false
+	EntryIndex=138
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_26 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_26'
+begin object name="HuxleyBattleZoneData_26" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-007-Hollow"
+	LevelName="BZT-007-Hollow"
+	GameType_Editor=EBZType_TDM
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	AdvantageTeam=1
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=218
+	MaxPlayers=40
+	GoalScore=400
+	TimeLimit=20.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=4
+	LinkedBattleServers[0]=217
+	LinkedBattleServers[1]=0
+	AxisID=2
+	bRookie=true
+	RecessMinutes=10
+	SapiWinRewardItems[0]=(ItemId=609101,Count=5)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=10)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=2)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=2)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=2)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=4)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=1)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=2)
+	EntryIndex=218
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_27 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_27'
+begin object name="HuxleyBattleZoneData_27" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-023-Platform"
+	LevelName="BZT-023-Platform"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-023-Platform'
+	GameType=0
+	bRookie=true
+	EntryIndex=123
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_28 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_28'
+begin object name="HuxleyBattleZoneData_28" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-003-Ice"
+	LevelName="BZC-003-Ice"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-003-Ice'
+	bRookie=true
+	EntryIndex=163
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_29 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_29'
+begin object name="HuxleyBattleZoneData_29" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-007-Hollow"
+	LevelName="BZT-007-Hollow"
+	ActiveGameTypes=/* Array type was not detected. */
+	BattleRegisterFee=2
+	IconTexture=TextureMovie'TextureMovieStream.BZT-007-Hollow'
+	GameType=0
+	MaxPlayers=32
+	GoalScore=10
+	EntryIndex=107
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_3 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_3'
+begin object name="HuxleyBattleZoneData_3" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-001-LandfillS"
+	LevelName="BZR-001-LandfillS"
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	AdvantageTeam=1
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleServerID=213
+	GameType=2
+	MaxPlayers=48
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=4
+	LinkedBattleServers[0]=210
+	LinkedBattleServers[1]=0
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=240
+	SapiWinRewardItems[0]=(ItemId=609101,Count=9)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=18)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=2)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=3)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=6)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=3)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=6)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=1)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AlterLoseRewardItems[2]=(ItemId=609201,Count=1)
+	EntryIndex=213
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_30 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_30'
+begin object name="HuxleyBattleZoneData_30" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-004-quakeS"
+	LevelName="BZT-004-quakeS"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-004-quakeS'
+	bRookie=true
+	EntryIndex=104
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_31 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_31'
+begin object name="HuxleyBattleZoneData_31" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-011-Methane"
+	LevelName="BZR-011-Methane"
+	ActiveGameTypes=/* Array type was not detected. */
+	ActiveClasses=/* Array type was not detected. */
+	BattleRegisterFee=2
+	IconTexture=TextureMovie'TextureMovieStream.BZR-011-Methane'
+	GameType=0
+	bRookie=true
+	EntryIndex=151
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_32 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_32'
+begin object name="HuxleyBattleZoneData_32" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-005-Temple"
+	LevelName="BZT-005-Temple"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-005-Temple'
+	bEnabled=false
+	EntryIndex=105
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_33 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_33'
+begin object name="HuxleyBattleZoneData_33" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZP-001-Quakes"
+	LevelName="BZP-001-Quakes"
+	Level=BZLevel_H
+	ActiveGameTypes=/* Array type was not detected. */
+	BattleRegisterFee=4
+	IconTexture=TextureMovie'TextureMovieStream.BZP-001-Quakes'
+	GameType=0
+	MinPlayerLevel=21
+	bEnabled=false
+	EntryIndex=181
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_34 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_34'
+begin object name="HuxleyBattleZoneData_34" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-002-Mine"
+	LevelName="BZR-002-Mine"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-002-Mine'
+	EntryIndex=142
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_35 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_35'
+begin object name="HuxleyBattleZoneData_35" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-002-Mine"
+	LevelName="BZR-002-Mine"
+	Level=BZLevel_H
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_SAPIENS
+	AdvantageTeam=0
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleRegisterFee=4
+	BattleServerID=208
+	GameType=2
+	MaxPlayers=48
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=3
+	LinkedBattleServers[0]=0
+	LinkedBattleServers[1]=209
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=240
+	SapiWinRewardItems[0]=(ItemId=609101,Count=3)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=6)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=1)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=9)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=18)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=2)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=3)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=6)
+	EntryIndex=208
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_36 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_36'
+begin object name="HuxleyBattleZoneData_36" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-003-OutBack"
+	LevelName="BZR-003-Outback"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-003-Outback'
+	EntryIndex=143
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_37 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_37'
+begin object name="HuxleyBattleZoneData_37" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-003-Outback"
+	LevelName="BZR-003-Outback"
+	Level=BZLevel_H
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_SAPIENS
+	AdvantageTeam=0
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleRegisterFee=4
+	BattleServerID=209
+	GameType=2
+	MaxPlayers=48
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=3
+	LinkedBattleServers[0]=208
+	LinkedBattleServers[1]=210
+	AxisStart=true
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=240
+	SapiWinRewardItems[0]=(ItemId=609101,Count=5)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=10)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=2)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=7)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=14)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=2)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AdvantageAmount=30
+	EntryIndex=209
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_38 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_38'
+begin object name="HuxleyBattleZoneData_38" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-007-LightHouse"
+	LevelName="BZR-007-LightHouse"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-007-LightHouse'
+	bEnabled=false
+	EntryIndex=147
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_39 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_39'
+begin object name="HuxleyBattleZoneData_39" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-006-IceCave"
+	LevelName="BZR-006-IceCave"
+	Level=BZLevel_H
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	AdvantageTeam=1
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleRegisterFee=4
+	BattleServerID=210
+	GameType=2
+	MaxPlayers=48
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=4
+	LinkedBattleServers[0]=209
+	LinkedBattleServers[1]=213
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=240
+	SapiWinRewardItems[0]=(ItemId=609101,Count=7)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=14)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=2)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=5)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=10)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=2)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=4)
+	AdvantageAmount=30
+	EntryIndex=210
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_4 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_4'
+begin object name="HuxleyBattleZoneData_4" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-010-Oilrig"
+	LevelName="BZR-010-Oilrig"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-010-Oilrig'
+	bEnabled=false
+	EntryIndex=150
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_40 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_40'
+begin object name="HuxleyBattleZoneData_40" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-006-IceCave"
+	LevelName="BZR-006-IceCave"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-006-IceCave'
+	EntryIndex=146
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_41 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_41'
+begin object name="HuxleyBattleZoneData_41" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-008-Islands"
+	LevelName="BZR-008-Islands"
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_SAPIENS
+	AdvantageTeam=0
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleRegisterFee=2
+	BattleServerID=211
+	GameType=2
+	MaxPlayers=44
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=3
+	LinkedBattleServers[0]=0
+	LinkedBattleServers[1]=214
+	AxisID=1
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=200
+	SapiWinRewardItems[0]=(ItemId=609101,Count=3)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=6)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=1)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=1)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=2)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=9)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=18)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=2)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=3)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=6)
+	bEnabled=false
+	EntryIndex=211
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_42 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_42'
+begin object name="HuxleyBattleZoneData_42" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-001-LandfillS"
+	LevelName="BZR-001-LandfillS"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-001-LandfillS'
+	EntryIndex=141
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_43 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_43'
+begin object name="HuxleyBattleZoneData_43" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-008-Islands"
+	LevelName="BZR-008-Islands"
+	Level=BZLevel_H
+	GameType_Editor=EBZType_Radar
+	BaseBattleZoneSpecies_Editor=BZ_SPECIES_ALTERNATIVE
+	AdvantageTeam=1
+	ActiveGameTypes=none
+	ActiveClasses=none
+	BattleRegisterFee=4
+	IconTexture=TextureMovie'TextureMovieStream.BZP-005-Harbor'
+	BattleServerID=212
+	GameType=2
+	MaxPlayers=44
+	GoalScore=8000
+	TimeLimit=45.0000000
+	MinPlayerLevel=1
+	OccupationWinCount=1
+	BaseBattleZoneSpecies=4
+	LinkedBattleServers[0]=214
+	LinkedBattleServers[1]=0
+	AxisID=1
+	bRookie=true
+	RecessMinutes=15
+	MaxReservePlayers=200
+	SapiWinRewardItems[0]=(ItemId=609101,Count=9)
+	SapiWinRewardItems[1]=(ItemId=500001,Count=18)
+	SapiWinRewardItems[2]=(ItemId=609201,Count=2)
+	SapiLoseRewardItems[0]=(ItemId=609101,Count=3)
+	SapiLoseRewardItems[1]=(ItemId=500001,Count=6)
+	AlterWinRewardItems[0]=(ItemId=609101,Count=3)
+	AlterWinRewardItems[1]=(ItemId=500001,Count=6)
+	AlterWinRewardItems[2]=(ItemId=609201,Count=1)
+	AlterLoseRewardItems[0]=(ItemId=609101,Count=1)
+	AlterLoseRewardItems[1]=(ItemId=500001,Count=2)
+	bEnabled=false
+	EntryIndex=212
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_44 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_44'
+begin object name="HuxleyBattleZoneData_44" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZP-006-QuakeB"
+	LevelName="BZP-006-quakeB"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZP-006-quakeB'
+	EntryIndex=186
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_45 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_45'
+begin object name="HuxleyBattleZoneData_45" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZP-004-Crossfire"
+	LevelName="BZP-004-Crossfire"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZP-004-Crossfire'
+	EntryIndex=184
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_46 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_46'
+begin object name="HuxleyBattleZoneData_46" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-012-Rig"
+	LevelName="BZC-012-Rig"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-012-Rig'
+	bEnabled=false
+	EntryIndex=172
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_47 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_47'
+begin object name="HuxleyBattleZoneData_47" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-010-Junkyard"
+	LevelName="BZC-010-Junkyard"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-010-Junkyard'
+	EntryIndex=170
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_48 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_48'
+begin object name="HuxleyBattleZoneData_48" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-004-Transponder"
+	LevelName="BZC-004-Transponder"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-004-Transponder'
+	EntryIndex=164
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_49 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_49'
+begin object name="HuxleyBattleZoneData_49" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZP-003-Slums"
+	LevelName="BZP-003-Slums"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZP-003-Slums'
+	bEnabled=false
+	EntryIndex=183
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_5 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_5'
+begin object name="HuxleyBattleZoneData_5" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-006-Wooden"
+	LevelName="BZT-006-Wooden"
+	ActiveGameTypes=/* Array type was not detected. */
+	ActiveClasses=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-006-Wooden'
+	TimeLimit=60.0000000
+	MinPlayerLevel=16
+	EntryIndex=106
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_50 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_50'
+begin object name="HuxleyBattleZoneData_50" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-004-Ice"
+	LevelName="BZR-004-Ice"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-004-Ice'
+	bRookie=true
+	EntryIndex=144
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_51 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_51'
+begin object name="HuxleyBattleZoneData_51" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZR-012-Sacred"
+	LevelName="BZR-012-Sacred"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZR-012-Sacred'
+	bRookie=true
+	EntryIndex=152
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_52 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_52'
+begin object name="HuxleyBattleZoneData_52" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-008-Ice"
+	LevelName="BZT-008-Ice"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-008-Ice'
+	bRookie=true
+	EntryIndex=108
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_53 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_53'
+begin object name="HuxleyBattleZoneData_53" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-009-Pipes"
+	LevelName="BZT-009-Pipes"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-009-Pipes'
+	bEnabled=false
+	EntryIndex=109
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_54 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_54'
+begin object name="HuxleyBattleZoneData_54" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-013-Rig"
+	LevelName="BZT-013-Rig"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-012-Rig'
+	bEnabled=false
+	EntryIndex=113
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_55 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_55'
+begin object name="HuxleyBattleZoneData_55" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-010-Junkyard"
+	LevelName="BZT-010-Junkyard"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-010-Junkyard'
+	EntryIndex=110
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_56 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_56'
+begin object name="HuxleyBattleZoneData_56" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-011-Crater"
+	LevelName="BZT-011-Crater"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-011-Crater'
+	bEnabled=false
+	EntryIndex=111
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_57 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_57'
+begin object name="HuxleyBattleZoneData_57" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-015-Tears"
+	LevelName="BZT-015-Tears"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-006-Tears'
+	bEnabled=false
+	EntryIndex=115
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_58 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_58'
+begin object name="HuxleyBattleZoneData_58" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-017-Methane"
+	LevelName="BZT-017-Methane"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-017-Methane'
+	bRookie=true
+	EntryIndex=117
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_59 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_59'
+begin object name="HuxleyBattleZoneData_59" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-018-Sacred"
+	LevelName="BZT-018-Sacred"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-018-Sacred'
+	bRookie=true
+	EntryIndex=118
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_6 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_6'
+begin object name="HuxleyBattleZoneData_6" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-024-JunkCity"
+	LevelName="BZT-024-JunkCity"
+	ActiveGameTypes=/* Array type was not detected. */
+	ActiveClasses=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-024-JunkCity'
+	bEnabled=false
+	EntryIndex=124
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_60 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_60'
+begin object name="HuxleyBattleZoneData_60" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-019-Transponder"
+	LevelName="BZT-019-Transponder"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-004-Transponder'
+	EntryIndex=119
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_61 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_61'
+begin object name="HuxleyBattleZoneData_61" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-013-BStar"
+	LevelName="BZC-013-BStar"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-013-BStar'
+	EntryIndex=173
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_62 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_62'
+begin object name="HuxleyBattleZoneData_62" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-017-Methane"
+	LevelName="BZC-017-Methane"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-017-Methane'
+	bRookie=true
+	EntryIndex=177
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_63 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_63'
+begin object name="HuxleyBattleZoneData_63" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-018-Sacred"
+	LevelName="BZC-018-Sacred"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-018-Sacred'
+	bRookie=true
+	EntryIndex=178
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_64 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_64'
+begin object name="HuxleyBattleZoneData_64" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-Test_Cuttle"
+	LevelName="BZT-Test_Cuttle"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=Texture2D'TextureDummy.dummyMap'
+	IconCoordinates=(UL=195.0000000,VL=170.0000000)
+	bEnabled=false
+	EntryIndex=191
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_65 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_65'
+begin object name="HuxleyBattleZoneData_65" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-Test-CuttleFish"
+	LevelName="BZT-Test-CuttleFish"
+	ActiveGameTypes=none
+	IconTexture=Texture2D'TextureDummy.dummyMap'
+	bEnabled=false
+	EntryIndex=219
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_66 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_66'
+begin object name="HuxleyBattleZoneData_66" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-Test-EqualityMode"
+	LevelName="BZT-Test-EqualityMode"
+	IconTexture=Texture2D'TextureDummy.dummyMap'
+	bRookie=true
+	EntryIndex=192
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_67 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_67'
+begin object name="HuxleyBattleZoneData_67" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-020-Bridge"
+	LevelName="BZC-020-bridge"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-002-Pipes'
+	bRookie=true
+	bEnabled=false
+	EntryIndex=180
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_7 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_7'
+begin object name="HuxleyBattleZoneData_7" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-012-Harbor"
+	LevelName="BZT-012-Harbor"
+	ActiveGameTypes=/* Array type was not detected. */
+	ActiveClasses=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-012-Harbor'
+	EntryIndex=112
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_8 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_8'
+begin object name="HuxleyBattleZoneData_8" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZT-002-Peak"
+	LevelName="BZT-002-Peak"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZT-002-Peak'
+	bRookie=true
+	EntryIndex=102
+end object
+
+// --- HuxleyBattleZoneData :: HuxleyBattleZoneData_9 ---
+// Reference: HuxleyBattleZoneData'HuxleyBattleZoneTable.BattleZones.HuxleyBattleZoneData_9'
+begin object name="HuxleyBattleZoneData_9" class=HuxleyGame.HuxleyBattleZoneData
+	BattleZoneName="BZC-014-Slums"
+	LevelName="BZC-014-Slums"
+	ActiveGameTypes=/* Array type was not detected. */
+	IconTexture=TextureMovie'TextureMovieStream.BZC-014-Slums'
+	bEnabled=false
+	EntryIndex=174
+end object
+
+// --- HuxleyDataTable :: BRT ---
+// Reference: HuxleyDataTable'HuxleyBattleZoneTable.BRT'
+begin object name="BRT" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyBRTData'
+	Table=/* Array type was not detected. */
+end object
+
+// --- HuxleyBRTData :: HuxleyBRTData ---
+// Reference: HuxleyBRTData'HuxleyBattleZoneTable.BRT.HuxleyBRTData'
+begin object name="HuxleyBRTData" class=HuxleyGame.HuxleyBRTData
+	BRTName="TestBRT"
+	BattleAreas=/* Array type was not detected. */
+	EntryIndex=1
+end object
+

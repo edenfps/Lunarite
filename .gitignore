@@ -1,0 +1,46 @@
+# Build output
+[Bb]in/
+[Oo]bj/
+bin-*/
+__pycache__/
+.isolated-build/
+backups/
+
+# Visual Studio
+.vs/
+*.user
+*.suo
+
+# Rider / VS Code
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+
+# Local diagnostics and packet captures
+*.log
+*.pcap
+*.pcapng
+huxley-udp.txt
+
+# External library (has its own git repo)
+UELib/
+
+# Read-only upstream reference checkouts (commit IDs recorded in references/README.md)
+references/external/
+
+# Runtime persistence
+Lunarite.Server/battleresults.json
+Lunarite.Server/personalbuffs.json
+
+# Unattended client/server test runs (isolated server copy, logs)
+.autotest/
+
+# Launch-HuxleyServer.ps1 / Watch-HuxleyServer.ps1 state
+server.stopped
+server.launching
+server-launch-args.json
+
+# Operator settings (huxley.conf.example is the template)
+huxley.conf

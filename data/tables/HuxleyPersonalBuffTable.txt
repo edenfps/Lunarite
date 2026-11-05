@@ -1,0 +1,111 @@
+=== HuxleyPersonalBuffTable.upk ===
+Class histogram:
+  HuxleyPersonalBuffData: 3
+  HuxleyPersonalBuffSetterData: 3
+  HuxleyDataTable: 2
+
+// --- HuxleyDataTable :: HuxleyPersonalBuffs ---
+// Reference: HuxleyDataTable'HuxleyPersonalBuffTable.HuxleyPersonalBuffs'
+begin object name="HuxleyPersonalBuffs" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyPersonalBuffData'
+	Table=/* Array type was not detected. */
+end object
+
+// --- HuxleyDataTable :: HuxleyPersonalBuffSetters ---
+// Reference: HuxleyDataTable'HuxleyPersonalBuffTable.HuxleyPersonalBuffSetters'
+begin object name="HuxleyPersonalBuffSetters" class=HuxleyGame.HuxleyDataTable
+	EntryClass=Class'HuxleyGame.HuxleyPersonalBuffSetterData'
+	Table=/* Array type was not detected. */
+end object
+
+// --- HuxleyPersonalBuffData :: HuxleyPersonalBuffData ---
+// Reference: HuxleyPersonalBuffData'HuxleyPersonalBuffTable.HuxleyPersonalBuffs.HuxleyPersonalBuffData'
+begin object name="HuxleyPersonalBuffData" class=HuxleyGame.HuxleyPersonalBuffData
+	AdultNameTag="2_adult_name"
+	TeenagerNameTag="2_teenager_name"
+	AdultDescriptionTag="2_adult_description"
+	TeenagerDescriptionTag="2_teenager_description"
+	Group=emPersonalBuffGroup_PubSystem
+	ModifierType=emPersonalBuffModifier_GaugeBarSpeed
+	GroupCode=1
+	ModifierTypeCode=1
+	CanBeCumulated=true
+	Value=10
+	DurationSeconds=120
+	EntryIndex=2
+end object
+
+// --- HuxleyPersonalBuffData :: HuxleyPersonalBuffData_1 ---
+// Reference: HuxleyPersonalBuffData'HuxleyPersonalBuffTable.HuxleyPersonalBuffs.HuxleyPersonalBuffData_1'
+begin object name="HuxleyPersonalBuffData_1" class=HuxleyGame.HuxleyPersonalBuffData
+	AdultNameTag="1_adult_name"
+	TeenagerNameTag="1_teenager_name"
+	AdultDescriptionTag="1_adult_description"
+	TeenagerDescriptionTag="1_teenager_description"
+	Group=emPersonalBuffGroup_PubSystem
+	ModifierType=emPersonalBuffModifier_RageGaugeRatio
+	GroupCode=1
+	ModifierTypeCode=3
+	Value=10
+	DurationSeconds=120
+	EntryIndex=1
+end object
+
+// --- HuxleyPersonalBuffData :: HuxleyPersonalBuffData_2 ---
+// Reference: HuxleyPersonalBuffData'HuxleyPersonalBuffTable.HuxleyPersonalBuffs.HuxleyPersonalBuffData_2'
+begin object name="HuxleyPersonalBuffData_2" class=HuxleyGame.HuxleyPersonalBuffData
+	AdultNameTag="3_adult_name"
+	TeenagerNameTag="3_teenager_name"
+	AdultDescriptionTag="3_adult_description"
+	TeenagerDescriptionTag="3_teenager_description"
+	Group=emPersonalBuffGroup_PubSystem
+	ModifierType=emPersonalBuffModifier_DeadDrunk
+	GroupCode=1
+	ModifierTypeCode=4
+	Value=-10
+	DurationSeconds=120
+	EntryIndex=3
+end object
+
+// --- HuxleyPersonalBuffSetterData :: HuxleyPersonalBuffSetterData ---
+// Reference: HuxleyPersonalBuffSetterData'HuxleyPersonalBuffTable.HuxleyPersonalBuffSetters.HuxleyPersonalBuffSetterData'
+begin object name="HuxleyPersonalBuffSetterData" class=HuxleyGame.HuxleyPersonalBuffSetterData
+	AdultNameTag="1_adult_name"
+	TeenagerNameTag="1_teenager_name"
+	DefaultGaugeSpeed=5
+	SideEffectProbability=70
+	GreateSuccessBuff=(nBuffID=1,byMaxBuffLevel=3)
+	SuccessBuff=(nBuffID=1,byGoalSizeRatio=15)
+	HandicapBuff=(nBuffID=2,byGoalSizeRatio=35,byMaxBuffLevel=5)
+	SideEffectBuff=(nBuffID=3,byGoalSizeRatio=100)
+	EntryIndex=1
+end object
+
+// --- HuxleyPersonalBuffSetterData :: HuxleyPersonalBuffSetterData_1 ---
+// Reference: HuxleyPersonalBuffSetterData'HuxleyPersonalBuffTable.HuxleyPersonalBuffSetters.HuxleyPersonalBuffSetterData_1'
+begin object name="HuxleyPersonalBuffSetterData_1" class=HuxleyGame.HuxleyPersonalBuffSetterData
+	AdultNameTag="2_adult_name"
+	TeenagerNameTag="2_teenager_name"
+	DefaultGaugeSpeed=5
+	SideEffectProbability=50
+	GreateSuccessBuff=(nBuffID=1,byGoalSizeRatio=20,byMaxBuffLevel=4)
+	SuccessBuff=(nBuffID=1,byGoalSizeRatio=25,byMaxBuffLevel=2)
+	HandicapBuff=(nBuffID=2,byGoalSizeRatio=40,byMaxBuffLevel=5)
+	SideEffectBuff=(nBuffID=3,byGoalSizeRatio=100)
+	EntryIndex=2
+end object
+
+// --- HuxleyPersonalBuffSetterData :: HuxleyPersonalBuffSetterData_2 ---
+// Reference: HuxleyPersonalBuffSetterData'HuxleyPersonalBuffTable.HuxleyPersonalBuffSetters.HuxleyPersonalBuffSetterData_2'
+begin object name="HuxleyPersonalBuffSetterData_2" class=HuxleyGame.HuxleyPersonalBuffSetterData
+	AdultNameTag="3_adult_name"
+	TeenagerNameTag="3_teenager_name"
+	DefaultGaugeSpeed=3
+	SideEffectProbability=10
+	GreateSuccessBuff=(nBuffID=1,byGoalSizeRatio=20,byMaxBuffLevel=2)
+	SuccessBuff=(nBuffID=1,byGoalSizeRatio=25)
+	HandicapBuff=(nBuffID=2,byGoalSizeRatio=40)
+	SideEffectBuff=(nBuffID=3)
+	EntryIndex=3
+end object
+
