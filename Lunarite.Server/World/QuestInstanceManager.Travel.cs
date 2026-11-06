@@ -173,8 +173,10 @@ public sealed partial class QuestInstanceManager
             PcRoomValid = _serverEvents.PcRoomActive,               // PostData byPCRoomValid
             SkillSlots = _playerStore.GetSkillSlots(pid),
             // Equipped gear is the only gear source in a battle quest. The boot-camp tutorial uses
-            // its fixed kit (Machine Gun, Flinger, Regulator).
-            Items = quest.QuestType == "QuestType_Tutorial" ? ItemManager.TutorialLoadoutItems() : _itemManager.StartingLoadoutItems(pid)
+            // its fixed kit (Machine Gun, Flinger, Regulator). The host's displaced stream carries no
+            // supplies: on the live server a belt record left the host with no weapon.
+            Items = quest.QuestType == "QuestType_Tutorial" ? ItemManager.TutorialLoadoutItems()
+                : _itemManager.StartingLoadoutItems(pid).Where(item => item.InvenIndex != InventoryType.Belt).ToList()
         };
     }
 
