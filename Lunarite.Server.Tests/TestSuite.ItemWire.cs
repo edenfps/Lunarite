@@ -111,4 +111,16 @@ internal sealed partial class TestSuite
         Check(sockets > 1000 && refused.Count == 0, "every armor socket accepts every skill of its part and shape");
         Check(empty.Count == 0, "every armor socket has at least one skill that fits it");
     }
+
+    // Two players warping together: the one who reappears second must still receive the first.
+    private void HiddenPlayerKeepsWhoAppeared()
+    {
+        var hidden = new Lunarite.World.Player(930821954);
+        hidden.NoteMissedPresence(7);
+        hidden.NoteMissedPresence(7);
+        hidden.NoteMissedPresence(9);
+        var missed = hidden.TakeMissedPresence();
+        Check(missed.OrderBy(pid => pid).SequenceEqual(new[] { 7, 9 }) && hidden.TakeMissedPresence().Length == 0,
+            "a hidden player remembers who appeared meanwhile, once each, until it reappears");
+    }
 }

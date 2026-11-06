@@ -46,12 +46,17 @@ public static class SpawnHandler
         if (pid <= 0) return true;
         Game.PlayerFor(pid).Position = (spawn.X, spawn.Y, spawn.Z, unchecked((short)spawn.Yaw));
         Game.PlayerFor(pid).MarkSpawned();
+        Game.PlayerFor(pid).TakeMissedPresence();  // a Spawn gets everyone below
         foreach (var pair in _playerManager.Online)
         {
             int otherPid = pair.Key;
             Client otherClient = pair.Value;
-            if (otherPid == pid || !Game.PlayerFor(otherPid).IsSpawned
-                || !_cityManager.SharesPresence(client, otherClient)) continue;
+            if (otherPid == pid || !_cityManager.SharesPresence(client, otherClient)) continue;
+            if (!Game.PlayerFor(otherPid).IsSpawned)
+            {
+                Game.PlayerFor(otherPid).NoteMissedPresence(pid);
+                continue;
+            }
             _characterManager.SendOtherPlayerSnapshot(client, otherPid);
             _characterManager.SendOtherPlayerSnapshot(otherClient, pid);
         }

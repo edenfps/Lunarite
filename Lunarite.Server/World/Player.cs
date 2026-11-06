@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace Lunarite.World;
@@ -55,6 +56,19 @@ public sealed class Player
     public bool TryMarkSpawned() => Interlocked.Exchange(ref _spawned, 1) == 0;
 
     public bool TryClearSpawned() => Interlocked.Exchange(ref _spawned, 0) != 0;
+
+    // Players who appeared while this one was hidden (a city warp): their AddPlayer skipped us, and
+    // our own Visible only announces us to them, so we send them when we reappear.
+    private readonly System.Collections.Concurrent.ConcurrentDictionary<int, byte> _missedPresence = new();
+
+    public void NoteMissedPresence(int pid) => _missedPresence[pid] = 0;
+
+    public int[] TakeMissedPresence()
+    {
+        int[] missed = _missedPresence.Keys.ToArray();
+        foreach (int pid in missed) _missedPresence.TryRemove(pid, out _);
+        return missed;
+    }
 
     // Tram route the character is riding (op104/op105).
     public bool IsOnTransport

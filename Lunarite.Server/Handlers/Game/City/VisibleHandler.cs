@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -47,12 +48,18 @@ public static class VisibleHandler
         }
 
         if (!Game.PlayerFor(pid).TryMarkSpawned()) return true;
+        int[] missed = Game.PlayerFor(pid).TakeMissedPresence();
         foreach (var pair in _playerManager.Online)
         {
             int otherPid = pair.Key;
-            if (otherPid == pid || !Game.PlayerFor(otherPid).IsSpawned
-                || !_cityManager.SharesPresence(client, pair.Value)) continue;
+            if (otherPid == pid || !_cityManager.SharesPresence(client, pair.Value)) continue;
+            if (!Game.PlayerFor(otherPid).IsSpawned)
+            {
+                Game.PlayerFor(otherPid).NoteMissedPresence(pid);
+                continue;
+            }
             _characterManager.SendOtherPlayerSnapshot(pair.Value, pid);
+            if (missed.Contains(otherPid)) _characterManager.SendOtherPlayerSnapshot(client, otherPid);
         }
 
         return true;
