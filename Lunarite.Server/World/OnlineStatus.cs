@@ -1,6 +1,8 @@
 using System;
 using System.IO;
+using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 
 using Lunarite.Storage;
 
@@ -10,27 +12,28 @@ namespace Lunarite.World;
 // TypeIndex below 10 is a Sapiens character, 10 and above an Alternative (CharacterStore.SimulationCenterMap).
 public static class OnlineStatus
 {
-    public static (int Sapiens, int Alternative) Count(PlayerManager players, CharacterStore characters)
+    public static (List<string> Sapiens, List<string> Alternative) Names(PlayerManager players, CharacterStore characters)
     {
-        int sapiens = 0, alternative = 0;
+        List<string> sapiens = [], alternative = [];
         foreach (int pid in players.OnlinePids)
         {
             if (characters.Get(pid) is not { } character) continue;
-            if (character.Index >= 10) alternative++;
-            else sapiens++;
+            (character.Index >= 10 ? alternative : sapiens).Add(character.Name);
         }
+        sapiens.Sort(StringComparer.OrdinalIgnoreCase);
+        alternative.Sort(StringComparer.OrdinalIgnoreCase);
         return (sapiens, alternative);
     }
 
     // inMission counts players in a quest or battle: a restart waits for them, not for those in a city or camp.
-    public static string Json(int sapiens, int alternative, int inMission, long unixSeconds) =>
-        $"{{\"online\":{sapiens + alternative},\"sapiens\":{sapiens},\"alternative\":{alternative},\"inMission\":{inMission},\"updated\":{unixSeconds}}}\n";
+    public static string Json(IReadOnlyList<string> sapiens, IReadOnlyList<string> alternative, int inMission, long unixSeconds) =>
+        $"{{\"online\":{sapiens.Count + alternative.Count},\"sapiens\":{sapiens.Count},\"alternative\":{alternative.Count},\"sapiensNames\":{JsonSerializer.Serialize(sapiens)},\"alternativeNames\":{JsonSerializer.Serialize(alternative)},\"inMission\":{inMission},\"updated\":{unixSeconds}}}\n";
 
     public static void Write(string path, PlayerManager players, CharacterStore characters, Func<int, bool> inMission)
     {
         try
         {
-            var (sapiens, alternative) = Count(players, characters);
+            var (sapiens, alternative) = Names(players, characters);
             string temporary = path + ".tmp";
             File.WriteAllText(temporary, Json(sapiens, alternative, players.OnlinePids.Count(inMission),
                 DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
