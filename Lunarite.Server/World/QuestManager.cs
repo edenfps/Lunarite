@@ -69,6 +69,17 @@ public sealed class QuestManager
 
     internal void FlushQuestTravelRefresh(Client client, int pid)
     {
+        // op217 writes its record over the slot holding that item, then clears the addressed slot.
+        // Addressing the same slot would wipe the gear; armor cell 5 does not exist, so nothing is
+        // cleared, and OnRemoveItem only acts on MAIN. op82 is refused for occupied slots.
+        if (client.Session.TryTakeEquipmentRefresh())
+            foreach (var item in _playerStore.GetInventory(pid, () => [])
+                         .Where(i => i.InventoryIndex is InventoryType.Weapon or InventoryType.Armor).ToList())
+                client.SendPacket(new ItemReplacement
+                {
+                    RemovedInventory = InventoryType.Armor, RemovedCell = 5,
+                    Item = ItemManager.ToInsertItem(item)
+                });
         if (!client.Session.TryTakeQuestRefresh(out byte refresh)) return;
         if ((refresh & QuestRefreshAcquire) != 0) SendQuestAcquireList(client, pid);
         if ((refresh & QuestRefreshAvailability) != 0) SendQuestAvailabilityUpdate(client, pid);

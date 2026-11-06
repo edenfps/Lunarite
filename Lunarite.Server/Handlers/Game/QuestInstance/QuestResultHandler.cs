@@ -73,6 +73,7 @@ public static class QuestResultHandler
                 ? _playerStore.UpdateQuestDurabilityFromBoots(ownerPid, boots.Durability)
                 : 0;
         }
+        if (updated != 0) QuestManager.QuestRewardLiveRecipient(ownerPid)?.Session.QueueEquipmentRefresh();
         bool recordedWeapons = _questStore.UpdateWeaponKills(ownerPid, questIndex,
             packet.WeaponUses.Select(x => (x.Category, x.Kills)), authenticatedDirectFieldRun: true);
         long runStarted = _questInstanceManager.StartedTicks(instanceHost);
