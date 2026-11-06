@@ -47,6 +47,8 @@ public sealed partial class PlayerStore
                 if (!genuine || durability > MaxDurability) continue;
                 var item = ItemAt(list, inven, cell);
                 if (item == null || durability >= item.Durability) continue;
+                // As in UpdateQuestDurabilityFromBoots: an unpatched client never loaded the gear.
+                if (durability == 0 && item.Durability > MaxDurability / 2) continue;
                 item.Durability = durability;
                 changed++;
             }
