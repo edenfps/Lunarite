@@ -248,6 +248,7 @@ internal sealed partial class TestSuite
         Game.OnHandlePacket(_questSocketClient, scriptedPickupBatch);
         var batchAnswer = new InsertDropItemAtOnceQuest { Answer = 0, Items = [(603056, 1)] };
         Check(ReadQuestSocketPacket()[0] == 82
+            && ReadQuestSocketPacket()[0] == 83
             && ReadQuestSocketPacket().SequenceEqual(batchAnswer.Serialize())
             && _playerStore.GetInventory(OfflineHostPid, () => [])
                 .Where(item => item.ItemId == 603056).Sum(item => item.Count) == scriptedItemBefore + 2,

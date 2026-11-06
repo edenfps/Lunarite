@@ -68,7 +68,7 @@ public static class QuestInsertDropItemAtOnceHandler
 
         if (valid)
         {
-            foreach (var item in inserted) ItemManager.SendInventoryItem(client, item);
+            foreach (var item in inserted) ItemManager.SendGrantedItem(client, item);
         }
 
         // OnInsertDropItem_AtOnce_Quest empties the reward panel before reading the result and

@@ -185,11 +185,20 @@ public sealed partial class ItemManager
     {
         var client = QuestManager.QuestRewardLiveRecipient(pid);
         if (client == null) return;
-        foreach (var item in inserted) SendInventoryItem(client, item);
+        foreach (var item in inserted) SendGrantedItem(client, item);
     }
 
     internal static void SendInventoryItem(Client client, PlayerStore.GenericItem item) =>
         client.SendPacket(ToInsertItem(item));
+
+    // Loot and rewards can land on an existing stack: the client refuses op82 for an occupied cell and
+    // keeps its old count, so the absolute op83 count follows (a no-op for a new cell).
+    internal static void SendGrantedItem(Client client, PlayerStore.GenericItem item)
+    {
+        SendInventoryItem(client, item);
+        if (item.Count > 1)
+            client.SendPacket(new UpdateItemNum { Inventory = item.InventoryIndex, Cell = item.InventoryCell, Count = item.Count });
+    }
 
     // Server-clock sweep for online players (offline expiry happens at selection). The cell is
     // removed first, then the same op219 warning as login-time expiry.

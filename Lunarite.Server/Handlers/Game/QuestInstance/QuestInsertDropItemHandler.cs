@@ -62,7 +62,7 @@ public static class QuestInsertDropItemHandler
             }, out claims);
         if (valid)
         {
-            foreach (var item in inserted) ItemManager.SendInventoryItem(client, item);
+            foreach (var item in inserted) ItemManager.SendGrantedItem(client, item);
         }
         // Short of room: INSERT_PROTION with the quantity actually inserted (possibly 0). The client
         // subtracts it from the panel entry and shows NotEnoghSlot; the rest stays claimable.

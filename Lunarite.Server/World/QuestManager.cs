@@ -194,7 +194,7 @@ public sealed class QuestManager
     {
         foreach (byte cell in changedCells.Distinct())
             client.SendPacket(new RemoveItem { InventoryIndex = InventoryType.Main, Cell = cell });
-        foreach (var item in inserted) ItemManager.SendInventoryItem(client, item);
+        foreach (var item in inserted) ItemManager.SendGrantedItem(client, item);
     }
 
     // Destination order: an explicit client request, the quest's cooked ExitZoneIndex, the city the
