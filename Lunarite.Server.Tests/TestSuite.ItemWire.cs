@@ -144,4 +144,14 @@ internal sealed partial class TestSuite
             && !_questSocketClient.Session.TryTakeEquipmentRefresh(),
             "worn equipment reaches the client once, by op217, at its next city Spawn");
     }
+
+    private void OutsideNoticeIsTakenOnce()
+    {
+        string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"huxley-notice-{Guid.NewGuid():N}.txt");
+        System.IO.File.WriteAllText(path, " Restart in 1 minute ");
+        Check(Lunarite.World.OnlineStatus.TakeNotice(path) == "Restart in 1 minute"
+            && Lunarite.World.OnlineStatus.TakeNotice(path) == null && !System.IO.File.Exists(path)
+            && Lunarite.World.OnlineStatus.NoticePath("x/online.json").EndsWith("notice.txt"),
+            "a notice file is broadcast once and removed");
+    }
 }

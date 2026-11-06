@@ -37,4 +37,22 @@ public static class OnlineStatus
         catch (IOException) { }
         catch (UnauthorizedAccessException) { }
     }
+
+    // notice.txt next to the status file is a server-wide notice from outside the game (restart
+    // announcements): taken once, then gone.
+    public static string NoticePath(string statusFile) =>
+        Path.Combine(Path.GetDirectoryName(statusFile) ?? "", "notice.txt");
+
+    public static string? TakeNotice(string path)
+    {
+        try
+        {
+            if (!File.Exists(path)) return null;
+            string text = File.ReadAllText(path).Trim();
+            File.Delete(path);
+            return text.Length == 0 ? null : text;
+        }
+        catch (IOException) { return null; }
+        catch (UnauthorizedAccessException) { return null; }
+    }
 }

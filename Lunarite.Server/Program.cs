@@ -21,6 +21,7 @@ static class Program
     static Timer? _itemExpiryTimer;
     static Timer? _squadSweepTimer;
     static Timer? _statusFileTimer;
+    static Timer? _noticeFileTimer;
     static Timer? _stateBackupTimer;
     static CashShopWebServer? _cashShopWebServer;
     static PatchServer? _patchServer;
@@ -198,6 +199,16 @@ static class Program
             var characters = serviceProvider.GetRequiredService<CharacterStore>();
             _statusFileTimer = new Timer(_ => OnlineStatus.Write(statusFile, onlinePlayers, characters), null,
                 TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(15));
+            // Same notice as the GM !notice, from outside the game (restart announcements).
+            string noticeFile = OnlineStatus.NoticePath(statusFile);
+            _noticeFileTimer = new Timer(_ =>
+            {
+                if (OnlineStatus.TakeNotice(noticeFile) is not { } text) return;
+                var notice = new Lunarite.Packets.Outgoing.Message
+                    { Kind = Lunarite.Packets.Outgoing.ServerMessageKind.Notice, Text = text, LifeSeconds = 10 };
+                foreach (var target in onlinePlayers.OnlineClients) target.SendPacket(notice);
+                Console.WriteLine($"[Notice] {text}");
+            }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
         }
 
         // Hourly verified snapshots, in backups/ next to the server's data unless HUXLEY_BACKUP_DIR

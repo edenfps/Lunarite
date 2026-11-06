@@ -194,6 +194,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         EverySocketTakesItsSkills();
         HiddenPlayerKeepsWhoAppeared();
         WornGearReachesClientAtSpawn();
+        OutsideNoticeIsTakenOnce();
         OptionalRewardQuest();
         QuestHostWorldUrl();
         ObjectiveWireFormat();
