@@ -69,6 +69,15 @@ public sealed class QuestManager
 
     internal void FlushQuestTravelRefresh(Client client, int pid)
     {
+        // op217, not op82: the slots are occupied, and the client refuses op82 for those.
+        if (client.Session.TryTakeEquipmentRefresh())
+            foreach (var item in _playerStore.GetInventory(pid, () => [])
+                         .Where(i => i.InventoryIndex is InventoryType.Weapon or InventoryType.Armor).ToList())
+                client.SendPacket(new ItemReplacement
+                {
+                    RemovedInventory = item.InventoryIndex, RemovedCell = item.InventoryCell,
+                    Item = ItemManager.ToInsertItem(item)
+                });
         if (!client.Session.TryTakeQuestRefresh(out byte refresh)) return;
         if ((refresh & QuestRefreshAcquire) != 0) SendQuestAcquireList(client, pid);
         if ((refresh & QuestRefreshAvailability) != 0) SendQuestAvailabilityUpdate(client, pid);

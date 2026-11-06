@@ -278,8 +278,8 @@ public sealed class BattleManager
     }
 
     // Battles wear gear like missions do: apply the result's per-slot durability with the same
-    // rules as native quest results (never repair, ignore an empty weapon slot's zero), then
-    // refresh the changed slots on the live MMO link.
+    // rules as native quest results (never repair, ignore an empty weapon slot's zero). The client
+    // gets the new values at its next city Spawn.
     public static IReadOnlyList<(byte Inven, byte Cell, byte Durability)> BattleDurabilityRecords(byte[] block)
     {
         var records = new List<(byte, byte, byte)>();
@@ -292,12 +292,7 @@ public sealed class BattleManager
     {
         var records = BattleDurabilityRecords(report.Durability);
         if (_playerStore.UpdateNativeQuestDurability(report.Pid, records) == 0) return;
-        var client = QuestManager.QuestRewardLiveRecipient(report.Pid);
-        if (client == null) return;
-        var inventory = _playerStore.GetInventory(report.Pid, () => []);
-        foreach (var (inven, cell, _) in records)
-            if (inventory.FirstOrDefault(x => x.InventoryIndex == inven && x.InventoryCell == cell) is { } item)
-                ItemManager.SendInventoryItem(client, item);
+        QuestManager.QuestRewardLiveRecipient(report.Pid)?.Session.QueueEquipmentRefresh();
     }
 
     internal bool TryGetReservation(int pid, out byte axis) => _battleReservations.TryGetValue(pid, out axis);

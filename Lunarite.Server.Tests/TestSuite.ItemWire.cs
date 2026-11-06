@@ -123,4 +123,25 @@ internal sealed partial class TestSuite
         Check(missed.OrderBy(pid => pid).SequenceEqual(new[] { 7, 9 }) && hidden.TakeMissedPresence().Length == 0,
             "a hidden player remembers who appeared meanwhile, once each, until it reappears");
     }
+
+    // Mission wear happens while the client is away: its next Spawn must carry the real durability,
+    // through op217 because the client refuses op82 for an occupied slot.
+    private void WornGearReachesClientAtSpawn()
+    {
+        var owner = _characterStore.Create(930821955, "WornGear", 1, new Custom());
+        _playerStore.GetInventory(owner.Pid, () =>
+        [
+            new PlayerStore.GenericItem { InventoryIndex = InventoryType.Weapon, InventoryCell = 0, ItemId = 100502, Count = 1, Durability = 23 }
+        ]);
+        _questSocketClient.Session.QueueEquipmentRefresh();
+        _questManager.FlushQuestTravelRefresh(_questSocketClient, owner.Pid);
+        byte[] wire = ReadQuestSocketPacket();
+        Check(wire.SequenceEqual(new ItemReplacement
+            {
+                RemovedInventory = InventoryType.Weapon, RemovedCell = 0,
+                Item = new InsertItem { ItemID = 100502, Count = 1, InventoryIndex = InventoryType.Weapon, Cell = 0, Durability = 23 }
+            }.Serialize())
+            && !_questSocketClient.Session.TryTakeEquipmentRefresh(),
+            "worn equipment reaches the client once, by op217, at its next city Spawn");
+    }
 }

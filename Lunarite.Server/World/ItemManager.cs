@@ -136,7 +136,7 @@ public sealed partial class ItemManager
         Durability = item.Durability, Skill = item.Skill, Skill1 = item.Skill1
     };
 
-    private static InsertItem ToInsertItem(PlayerStore.GenericItem item) => new()
+    internal static InsertItem ToInsertItem(PlayerStore.GenericItem item) => new()
     {
         ItemID = item.ItemId,
         Count = Math.Max(1, item.Count),

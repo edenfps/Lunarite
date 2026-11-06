@@ -193,6 +193,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         HelmetSkillFitsHelmet();
         EverySocketTakesItsSkills();
         HiddenPlayerKeepsWhoAppeared();
+        WornGearReachesClientAtSpawn();
         OptionalRewardQuest();
         QuestHostWorldUrl();
         ObjectiveWireFormat();
