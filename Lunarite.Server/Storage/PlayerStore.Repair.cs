@@ -67,6 +67,9 @@ public sealed partial class PlayerStore
             if (!_inventory.TryGetValue(pid, out var list)) return 0;
             var boots = ItemAt(list, InventoryType.Armor, 4);
             if (boots == null || reportedBootsDurability > boots.Durability) return 0;
+            // Zero from healthy boots means the run never loaded the gear, not wear: no run takes half
+            // of a boot's durability, and this would break all equipment at once.
+            if (reportedBootsDurability == 0 && boots.Durability > MaxDurability / 2) return 0;
             int wear = boots.Durability - reportedBootsDurability;
             if (wear == 0) return 0;
             int changed = 0;

@@ -365,6 +365,8 @@ internal sealed partial class TestSuite
             "type-4 quest settlement derives uniform equipped wear from trustworthy terminal boots durability");
         Check(_playerStore.UpdateQuestDurabilityFromBoots(questWearPid, 92) == 0,
             "type-4 quest settlement rejects a terminal durability increase");
+        Check(_playerStore.UpdateQuestDurabilityFromBoots(questWearPid, 0) == 0,
+            "a zero report from healthy boots breaks nothing: the run never loaded the gear");
         const int questWearUsedPid = 920096;
         ResetCharacter(questWearUsedPid);
         _playerStore.GetInventory(questWearUsedPid, () =>
