@@ -218,8 +218,8 @@ internal sealed partial class TestSuite
 
     private void SettingsFileParsing()
     {
-        Check(Lunarite.World.OnlineStatus.Json(3, 2, 1793849213)
-                == "{\"online\":5,\"sapiens\":3,\"alternative\":2,\"updated\":1793849213}\n",
+        Check(Lunarite.World.OnlineStatus.Json(3, 2, 1, 1793849213)
+                == "{\"online\":5,\"sapiens\":3,\"alternative\":2,\"inMission\":1,\"updated\":1793849213}\n",
             "HUXLEY_STATUS_FILE holds players online per faction as one JSON line");
         var parsed = Lunarite.SettingsFile.Parse([
             "# comment", "", "HUXLEY_SERVER_NAME=Test Server", "  HUXLEY_WINE = xvfb-run -a wine ",

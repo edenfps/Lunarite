@@ -197,7 +197,10 @@ static class Program
         {
             var onlinePlayers = serviceProvider.GetRequiredService<PlayerManager>();
             var characters = serviceProvider.GetRequiredService<CharacterStore>();
-            _statusFileTimer = new Timer(_ => OnlineStatus.Write(statusFile, onlinePlayers, characters), null,
+            var quests = serviceProvider.GetRequiredService<QuestManager>();
+            var battles = serviceProvider.GetRequiredService<BattleInstanceManager>();
+            _statusFileTimer = new Timer(_ => OnlineStatus.Write(statusFile, onlinePlayers, characters,
+                    pid => quests.IsPlayerInQuest(pid) || battles.IsInBattle(pid)), null,
                 TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(15));
             // Same notice as the GM !notice, from outside the game (restart announcements).
             string noticeFile = OnlineStatus.NoticePath(statusFile);

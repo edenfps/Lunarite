@@ -22,16 +22,18 @@ public static class OnlineStatus
         return (sapiens, alternative);
     }
 
-    public static string Json(int sapiens, int alternative, long unixSeconds) =>
-        $"{{\"online\":{sapiens + alternative},\"sapiens\":{sapiens},\"alternative\":{alternative},\"updated\":{unixSeconds}}}\n";
+    // inMission counts players in a quest or battle: a restart waits for them, not for those in a city or camp.
+    public static string Json(int sapiens, int alternative, int inMission, long unixSeconds) =>
+        $"{{\"online\":{sapiens + alternative},\"sapiens\":{sapiens},\"alternative\":{alternative},\"inMission\":{inMission},\"updated\":{unixSeconds}}}\n";
 
-    public static void Write(string path, PlayerManager players, CharacterStore characters)
+    public static void Write(string path, PlayerManager players, CharacterStore characters, Func<int, bool> inMission)
     {
         try
         {
             var (sapiens, alternative) = Count(players, characters);
             string temporary = path + ".tmp";
-            File.WriteAllText(temporary, Json(sapiens, alternative, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
+            File.WriteAllText(temporary, Json(sapiens, alternative, players.OnlinePids.Count(inMission),
+                DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
             File.Move(temporary, path, true);
         }
         catch (IOException) { }
