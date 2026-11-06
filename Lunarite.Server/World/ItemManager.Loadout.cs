@@ -112,7 +112,7 @@ public sealed partial class ItemManager
     {
         var inventory = _playerStore.GetInventory(pid, () => BuildInitialInventory(pid));
         return inventory
-            .Where(i => i.InventoryIndex == InventoryType.Weapon || i.InventoryIndex == InventoryType.Armor)
+            .Where(i => i.InventoryIndex is InventoryType.Belt or InventoryType.Weapon or InventoryType.Armor)
             .Select(i => new QuestCreate.Item
             {
                 ItemID = i.ItemId,

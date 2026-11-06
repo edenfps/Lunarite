@@ -145,6 +145,20 @@ internal sealed partial class TestSuite
             "worn equipment reaches the client once, by op217, at its next city Spawn");
     }
 
+    // CMMOVerify::AddDatas copies BELT, WEAPON, ARMOR and SKILL into the mission: supplies travel too.
+    private void SuppliesTravelWithTheLoadout()
+    {
+        var owner = _characterStore.Create(930821956, "BeltCarrier", 1, new Custom());
+        _playerStore.GetInventory(owner.Pid, () =>
+        [
+            new PlayerStore.GenericItem { InventoryIndex = InventoryType.Belt, InventoryCell = 0, ItemId = 510001, Count = 5, Durability = 100 },
+            new PlayerStore.GenericItem { InventoryIndex = InventoryType.Main, InventoryCell = 0, ItemId = 510001, Count = 3, Durability = 100 }
+        ]);
+        var loadout = _itemManager.StartingLoadoutItems(owner.Pid);
+        Check(loadout.Count == 1 && loadout[0] is { ItemID: 510001, Count: 5, InvenIndex: InventoryType.Belt, Cell: 0 },
+            "equipped supplies, not the main inventory, go into missions and battles");
+    }
+
     private void OutsideNoticeIsTakenOnce()
     {
         string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"huxley-notice-{Guid.NewGuid():N}.txt");
