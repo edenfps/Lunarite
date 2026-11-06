@@ -158,8 +158,11 @@ internal sealed partial class TestSuite
         Check(loadout.Count == 1 && loadout[0] is { ItemID: 510001, Count: 5, InvenIndex: InventoryType.Belt, Cell: 0 },
             "equipped supplies, not the main inventory, go into missions and battles");
         var quest = _questCatalog.Get(846000)!;
-        Check(_questInstanceManager.BuildQuestCreate(owner.Pid, quest, 0, new byte[16]).Items.Count == 0,
-            "a mission host's op42 leaves supplies out");
+        var writer = new Lunarite.Network.PacketWriter();
+        QuestTravelItemStream.Write(writer, _questInstanceManager.BuildQuestCreate(owner.Pid, quest, 0, new byte[16]).Items, displacedP2P: true);
+        byte[] stream = writer.Buffer;
+        Check(BitConverter.ToInt32(stream, 7) == -1 && BitConverter.ToInt32(stream, 11) == 510001 && stream[1] == 1,
+            "a host's belt record reads as no quest items to the backup parser, and as the kit to the item reader");
     }
 
     private void OutsideNoticeIsTakenOnce()

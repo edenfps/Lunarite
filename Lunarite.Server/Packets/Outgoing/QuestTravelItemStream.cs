@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using Lunarite.Network;
+using Lunarite.Packets.Common;
 
 namespace Lunarite.Packets.Outgoing;
 
@@ -39,7 +40,11 @@ internal static class QuestTravelItemStream
 
             // Type 4: native storage reads the record at +0, the cooked quest script at +4.
             // ByteStream2GenericItem is a raw 32-byte memcpy (sub_111D92B0).
-            writer.Write(item.ItemID);          // +0  storage occupancy
+            // The stream's first dword is the quest-item count ParsePlayerBackupData consumes, and
+            // BELT cell 0 is the first slot AddDatas emits. An item ID there runs the GetQuestItem loop
+            // past every item and the host loses all gear; -1 is occupied for sub_11116470, no items
+            // for the script.
+            writer.Write(item.InvenIndex == InventoryType.Belt && item.Cell == 0 ? -1 : item.ItemID); // +0  storage occupancy
             writer.Write(item.ItemID);          // +4  displaced arData nItemID
             writer.Write(item.InvenIndex);      // +8  storage inventory
             writer.Write(item.Cell);            // +9  storage cell
