@@ -208,7 +208,8 @@ public sealed class QuestManager
 
     // Destination order: an explicit client request, the quest's cooked ExitZoneIndex, the city the
     // player departed from (the saved city location is not changed by quest travel), then the
-    // faction Training Center.
+    // faction Training Center. A cooked ExitAreaIndex with no zone is an area of the departure city:
+    // Q-890022 has area 13, Eska's ESKA_RS_02, and the Training Center has only 6 areas.
     public (int ZoneIndex, int AreaIndex) ResolveQuestExit(
         int requestedZone, int requestedArea, int factionCamp,
         int questExitZone = -1, int questExitArea = -1, (int Zone, int Area)? departure = null)
@@ -216,10 +217,9 @@ public sealed class QuestManager
         if (requestedZone >= 0 && _cityZoneCatalog.IsKnown(requestedZone)) return (requestedZone, requestedArea);
         if (questExitZone >= 0 && _cityZoneCatalog.IsKnown(questExitZone))
             return (questExitZone, questExitArea >= 0 ? questExitArea : 0);
-        if (questExitArea >= 0) return (factionCamp, questExitArea); // cooked exit area in the camp
         if (departure is { } d && d.Zone >= 0 && _cityZoneCatalog.IsKnown(d.Zone) && !IsQuestLevelZone(d.Zone))
-            return (d.Zone, Math.Max(0, d.Area));
-        return (factionCamp, 0);
+            return (d.Zone, questExitArea >= 0 ? questExitArea : Math.Max(0, d.Area));
+        return (factionCamp, questExitArea >= 0 ? questExitArea : 0);
     }
 
     internal int QuestParticipantClientId(int pid) =>
