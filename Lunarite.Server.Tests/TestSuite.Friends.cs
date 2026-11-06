@@ -7,7 +7,7 @@ internal sealed partial class TestSuite
         var friendList = new FriendList();
         friendList.Entries.Add(new FriendWireEntry(0, 7, "A", 1, 2, 3, 1));
         Check(friendList.Serialize().SequenceEqual(new byte[] { 160, 5, 1, 0, 7, 0, 0, 0,
-                65, 0, 1, 2, 3, 1 })
+                65, 0, 2, 3, 1, 1 })
             && new FriendActionResult { Opcode = 158, Result = 0 }.Serialize().SequenceEqual(new byte[] { 158, 0 })
             && new FriendActionResult { Opcode = 159, Result = 4 }.Serialize().SequenceEqual(new byte[] { 159, 4 }),
             "friend list/add/delete packets match native bdsbbbb and result layouts");

@@ -17,7 +17,8 @@ public sealed class FriendList : IPacketSerialize
             foreach (var entry in Entries)
             {
                 writer.Write(entry.Relation); writer.Write(entry.Pid); writer.Write(entry.Name);
-                writer.Write(entry.Species); writer.Write(entry.Level); writer.Write(entry.Style); writer.Write(entry.Login);
+                // ProcFriendList "bdsbbbb": relation, PID, name, level, style, species, login.
+                writer.Write(entry.Level); writer.Write(entry.Style); writer.Write(entry.Species); writer.Write(entry.Login);
             }
         }
         return writer.Buffer;
