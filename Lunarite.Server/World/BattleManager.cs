@@ -291,8 +291,7 @@ public sealed class BattleManager
     public void ApplyBattleDurability(BattleResultRequest report)
     {
         var records = BattleDurabilityRecords(report.Durability);
-        if (_playerStore.UpdateNativeQuestDurability(report.Pid, records) == 0) return;
-        QuestManager.QuestRewardLiveRecipient(report.Pid)?.Session.QueueEquipmentRefresh();
+        _playerStore.UpdateNativeQuestDurability(report.Pid, records);
     }
 
     internal bool TryGetReservation(int pid, out byte axis) => _battleReservations.TryGetValue(pid, out axis);

@@ -41,12 +41,6 @@ public sealed class ClientSession
     public bool ExpectedQuestTravel;
     public long? ExpectedCityTravelAt; // Unix ms
 
-    // Mission and battle wear reaches the server while the client is away; its city copy of the gear
-    // keeps the old durability until the next Spawn sends it.
-    private int _equipmentRefresh;
-    public void QueueEquipmentRefresh() => Volatile.Write(ref _equipmentRefresh, 1);
-    public bool TryTakeEquipmentRefresh() => Interlocked.Exchange(ref _equipmentRefresh, 0) != 0;
-
     // Tutorial quest that starts once the character has spawned.
     public int? PendingTutorialQuest;
 
