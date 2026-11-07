@@ -191,6 +191,21 @@ public sealed class CityManager
                 target.SendPacket(packet);
     }
 
+    internal void BroadcastPresence(Client sender, int senderPid, IPacketSerialize packet)
+    {
+        if (senderPid <= 0) return;
+        int instance = _questRoomMembers.InstanceOf(sender.Id);
+        int cityMap = Game.PlayerFor(senderPid).CityMap ?? 0;
+        foreach (var target in _playerManager.OnlineClients)
+        {
+            int targetPid = Game.PidOf(target);
+            if (ReferenceEquals(target, sender) || targetPid <= 0 || targetPid == senderPid) continue;
+            if (SharesPresence(instance, cityMap, _questRoomMembers.InstanceOf(target.Id),
+                    Game.PlayerFor(targetPid).CityMap ?? 0))
+                target.SendPacket(packet);
+        }
+    }
+
     public static bool SharesPresence(int instanceA, int cityMapA, int instanceB, int cityMapB) =>
         instanceA > 0 || instanceB > 0
             ? instanceA > 0 && instanceA == instanceB
@@ -221,7 +236,9 @@ public sealed class CityManager
         // here, before a same-socket Spawn or observer snapshot can publish it.
         VehicleManager.ClearMountedVehicleOnPresenceExit(pid, out _);
         if (!Game.PlayerFor(pid).TryClearSpawned()) return;
-        BroadcastPresence(client, new DelPlayer { Pid = pid });
+        // Disconnect and character select clear client.Player before releasing the character, so
+        // the leaver's presence is taken from its PID, not from the client.
+        BroadcastPresence(client, pid, new DelPlayer { Pid = pid });
     }
 
     internal static void ArmExpectedCityTravel(Client client) =>

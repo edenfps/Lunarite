@@ -230,6 +230,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         PlayerLanguageChoice();
         BattleRecordResetAndInspection();
         GmAccountStatus();
+        CityLeaveReachesOthers();
         AccountBansAndListenEndpoint();
         BattlefieldFrontAndRewards();
         EntryReservationRecovery();
