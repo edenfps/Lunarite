@@ -165,6 +165,38 @@ internal sealed partial class TestSuite
             "a host's belt record reads as no quest items to the backup parser, and as the kit to the item reader");
     }
 
+    // Layouts from FP2PSocket: type-187 flag 0 (guest, by host PID) and flag 1 (host, by guest endpoint);
+    // relayed frames end in ip4, network-order port, 01.
+    private void RelayCarriesBothDirections()
+    {
+        var hostIp = System.Net.IPAddress.Parse("9.9.9.9");
+        var guestIp = System.Net.IPAddress.Parse("8.8.8.8");
+        var host = new System.Net.IPEndPoint(hostIp, 7777);
+        var guest = new System.Net.IPEndPoint(guestIp, 50000);
+        byte[] FromGuest(int pid) => [17, 0, 0, 187, 4, 0, 0, 0, 0, (byte)pid, 0, 0, 0, 1, 2, 3, 4];
+        byte[] FromHost(byte[] dst) => [.. new byte[] { 18, 0, 0, 187, 3, 0, 0, 0, 1 }, .. dst, 5, 6, 7];
+        var relay = new P2PRelayTable();
+        relay.Open(7, hostIp, 7777, System.Net.IPAddress.Parse("1.2.3.4"), 7777, guestIp);
+        bool waitsForHost = relay.Route(0, FromGuest(7), guest) == null;
+        relay.NoteClient(0, host);
+        var toHost = relay.Route(0, FromGuest(7), guest);
+        var toGuest = relay.Route(0, FromHost([8, 8, 8, 8, 0xC3, 0x50]), host);
+        Check(waitsForHost && toHost is { } up && up.To.Equals(host)
+                && up.Data.SequenceEqual(new byte[] { 1, 2, 3, 4, 8, 8, 8, 8, 0xC3, 0x50, 1 })
+            && toGuest is { } down && down.To.Equals(guest)
+                && down.Data.SequenceEqual(new byte[] { 5, 6, 7, 1, 2, 3, 4, 0x1E, 0x61, 1 }),
+            "the relay carries a guest's frames to its host and back under the native trailers");
+        Check(relay.Route(0, FromGuest(8), guest) == null
+            && relay.Route(0, FromGuest(7), new System.Net.IPEndPoint(System.Net.IPAddress.Parse("7.7.7.7"), 1)) == null
+            && relay.Route(0, FromHost([7, 7, 7, 7, 0, 1]), host) == null,
+            "the relay drops unknown hosts, unlisted guests and unknown destinations");
+        relay.Close(7, guestIp);
+        Check(relay.Route(0, FromGuest(7), guest) == null, "a closed relay session carries nothing");
+        Check(new SetRelayInfo { HostPid = 1, RelayEndpoint = new P2PEndpoint(2, 45407) }.Serialize()
+                .SequenceEqual(new byte[] { 206, 1, 0, 0, 0, 2, 0, 0, 0, 0xB1, 0x5F }),
+            "op206 carries the relay port in network order");
+    }
+
     private void OutsideNoticeIsTakenOnce()
     {
         string path = System.IO.Path.Combine(System.IO.Path.GetTempPath(), $"huxley-notice-{Guid.NewGuid():N}.txt");

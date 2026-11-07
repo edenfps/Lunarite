@@ -447,7 +447,7 @@ internal sealed partial class TestSuite
             {
                 HostPid = 0x01020304,
                 RelayEndpoint = new P2PEndpoint(unchecked((int)0xAABBCCDD), 7777)
-            }.Serialize().SequenceEqual(new byte[] { 206, 4, 3, 2, 1, 0xDD, 0xCC, 0xBB, 0xAA, 0x61, 0x1E })
+            }.Serialize().SequenceEqual(new byte[] { 206, 4, 3, 2, 1, 0xDD, 0xCC, 0xBB, 0xAA, 0x1E, 0x61 })
             && new GameGuardState { State = 2 }.Serialize().SequenceEqual(new byte[] { 235, 2 }),
             "server op5/op206/op235 match the native opaque-token, relay-address, and GameGuard layouts");
 

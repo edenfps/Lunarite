@@ -17,6 +17,7 @@ namespace Lunarite.Network;
 public sealed class P2PNatTestService : IDisposable
 {
     private static readonly byte[] Probe = [4, 0, 0, 0x99];
+    private static readonly byte[] KeepAlive = [4, 0, 0, 0x9A];
     private readonly ILogger _logger;
     // Fixed ports (HUXLEY_NAT_TEST_PORTS, default 45407,45408) so a host firewall can open them;
     // a port that is taken (a second server or the test suite on one machine) falls back to any.
@@ -36,6 +37,8 @@ public sealed class P2PNatTestService : IDisposable
     }
     private readonly CancellationTokenSource _cancel = new();
     private bool _started;
+
+    public P2PRelayTable Relay { get; } = new();
 
     public P2PNatTestService(ILogger<P2PNatTestService> logger)
     {
@@ -65,21 +68,42 @@ public sealed class P2PNatTestService : IDisposable
     {
         if (_started) return;
         _started = true;
-        foreach (var listener in _listeners) _ = ServeAsync(listener, _cancel.Token);
+        for (int socket = 0; socket < _listeners.Length; socket++)
+            _ = ServeAsync(socket, _listeners[socket], _cancel.Token);
         _logger.LogInformation("[P2P] NAT test UDP endpoints listening on ports {0}, {1}.", Ports[0], Ports[1]);
     }
 
-    private async Task ServeAsync(UdpClient listener, CancellationToken cancel)
+    private async Task ServeAsync(int socket, UdpClient listener, CancellationToken cancel)
     {
         var observedPeers = new HashSet<IPEndPoint>();
+        var relayedPeers = new HashSet<IPEndPoint>();
         while (!cancel.IsCancellationRequested)
         {
             try
             {
                 UdpReceiveResult request = await listener.ReceiveAsync(cancel);
-                if (!request.Buffer.AsSpan().SequenceEqual(Probe)
-                    || request.RemoteEndPoint.Address.AddressFamily != AddressFamily.InterNetwork)
+                if (request.RemoteEndPoint.Address.AddressFamily != AddressFamily.InterNetwork) continue;
+                if (request.Buffer.AsSpan().SequenceEqual(KeepAlive))
+                {
+                    Relay.NoteClient(socket, request.RemoteEndPoint);
                     continue;
+                }
+                if (!request.Buffer.AsSpan().SequenceEqual(Probe))
+                {
+                    if (Relay.Route(socket, request.Buffer, request.RemoteEndPoint) is { } routed)
+                    {
+                        await listener.SendAsync(routed.Data, routed.To, cancel);
+                        if (relayedPeers.Count >= 1024) relayedPeers.Clear();
+                        if (relayedPeers.Add(routed.To))
+                            _logger.LogInformation("[P2P] relay {0} forwarded {1} to {2}.",
+                                ((IPEndPoint)listener.Client.LocalEndPoint!).Port, request.RemoteEndPoint, routed.To);
+                    }
+                    else if (relayedPeers.Add(request.RemoteEndPoint))
+                        _logger.LogWarning("[P2P] relay {0} dropped a {1}-byte frame from {2}.",
+                            ((IPEndPoint)listener.Client.LocalEndPoint!).Port, request.Buffer.Length, request.RemoteEndPoint);
+                    continue;
+                }
+                Relay.NoteClient(socket, request.RemoteEndPoint);
                 byte[] reply = BuildReply(request.RemoteEndPoint);
                 await listener.SendAsync(reply, request.RemoteEndPoint, cancel);
                 // The native client sends this probe every 50 ms. Report the first

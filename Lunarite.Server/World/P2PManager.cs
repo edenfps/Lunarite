@@ -27,6 +27,15 @@ public sealed class P2PManager
 
     public P2PNatTestService? NatTestService { get; set; }
 
+    internal static IPAddress NatTestAddress(Client client)
+    {
+        string? configured = Environment.GetEnvironmentVariable("HUXLEY_P2P_TEST_PUBLIC_IP")
+            ?? Environment.GetEnvironmentVariable("HUXLEY_GAME_PUBLIC_IP");
+        return Lunarite.Handlers.Agent.ResolveGameAddress(configured, client.LocalIPAddress,
+            Environment.GetEnvironmentVariable("HUXLEY_P2P_TEST_PUBLIC_IP") is null
+                ? "HUXLEY_GAME_PUBLIC_IP" : "HUXLEY_P2P_TEST_PUBLIC_IP");
+    }
+
     // Public UDP endpoint of a listen host: the authenticated op155 NAT report when present, else
     // the relay-observed reflexive address from op196 (UDPSocketHelper "MyAddr"). The relay sees
     // same-PC clients as 127.0.0.1 regardless of their -MULTIHOME address, so a loopback op196
@@ -93,6 +102,36 @@ public sealed class P2PManager
         return (CharacterStore.TrainingCenterMap(characterIndex), 0);
     }
 
+    // Client order, from the native op206 to op125 path: relay and host identity, then op125 with
+    // Result 0 turns relaying on. It needs a resolved NAT type, or the client ignores op124 and op125.
+    // The trailer is the op124 endpoint, the only source a relay guest accepts.
+    internal bool TryStartRelay(Client guest, int hostPid, Client host, P2PEndpoint hostEndpoint, P2PEndpoint hostPeer)
+    {
+        if (NatTestService is not { } relay || guest.Session.NatEndpoint == null) return false;
+        var announced = relay.BuildAnnouncement(NatTestAddress(guest)).Endpoints[0];
+        ushort reportedPort = ReportedPublicEndpoint(host.Session.NatEndpoint, host.Session.NetworkAddresses)?.Port ?? 7777;
+        uint trailer = unchecked((uint)hostEndpoint.Address);
+        relay.Relay.Open(hostPid, host.IPAddress.MapToIPv4(), reportedPort,
+            new IPAddress([(byte)trailer, (byte)(trailer >> 8), (byte)(trailer >> 16), (byte)(trailer >> 24)]),
+            hostEndpoint.Port, guest.IPAddress.MapToIPv4());
+        guest.Session.RelayHostPid = hostPid;
+        guest.SendPacket(new SetRelayInfo { HostPid = hostPid, RelayEndpoint = announced });
+        guest.SendPacket(new HoleStart { PublicEndpoint = hostEndpoint, PeerEndpoint = hostPeer });
+        guest.SendPacket(new HoleResult { Result = 0, Playable = 1 });
+        return true;
+    }
+
+    // Relay mode outlives the mission: op125 Result 1 is the only way back, or the client keeps
+    // wrapping everything for the relay, even as a host.
+    internal void StopRelay(Client guest)
+    {
+        int hostPid = guest.Session.RelayHostPid;
+        if (hostPid == 0) return;
+        guest.Session.RelayHostPid = 0;
+        NatTestService?.Relay.Close(hostPid, guest.IPAddress.MapToIPv4());
+        guest.SendPacket(Game.P2PDirectHoleResult);
+    }
+
     // "a.b.c.d" -> uint with a in the low byte (127.0.0.1 = 0x0100007F). The client prints the
     // op52 IP low byte first in its `Browse: <ip>/...` log line.
     internal static uint PackedIp(string dotted)
@@ -111,13 +150,14 @@ public sealed class P2PManager
     // (live 2026-11-05: two misses in a row, then the next try worked), so a caller can pass
     // reprobe, which re-sends the endpoints (op128 queues a fresh probe) before each extra round.
     internal async System.Threading.Tasks.Task SendAfterHolePunch(Client client,
-        int pid, int hostPid, IPacketSerialize join, string joinName, Action? reprobe = null)
+        int pid, int hostPid, IPacketSerialize join, string joinName, Action? reprobe = null, Func<bool>? relay = null)
     {
         int waitMs = int.TryParse(Environment.GetEnvironmentVariable("QUEST_HOLEPUNCH_WAIT_MS"), out int configured)
             && configured >= 0 ? configured : 3000;
         int rounds = reprobe == null ? 1
             : int.TryParse(Environment.GetEnvironmentVariable("QUEST_HOLEPUNCH_ATTEMPTS"), out int attempts)
                 && attempts > 0 ? attempts : 4;
+        if (relay != null && Environment.GetEnvironmentVariable("QUEST_P2P_FORCE_RELAY") == "1") rounds = 0;
         int round = 0;
         while (++round <= rounds)
         {
@@ -135,6 +175,12 @@ public sealed class P2PManager
         }
         if (!Game.TryGetClient(pid, out var current) || !ReferenceEquals(current, client)) return;
         bool acknowledged = client.Session.HolePunchAcknowledged;
+        if (!acknowledged && relay?.Invoke() == true)
+        {
+            client.SendPacket(join);
+            _logger.LogInformation("[P2P] sent guest PID {0} {1} for host PID {2} through the relay.", pid, joinName, hostPid);
+            return;
+        }
         client.SendPacket(Game.P2PDirectHoleResult);
         client.SendPacket(join);
         _logger.LogInformation("[P2P] sent guest PID {0} {1} for host PID {2} ({3}).", pid, joinName,

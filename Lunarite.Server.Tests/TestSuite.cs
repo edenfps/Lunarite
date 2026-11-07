@@ -195,6 +195,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         HiddenPlayerKeepsWhoAppeared();
         WornGearReachesClientAtSpawn();
         SuppliesTravelWithTheLoadout();
+        RelayCarriesBothDirections();
         OutsideNoticeIsTakenOnce();
         OptionalRewardQuest();
         QuestHostWorldUrl();

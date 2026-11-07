@@ -90,13 +90,7 @@ public static class ConnectHandler
         _characterManager.SendPlayerList(client);
         if (_p2pManager.NatTestService is { } natTest)
         {
-            string? configuredNatIp = Environment.GetEnvironmentVariable("HUXLEY_P2P_TEST_PUBLIC_IP")
-                ?? Environment.GetEnvironmentVariable("HUXLEY_GAME_PUBLIC_IP");
-            IPAddress testIp = Lunarite.Handlers.Agent.ResolveGameAddress(
-                configuredNatIp, client.LocalIPAddress,
-                Environment.GetEnvironmentVariable("HUXLEY_P2P_TEST_PUBLIC_IP") is null
-                    ? "HUXLEY_GAME_PUBLIC_IP" : "HUXLEY_P2P_TEST_PUBLIC_IP");
-            client.SendPacket(natTest.BuildAnnouncement(testIp));
+            client.SendPacket(natTest.BuildAnnouncement(P2PManager.NatTestAddress(client)));
         }
 
         return true;

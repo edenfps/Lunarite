@@ -458,6 +458,7 @@ public sealed partial class QuestInstanceManager
         // HuxleySubsystem.OnPlayerInfo clears the quest lists and calls
         // ResetTransaction_PlayerSelect. During QuestLeave that transaction is NONE, so op11
         // asserts and leaves a quest-list UIScene whose rows no longer respond.
+        _p2pManager.StopRelay(client);
         CityManager.ArmExpectedCityTravel(client);
         client.SendPacket(new LoadMap { Index = destination.ZoneIndex, Position = destination.AreaIndex });
         // The city journal still holds its pre-mission counts; op38 refreshes it after Spawn.

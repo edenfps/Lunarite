@@ -27,6 +27,7 @@ public sealed class ClientSession
     // P2P reports: NAT endpoints (op155), socket addresses (op196) and the hole-punch test
     // acknowledgment (op118), which a guest's join waits for on another thread.
     public P2PNatEndpointReport? NatEndpoint;
+    public int RelayHostPid;
     public P2PNetworkAddressesReport? NetworkAddresses;
     private volatile bool _holePunchAcknowledged;
 

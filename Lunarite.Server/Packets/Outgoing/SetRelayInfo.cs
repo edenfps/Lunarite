@@ -1,3 +1,5 @@
+using System.Buffers.Binary;
+
 using Lunarite.Network;
 
 namespace Lunarite.Packets.Outgoing;
@@ -13,7 +15,8 @@ public sealed class SetRelayInfo : IPacketSerialize
         writer.Write((byte)206);
         writer.Write(HostPid);
         writer.Write(RelayEndpoint.Address);
-        writer.Write(RelayEndpoint.Port);
+        // Stored straight into sin_port, unlike the host-order ports of op124 and op128.
+        writer.Write(BinaryPrimitives.ReverseEndianness(RelayEndpoint.Port));
         return writer.Buffer;
     }
 }

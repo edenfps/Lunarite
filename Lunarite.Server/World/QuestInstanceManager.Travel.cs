@@ -386,7 +386,11 @@ public sealed partial class QuestInstanceManager
             _logger.LogInformation(
                 "[QuestTransport] sent guest PID {0} op128 for host PID {1}, quest {2}, public 0x{3:X8}, peer 0x{4:X8}.",
                 memberPid, hostPid, activeQuest, transport.HostIp, transport.HostPeerIp);
-            _ = _p2pManager.SendAfterHolePunch(memberClient, memberPid, hostPid, travel[1], "op52", Probe);
+            var hostEndpoint = new P2PEndpoint(unchecked((int)P2PManager.HostIpFor(transport.HostIp, memberClient)), transport.HostPublicPort);
+            var hostPeer = new P2PEndpoint(unchecked((int)P2PManager.HostIpFor(transport.HostPeerIp, memberClient)), transport.HostPeerPort);
+            _ = _p2pManager.SendAfterHolePunch(memberClient, memberPid, hostPid, travel[1], "op52", Probe,
+                () => Game.TryGetClient(hostPid, out var relayHost)
+                    && _p2pManager.TryStartRelay(guest, hostPid, relayHost, hostEndpoint, hostPeer));
         }
         if (arrivals.Pending.Count == 0) return;
         _questGuestArrivals[hostPid] = arrivals;
