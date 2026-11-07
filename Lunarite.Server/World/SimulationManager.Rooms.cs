@@ -469,13 +469,19 @@ public sealed partial class SimulationManager
         foreach (var transport in _simulationTransports.Values) transport.Pending.Remove(pid);
         if (!_simulationPidRoom.Remove(pid, out byte roomId) || !_simulationRooms.TryGetValue(roomId, out var room)) return;
         room.Members.Remove(pid);
+        _p2pManager.StopRelay(pid);
         // A running match whose host left continues on another member (HuxleyBattleGame restores
         // scores, clock and player records from the backup the old host sent).
         bool rehost = abandonedMatch && lostMatch!.Started && room.Members.Count != 0;
         if (abandonedMatch && !rehost)
         {
             room.State = 0;
-            foreach (var member in room.Members.Values) { member.Ready = false; member.State = 0; }
+            foreach (var member in room.Members.Values)
+            {
+                member.Ready = false;
+                member.State = 0;
+                _p2pManager.StopRelay(member.Pid);
+            }
             BroadcastSimulationChannelLocked(new ChangeGameStateBC
                 { RoomId = room.Id, GameState = room.State });
         }

@@ -176,6 +176,8 @@ public sealed partial class SimulationManager
             client.SendPacket(new OwnerStart { Result = SimulationAnswer.Error });
             return;
         }
+        // A relay guest promoted after host loss must stop wrapping its traffic for the relay.
+        _p2pManager.StopRelay(client);
         byte[] key = new byte[16];
         System.Security.Cryptography.RandomNumberGenerator.Fill(key);
         // HostIp is the UE3 browse address (like the quest path's hostJoinIp): the TCP source
@@ -262,9 +264,33 @@ public sealed partial class SimulationManager
             memberClient.SendPacket(join);
             return;
         }
+        // A member re-admitted after host loss still relays to the old host.
+        _p2pManager.StopRelay(memberClient);
+        int ownerPid = transport.OwnerPid;
+        var hostEndpoints = P2PManager.HostEndpointsFor(transport.PeerEndpoints, memberClient);
+        // As on missions: the owner gets this member's endpoints too, so its socket punches back.
+        void Probe()
+        {
+            if (Game.TryGetClient(ownerPid, out var owner))
+                owner.SendPacket(P2PManager.HostEndpointsFor(P2PManager.BuildClientPeerEndpoints(memberClient, null,
+                    P2PManager.PackedIp(memberClient.IPAddress.MapToIPv4().ToString())), owner));
+            memberClient.SendPacket(hostEndpoints);
+        }
         memberClient.Session.HolePunchAcknowledged = false;
-        memberClient.SendPacket(P2PManager.HostEndpointsFor(transport.PeerEndpoints, memberClient));
-        _ = _p2pManager.SendAfterHolePunch(memberClient, memberPid, transport.OwnerPid, join, "op156");
+        Probe();
+        _ = _p2pManager.SendAfterHolePunch(memberClient, memberPid, ownerPid, join, "op156", Probe,
+            () => Game.TryGetClient(ownerPid, out var relayHost) && _p2pManager.TryStartRelay(memberClient, ownerPid,
+                relayHost, hostEndpoints.PublicEndpoint, hostEndpoints.PeerEndpoint),
+            () => !IsAwaitingSimulationJoin(transport, memberPid));
+    }
+
+    // The punch can outlast the match or the member's stay in the room.
+    private bool IsAwaitingSimulationJoin(SimulationTransport transport, int memberPid)
+    {
+        lock (_simulationLock)
+            return _simulationTransports.TryGetValue(transport.OwnerPid, out var current)
+                && ReferenceEquals(current, transport) && _simulationPidRoom.TryGetValue(memberPid, out byte roomId)
+                && roomId == transport.RoomId;
     }
 
     private void SendSimulationPermissionRegisterLocked(SimulationTransport transport, int memberPid)
@@ -367,11 +393,16 @@ public sealed partial class SimulationManager
         {
             if (!_simulationPidRoom.TryGetValue(pid, out byte roomId) || !_simulationRooms.TryGetValue(roomId, out var room))
                 return (false, aborted);
+            // op106 comes after the scoreboard; the guest's relay stays up until then.
+            _p2pManager.StopRelay(pid);
             if (room.State != 0 && room.OwnerPid == pid)
             {
                 foreach (int memberPid in room.Members.Keys)
                     if (Game.TryGetClient(memberPid, out var memberClient))
+                    {
+                        _p2pManager.StopRelay(memberClient);
                         aborted.Add((memberClient, memberPid));
+                    }
                 FinishSimulationMatchLocked(room);
                 _logger.LogInformation("[Simulation] room {0} aborted by host PID {1}; returning {2} member(s).",
                     room.Id, pid, aborted.Count);

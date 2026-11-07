@@ -8,6 +8,7 @@ using Lunarite.Packets.Common;
 using Lunarite.Packets.Incoming;
 using Lunarite.Storage;
 using Lunarite.World;
+using Microsoft.Extensions.Logging;
 
 internal sealed partial class TestSuite
 {
@@ -88,6 +89,76 @@ internal sealed partial class TestSuite
         ReportSimulationResult(host, guestPid, 100_000, ushort.MaxValue);
         var after = _playerStore.GetProgress(guestPid);
         return (after.BP - bp, after.QT - qt, SimulationMedals(guestPid) - medals);
+    }
+
+    // A Skirmish guest with no punched path joins through the relay, and keeps it until op106 sends
+    // it back after the scoreboard. A guest that left during the punch gets no op156.
+    private void SimulationGuestRelay()
+    {
+        var links = new List<(Client Client, System.Net.Sockets.TcpClient Peer)>();
+        var pids = new List<int>();
+        string? forceRelay = Environment.GetEnvironmentVariable("QUEST_P2P_FORCE_RELAY");
+        string? punchWait = Environment.GetEnvironmentVariable("QUEST_HOLEPUNCH_WAIT_MS");
+        var natService = _p2pManager.NatTestService;
+        using var relayService = new P2PNatTestService(_loggerFactory.CreateLogger<P2PNatTestService>());
+        try
+        {
+            _p2pManager.NatTestService = relayService;
+            Environment.SetEnvironmentVariable("QUEST_P2P_FORCE_RELAY", "1");
+            for (int i = 0; i < 2; i++)
+            {
+                int pid = _characterStore.Create(959490000 + i, $"SimRelay{i}", 1, new Custom()).Pid;
+                ResetCharacter(pid);
+                pids.Add(pid);
+            }
+            var host = OpenSimulationLink(pids[0], links);
+            var guest = OpenSimulationLink(pids[1], links);
+            guest.Client.Session.NatEndpoint = new P2PNatEndpointReport { NatType = 3, PublicPort = 7777 };
+            _simulationManager.CreateRoom(host.Client, "Relay", 2, 102, 5, 8, 0, 1, 3, "");
+            byte roomId = ReceiveSimulationOp(host, 131)![2];
+            _simulationManager.JoinRoom(guest.Client, roomId, "");
+            _simulationManager.Ready(guest.Client);
+            _simulationManager.Ready(host.Client);
+            ReceiveSimulationOp(host, 143);
+            _simulationManager.SimulationPermissionAck(host.Client, pids[1], 1);
+            byte[]? relayInfo = ReceiveSimulationOp(guest, 206);
+            byte[]? relayOn = ReceiveSimulationOp(guest, 125);
+            byte[]? join = ReceiveSimulationOp(guest, 156);
+            Check(relayInfo != null && relayOn is [125, 0, 1] && join != null
+                && guest.Client.Session.RelayHostPid == pids[0],
+                "a Skirmish guest that cannot punch through joins its host through the relay");
+            _simulationManager.StartMatch(host.Client);
+            _simulationManager.BattleResultSecret(host.Client);
+            int relayedAfterResults = guest.Client.Session.RelayHostPid;
+            _simulationManager.AbortHostedMatch(pids[1]);
+            Check(relayedAfterResults == pids[0] && guest.Client.Session.RelayHostPid == 0
+                && ReceiveSimulationOp(guest, 125) is [125, 1, 1],
+                "a Skirmish relay outlasts the scoreboard and ends when the guest leaves with op106");
+
+            Environment.SetEnvironmentVariable("QUEST_P2P_FORCE_RELAY", null);
+            Environment.SetEnvironmentVariable("QUEST_HOLEPUNCH_WAIT_MS", "300");
+            _simulationManager.Ready(guest.Client);
+            _simulationManager.Ready(host.Client);
+            ReceiveSimulationOp(host, 143);
+            _simulationManager.SimulationPermissionAck(host.Client, pids[1], 1);
+            _simulationManager.LeaveRoom(pids[1]);
+            guest.Peer.ReceiveTimeout = 1600;
+            Check(ReceiveSimulationOp(guest, 156) == null,
+                "a guest that leaves the room while hole punching gets no Skirmish join");
+        }
+        finally
+        {
+            Environment.SetEnvironmentVariable("QUEST_P2P_FORCE_RELAY", forceRelay);
+            Environment.SetEnvironmentVariable("QUEST_HOLEPUNCH_WAIT_MS", punchWait);
+            _p2pManager.NatTestService = natService;
+            foreach (int pid in pids) _simulationManager.LeaveSimulationCenter(pid);
+            foreach (var link in links)
+            {
+                _playerManager.SetOffline(Game.PidOf(link.Client));
+                link.Client.Dispose();
+                link.Peer.Dispose();
+            }
+        }
     }
 
     // Simulation rooms only offer the retail ActiveGameTypes and never start alone; op114 credits

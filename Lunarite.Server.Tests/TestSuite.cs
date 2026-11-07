@@ -269,6 +269,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         PendingQuestRoomRefunds();
         KillReportsSaveDebounced();
         SimulationRewardLimits();
+        SimulationGuestRelay();
         MailedBattlefieldRewardsStayBound();
         GameHandoffBinding();
         SelectionGateAndPendingDeletion();

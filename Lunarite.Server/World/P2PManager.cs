@@ -132,6 +132,11 @@ public sealed class P2PManager
         guest.SendPacket(Game.P2PDirectHoleResult);
     }
 
+    internal void StopRelay(int pid)
+    {
+        if (Game.TryGetClient(pid, out var guest)) StopRelay(guest);
+    }
+
     // "a.b.c.d" -> uint with a in the low byte (127.0.0.1 = 0x0100007F). The client prints the
     // op52 IP low byte first in its `Browse: <ip>/...` log line.
     internal static uint PackedIp(string dotted)
@@ -150,7 +155,8 @@ public sealed class P2PManager
     // (live 2026-11-05: two misses in a row, then the next try worked), so a caller can pass
     // reprobe, which re-sends the endpoints (op128 queues a fresh probe) before each extra round.
     internal async System.Threading.Tasks.Task SendAfterHolePunch(Client client,
-        int pid, int hostPid, IPacketSerialize join, string joinName, Action? reprobe = null, Func<bool>? relay = null)
+        int pid, int hostPid, IPacketSerialize join, string joinName, Action? reprobe = null, Func<bool>? relay = null,
+        Func<bool>? cancelled = null)
     {
         int waitMs = int.TryParse(Environment.GetEnvironmentVariable("QUEST_HOLEPUNCH_WAIT_MS"), out int configured)
             && configured >= 0 ? configured : 3000;
@@ -163,7 +169,8 @@ public sealed class P2PManager
         {
             if (round > 1)
             {
-                if (!Game.TryGetClient(pid, out var waiting) || !ReferenceEquals(waiting, client)) return;
+                if (!Game.TryGetClient(pid, out var waiting) || !ReferenceEquals(waiting, client)
+                    || cancelled?.Invoke() == true) return;
                 _logger.LogInformation("[P2P] no hole-punch ACK from guest PID {0} yet; probing host PID {1} again ({2}/{3}).",
                     pid, hostPid, round, rounds);
                 reprobe!();
@@ -173,7 +180,8 @@ public sealed class P2PManager
                 await System.Threading.Tasks.Task.Delay(25);
             if (client.Session.HolePunchAcknowledged) break;
         }
-        if (!Game.TryGetClient(pid, out var current) || !ReferenceEquals(current, client)) return;
+        if (!Game.TryGetClient(pid, out var current) || !ReferenceEquals(current, client)
+            || cancelled?.Invoke() == true) return;
         bool acknowledged = client.Session.HolePunchAcknowledged;
         if (!acknowledged && relay?.Invoke() == true)
         {
