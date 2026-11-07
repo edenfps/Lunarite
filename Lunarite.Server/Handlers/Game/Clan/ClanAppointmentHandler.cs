@@ -30,7 +30,7 @@ public static class ClanAppointmentHandler
         if (!reader.TryRead(out string? name) || !reader.TryRead(out byte grade)
             || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)36 : _clanStore.Appoint(pid, target.Pid, grade);
         client.SendPacket(new ClanActionResult { Opcode = 188, Result = result });
         if (result == 33 && target != null)

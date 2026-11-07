@@ -26,7 +26,7 @@ public static class FriendAddHandler
         if (!reader.TryRead(out string? name) || !reader.TryRead(out byte relation)
             || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)1 : _friendStore.Add(pid, target.Pid, relation);
         client.SendPacket(new FriendActionResult { Opcode = 158, Result = result });
         return true;

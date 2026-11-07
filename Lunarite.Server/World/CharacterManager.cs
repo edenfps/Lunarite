@@ -425,7 +425,7 @@ public sealed class CharacterManager
         return new AddPlayer
         {
             Pid = pid,
-            Name = character?.Name ?? "",
+            Name = DisplayNameFor(character),
             Index = character?.Index ?? 1,
             Custom = character?.Custom ?? new Custom(),
             X = position.X, Y = position.Y, Z = position.Z, Yaw = position.Yaw,
@@ -469,6 +469,13 @@ public sealed class CharacterManager
 
     // Native UHuxleySubsystem::IsAdmin is `m_stPlayer.nUserStatus >= 100`; HuxleyMMOGame
     // then calls SetAdmin, which grants the retail GM cheat manager for that character.
+    // The name tag other players see: GM characters get "[GM] " in front. Their own client keeps the
+    // plain name; name lookups accept either (CharacterStore.SameName).
+    public string DisplayNameFor(CharacterStore.Character? character) =>
+        character == null ? ""
+        : UserStatusFor(character) >= PlayerInfo.GmUserStatus ? CharacterStore.GmNamePrefix + character.Name
+        : character.Name;
+
     public byte UserStatusFor(CharacterStore.Character? character) =>
         character != null && GmCommands.IsGmLogin(_accountStore.LoginFor(character.OwnerUserId),
             Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS"))

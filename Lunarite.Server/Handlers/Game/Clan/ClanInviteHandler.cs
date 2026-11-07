@@ -30,7 +30,7 @@ public static class ClanInviteHandler
         if (!reader.TryRead(out string? targetName) || reader.RemainingLength != 0) return false;
         int leaderPid = Game.PidOf(client);
         var target = _characterStore.All()
-            .FirstOrDefault(x => string.Equals(x.Name, targetName, StringComparison.OrdinalIgnoreCase));
+            .FirstOrDefault(x => CharacterStore.SameName(x.Name, targetName));
         var clan = _clanStore.ForPid(leaderPid);
         bool targetOnline = target != null && _playerManager.IsOnline(target.Pid);
         var leader = _characterStore.Get(leaderPid);

@@ -284,7 +284,7 @@ public sealed class GmCommands
     // A name, or #<pid> for a name the GM's client cannot type (a Korean name on an English client).
     private CharacterStore.Character? FindCharacter(string name) =>
         name.StartsWith('#') && int.TryParse(name.AsSpan(1), out int pid) ? _characterStore.Get(pid)
-        : _characterStore.All().FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+        : _characterStore.All().FirstOrDefault(c => CharacterStore.SameName(c.Name, name));
 
     // !mail <name|#pid> <item> [count 1-999]: the item arrives in that character's mailbox as a normal
     // mail from the GM (online or not), with the usual arrival marker if the character is online.

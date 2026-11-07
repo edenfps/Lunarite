@@ -151,9 +151,23 @@ public sealed class CharacterStore
     {
         lock (_lock)
         {
-            return _chars.FirstOrDefault(c => string.Equals(c.Name, name, StringComparison.OrdinalIgnoreCase));
+            return _chars.FirstOrDefault(c => SameName(c.Name, name));
         }
     }
+
+    // GM characters show to other players as "[GM] Name" (CharacterManager.DisplayNameFor), so a
+    // name typed or clicked from that tag still finds the character.
+    public const string GmNamePrefix = "[GM] ";
+
+    public static string WithoutGmPrefix(string? name)
+    {
+        string trimmed = (name ?? "").Trim();
+        return trimmed.StartsWith(GmNamePrefix.TrimEnd(), StringComparison.OrdinalIgnoreCase)
+            ? trimmed[GmNamePrefix.TrimEnd().Length..].TrimStart() : trimmed;
+    }
+
+    public static bool SameName(string? stored, string? typed) =>
+        string.Equals(stored, WithoutGmPrefix(typed), StringComparison.OrdinalIgnoreCase);
 
     public Character? GetOwned(int ownerUserId, int pid)
     {

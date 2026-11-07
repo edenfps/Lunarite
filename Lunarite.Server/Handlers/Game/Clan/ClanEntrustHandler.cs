@@ -29,7 +29,7 @@ public static class ClanEntrustHandler
     {
         if (!reader.TryRead(out string? name) || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)27 : _clanStore.Entrust(pid, target.Pid);
         client.SendPacket(new ClanActionResult { Opcode = 186, Result = result });
         if (result == 26 && target != null)

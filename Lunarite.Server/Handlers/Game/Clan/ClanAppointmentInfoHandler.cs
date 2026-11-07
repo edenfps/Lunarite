@@ -26,7 +26,7 @@ public static class ClanAppointmentInfoHandler
     {
         if (!reader.TryRead(out string? name) || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         var counts = _clanStore.AppointmentCounts(target?.Pid ?? pid);
         client.SendPacket(new ClanAppointmentInfo
         {

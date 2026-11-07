@@ -116,7 +116,7 @@ public sealed class TransmitManager
         _ = playerIndex;
         if (string.IsNullOrWhiteSpace(toName)) return null;
         return _characterStore.All().FirstOrDefault(x =>
-            string.Equals(x.Name, toName, StringComparison.OrdinalIgnoreCase));
+            CharacterStore.SameName(x.Name, toName));
     }
 
     // Not retail: player mail one sender may deliver per UTC day. Each delivered message stays in

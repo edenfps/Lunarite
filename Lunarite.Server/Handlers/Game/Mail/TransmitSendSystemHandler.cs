@@ -42,7 +42,7 @@ public static class TransmitSendSystemHandler
         _logger.LogDebug("Received {0} packet. ( {1} )", nameof(TransmitSendSystemRequest), packet);
 
         var recipient = _characterStore.All().FirstOrDefault(x =>
-            string.Equals(x.Name, packet.ToName, StringComparison.OrdinalIgnoreCase));
+            CharacterStore.SameName(x.Name, packet.ToName));
         if (recipient == null)
         {
             client.SendPacket(new TransmitSend { Answer = TransmitResultCode.NotfoundPlayer });

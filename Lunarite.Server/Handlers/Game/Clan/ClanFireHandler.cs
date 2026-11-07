@@ -29,7 +29,7 @@ public static class ClanFireHandler
     {
         if (!reader.TryRead(out string? name) || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)22 : _clanStore.Fire(pid, target.Pid);
         client.SendPacket(new ClanActionResult { Opcode = 184, Result = result });
         if (result == 23 && target != null && Game.TryGetClient(target.Pid, out var targetClient))

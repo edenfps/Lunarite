@@ -83,7 +83,7 @@ public static class ChatHandler
         if (type is 4 or 6) // whisper / whisper reply
         {
             var target = _characterStore.All().FirstOrDefault(c =>
-                string.Equals(c.Name, to, StringComparison.OrdinalIgnoreCase));
+                CharacterStore.SameName(c.Name, to));
             failure = ChatManager.WhisperFailure(target != null && Game.TryGetClient(target.Pid, out _),
                 _characterStore.Get(senderPid)?.Index ?? 0, target?.Index ?? 0,
                 target != null && _blockStore.List(target.Pid).Contains(senderPid));

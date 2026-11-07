@@ -25,7 +25,7 @@ public static class FriendDelHandler
     {
         if (!reader.TryRead(out string? name) || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)7 : _friendStore.Delete(pid, target.Pid);
         client.SendPacket(new FriendActionResult { Opcode = 159, Result = result });
         return true;

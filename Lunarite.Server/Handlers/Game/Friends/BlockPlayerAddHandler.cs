@@ -25,7 +25,7 @@ public static class BlockPlayerAddHandler
     {
         if (!reader.TryRead(out string? name) || reader.RemainingLength != 0) return false;
         int pid = Game.PidOf(client);
-        var target = _characterStore.All().FirstOrDefault(x => string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+        var target = _characterStore.All().FirstOrDefault(x => CharacterStore.SameName(x.Name, name));
         byte result = target == null ? (byte)3 : _blockStore.Add(pid, target.Pid);
         client.SendPacket(new BlockActionResult { Opcode = 210, Result = result });
         return true;
