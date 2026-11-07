@@ -27,12 +27,15 @@ public sealed class SimulationMapOverrides
         "BZT-Test-CuttleFish", "BZP-005-Harbor", "BZC-007-Docks", "SQ-Game"
     ];
 
-    // Two table rows with no level of their own carry the maps that have no row; the patched client
+    // Table rows with no usable level of their own carry the maps that have no row; the patched client
     // labels them (tools/patches/skirmish_maps.py).
     private static readonly IReadOnlyDictionary<int, string> BuiltIn = new Dictionary<int, string>
     {
+        [109] = "BZC-008-LargeQuake",
+        [174] = "BZC-001-Earthquake",
         [180] = "BZC-007-Docks",
-        [183] = "BZP-005-Harbor"
+        [183] = "BZP-005-Harbor",
+        [191] = "BZT-Test-CuttleFish"
     };
 
     private static readonly object Lock = new();

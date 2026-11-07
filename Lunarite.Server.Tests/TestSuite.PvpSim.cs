@@ -91,6 +91,51 @@ internal sealed partial class TestSuite
         return (after.BP - bp, after.QT - qt, SimulationMedals(guestPid) - medals);
     }
 
+    // Each class channel takes its class and below, Free takes everyone, and rooms stay in their channel.
+    private void SimulationChannels()
+    {
+        Check(SimulationManager.IsSimulationChannelOpen(0, 0) && !SimulationManager.IsSimulationChannelOpen(0, 1)
+            && SimulationManager.IsSimulationChannelOpen(1, 0) && !SimulationManager.IsSimulationChannelOpen(2, 3)
+            && SimulationManager.IsSimulationChannelOpen(3, 3) && SimulationManager.IsSimulationChannelOpen(4, 3)
+            && !SimulationManager.IsSimulationChannelOpen(5, 0),
+            "Skirmish class channels refuse higher classes and the Free channel takes everyone");
+        var links = new List<(Client Client, System.Net.Sockets.TcpClient Peer)>();
+        var pids = new List<int>();
+        try
+        {
+            for (int i = 0; i < 2; i++)
+            {
+                int pid = _characterStore.Create(959500000 + i, $"SimChan{i}", 1, new Custom()).Pid;
+                ResetCharacter(pid);
+                pids.Add(pid);
+            }
+            var owner = OpenSimulationLink(pids[0], links);
+            var other = OpenSimulationLink(pids[1], links);
+            _simulationManager.JoinChannel(owner.Client, pids[0], 4);
+            _simulationManager.JoinChannel(other.Client, pids[1], 1);
+            _simulationManager.CreateRoom(owner.Client, "Free", 2, 102, 5, 8, 0, 1, 3, "");
+            byte roomId = ReceiveSimulationOp(owner, 131)![2];
+            other.Peer.ReceiveTimeout = 300;
+            _simulationManager.JoinRoom(other.Client, roomId, "");
+            byte[]? refused = ReceiveSimulationOp(other, 132);
+            _simulationManager.JoinChannel(other.Client, pids[1], 4);
+            _simulationManager.JoinRoom(other.Client, roomId, "");
+            Check(refused is [132, SimulationAnswer.NoRoom, ..] && ReceiveSimulationOp(other, 132) is [132, 0, ..]
+                && _simulationManager.SimulationChannelPlayers(4) == 2,
+                "a Skirmish room is joined only from its own channel");
+        }
+        finally
+        {
+            foreach (int pid in pids) _simulationManager.LeaveSimulationCenter(pid);
+            foreach (var link in links)
+            {
+                _playerManager.SetOffline(Game.PidOf(link.Client));
+                link.Client.Dispose();
+                link.Peer.Dispose();
+            }
+        }
+    }
+
     // A Skirmish guest with no punched path joins through the relay, and keeps it until op106 sends
     // it back after the scoreboard. A guest that left during the punch gets no op156.
     private void SimulationGuestRelay()
@@ -201,10 +246,13 @@ internal sealed partial class TestSuite
             Check(SimulationManager.IsSimulationGameType(3) && SimulationManager.IsSimulationGoal(3, 100, 12)
                 && SimulationManager.CheckStartCondition(3, 2, new byte[] { 1, 3 })
                 && _battleZoneCatalog.SupportsRoom(171, 8) && _battleZoneCatalog.SupportsRoom(180, 8)
-                && _battleZoneCatalog.SupportsRoom(183, 8) && !_battleZoneCatalog.SupportsRoom(174, 8)
+                && _battleZoneCatalog.SupportsRoom(183, 8) && _battleZoneCatalog.SupportsRoom(174, 8)
+                && _simulationMapOverrides.LevelFor(174) == "BZC-001-Earthquake"
+                && _simulationMapOverrides.LevelFor(109) == "BZC-008-LargeQuake"
+                && _simulationMapOverrides.LevelFor(191) == "BZT-Test-CuttleFish"
                 && _simulationMapOverrides.LevelFor(180) == "BZC-007-Docks"
                 && _simulationMapOverrides.LevelFor(183) == "BZP-005-Harbor",
-                "Skirmish offers Pickup and the BZC and BZP maps, but not the empty BZC-014-Slums");
+                "Skirmish offers Pickup and every map with geometry; BZC-014-Slums's row hosts Earthquake instead");
             _simulationManager.LeaveRoom(pids[0]);
 
             var host = OpenLink(pids[1]);

@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Lunarite.Network;
 using Lunarite.Packets.Common;
 using Lunarite.Packets.Outgoing;
+using Lunarite.Storage;
 using Lunarite.World;
 
 namespace Lunarite.Handlers;
@@ -14,6 +15,7 @@ namespace Lunarite.Handlers;
 public static class JoinChannelHandler
 {
     private static SimulationManager _simulationManager = null!;
+    private static PlayerStore _playerStore = null!;
     private static ILogger _logger = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
@@ -21,6 +23,7 @@ public static class JoinChannelHandler
         var loggerFactory = serviceProvider.GetRequiredService<ILoggerFactory>();
         _logger = loggerFactory.CreateLogger(nameof(JoinChannelHandler));
         _simulationManager = serviceProvider.GetRequiredService<SimulationManager>();
+        _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
     }
 
     public static bool HandlePacket(Client client, ref PacketReader reader)
@@ -29,15 +32,22 @@ public static class JoinChannelHandler
         if (!reader.TryRead(out byte channelId) || reader.RemainingLength != 0)
             return false;
 
-        if (channelId != 0)
+        if (channelId >= SimulationManager.SimulationChannelCount)
         {
             client.SendPacket(new JoinChannel { Result = SimulationAnswer.Error });
             return true;
         }
 
-        client.SendPacket(new JoinChannel());
         int pid = Game.PidOf(client);
-        _simulationManager.JoinChannel(client, pid);
+        byte levelClass = CharacterManager.GetLevelClass(_playerStore.GetProgress(pid).Level);
+        if (!SimulationManager.IsSimulationChannelOpen(channelId, levelClass))
+        {
+            client.SendPacket(new JoinChannel { Result = SimulationAnswer.LevelError });
+            return true;
+        }
+
+        client.SendPacket(new JoinChannel());
+        _simulationManager.JoinChannel(client, pid, channelId);
         _logger.LogInformation("[SimulationCenter] Joined channel {0}; sent {1} room(s).", channelId, _simulationManager.RoomCount);
         return true;
     }

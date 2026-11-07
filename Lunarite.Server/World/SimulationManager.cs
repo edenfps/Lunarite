@@ -54,6 +54,7 @@ public sealed partial class SimulationManager
         public byte IsPublic;
         public byte LimitClass;
         public byte State;
+        public byte Channel;
         public Dictionary<int, SCPlayerInfo> Members = [];
     }
 
@@ -172,6 +173,8 @@ public sealed partial class SimulationManager
     private readonly Dictionary<byte, SCRoomInfo> _simulationRooms = [];
     private readonly Dictionary<int, byte> _simulationPidRoom = [];
     private readonly HashSet<int> _simulationChannelPids = [];
+    // Outlives LeaveChannel: a player in a room is out of the channel's broadcasts but stays in it.
+    private readonly Dictionary<int, byte> _simulationPlayerChannels = [];
     private readonly Dictionary<int, SimulationTransport> _simulationTransports = [];
     private readonly Dictionary<int, ushort> _simulationClientPorts = [];
     private readonly Dictionary<int, FinishedSimulationMatch> _finishedSimulationMatches = [];
@@ -291,6 +294,20 @@ public sealed partial class SimulationManager
     }
 
     internal int RoomCount => _simulationRooms.Count;
+
+    // HuxleySCSelectChannelMenu.ChannelNames: Beginner (C class), B, A, S, Free. The native join sends
+    // only the channel ID, so each group's one channel has its group number as ID.
+    internal const byte SimulationChannelCount = 5;
+    private const byte FreeSimulationChannel = 4;
+
+    // MESSAGE_LEVEL_CLASS_ERROR "Your level is too high": a class channel takes that class and below.
+    public static bool IsSimulationChannelOpen(byte channel, byte levelClass) =>
+        channel == FreeSimulationChannel || channel < FreeSimulationChannel && levelClass <= channel;
+
+    internal int SimulationChannelPlayers(byte channel)
+    {
+        lock (_simulationLock) return _simulationPlayerChannels.Values.Count(x => x == channel);
+    }
 
     internal void AssignPort(Client client)
     {

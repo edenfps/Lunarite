@@ -270,6 +270,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         KillReportsSaveDebounced();
         SimulationRewardLimits();
         SimulationGuestRelay();
+        SimulationChannels();
         MailedBattlefieldRewardsStayBound();
         GameHandoffBinding();
         SelectionGateAndPendingDeletion();

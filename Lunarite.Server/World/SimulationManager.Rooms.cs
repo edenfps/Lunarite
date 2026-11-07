@@ -54,7 +54,7 @@ public sealed partial class SimulationManager
                 GoalScore = goalScore, MaxPlayers = maxPlayers, LimitClass = limitClass
             };
             BroadcastSimulationLocked(room, changed, pid);
-            BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room));
+            BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room));
         }
     }
 
@@ -152,7 +152,8 @@ public sealed partial class SimulationManager
             {
                 Id = roomId, OwnerPid = pid, Name = roomName, Password = password ?? "", Map = map,
                 GameType = gameType, MaxPlayers = maxPlayers, GoalTime = goalTime,
-                GoalScore = goalScore, IsPublic = isPublic, LimitClass = limitClass
+                GoalScore = goalScore, IsPublic = isPublic, LimitClass = limitClass,
+                Channel = _simulationPlayerChannels.GetValueOrDefault(pid)
             };
             byte species = CharacterStore.GetTribe(character.Index);
             room.Members[pid] = NewSimulationMember(client, pid, species);
@@ -162,7 +163,7 @@ public sealed partial class SimulationManager
             // already exist.
             client.SendPacket(new CreateRoom
                 { RoomId = roomId, Species = species, FullConnection = 1 });
-            BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room), pid);
+            BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room), pid);
         }
         _logger.LogInformation(
             "[SimulationCenter] Created room {0} '{1}' map={2} type={3} time={4} score={5} max={6} public={7} class={8} password={9}.",
@@ -266,12 +267,13 @@ public sealed partial class SimulationManager
         lock (_simulationLock) RemoveSimulationMemberLocked(pid, 0);
     }
 
-    internal void JoinChannel(Client client, int pid)
+    internal void JoinChannel(Client client, int pid, byte channel)
     {
         lock (_simulationLock)
         {
             _simulationChannelPids.Add(pid);
-            foreach (var room in _simulationRooms.Values)
+            _simulationPlayerChannels[pid] = channel;
+            foreach (var room in _simulationRooms.Values.Where(x => x.Channel == channel))
                 client.SendPacket(BuildSimulationRoomBroadcast(room));
         }
     }
@@ -286,6 +288,7 @@ public sealed partial class SimulationManager
         lock (_simulationLock)
         {
             _simulationChannelPids.Remove(pid);
+            _simulationPlayerChannels.Remove(pid);
             RemoveSimulationMemberLocked(pid, 0);
         }
     }
@@ -298,7 +301,8 @@ public sealed partial class SimulationManager
         int pid = Game.PidOf(client);
         lock (_simulationLock)
         {
-            if (!_simulationRooms.TryGetValue(roomId, out var room))
+            if (!_simulationRooms.TryGetValue(roomId, out var room)
+                || room.Channel != _simulationPlayerChannels.GetValueOrDefault(pid))
             {
                 client.SendPacket(new JoinRoom { Result = SimulationAnswer.NoRoom });
                 return true;
@@ -366,10 +370,11 @@ public sealed partial class SimulationManager
                 BroadcastSimulationLocked(room, new JoinPlayerBCRoom
                     { RoomId = room.Id, Player = joinedPlayer }, pid);
                 foreach (int channelPid in _simulationChannelPids)
-                    if (!room.Members.ContainsKey(channelPid) && Game.TryGetClient(channelPid, out var observer))
+                    if (!room.Members.ContainsKey(channelPid) && IsInSimulationChannelLocked(channelPid, room.Channel)
+                        && Game.TryGetClient(channelPid, out var observer))
                         observer.SendPacket(new JoinPlayerBCChannel
                             { RoomId = room.Id, Player = joinedPlayer });
-                BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room));
+                BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room));
             }
             else
             {
@@ -456,10 +461,14 @@ public sealed partial class SimulationManager
         };
     }
 
-    private void BroadcastSimulationChannelLocked(IPacketSerialize packet, int exceptPid = 0)
+    private bool IsInSimulationChannelLocked(int pid, byte channel) =>
+        _simulationChannelPids.Contains(pid) && _simulationPlayerChannels.GetValueOrDefault(pid) == channel;
+
+    private void BroadcastSimulationChannelLocked(byte channel, IPacketSerialize packet, int exceptPid = 0)
     {
         foreach (int channelPid in _simulationChannelPids)
-            if (channelPid != exceptPid && Game.TryGetClient(channelPid, out var target))
+            if (channelPid != exceptPid && IsInSimulationChannelLocked(channelPid, channel)
+                && Game.TryGetClient(channelPid, out var target))
                 target.SendPacket(packet);
     }
 
@@ -482,15 +491,15 @@ public sealed partial class SimulationManager
                 member.State = 0;
                 _p2pManager.StopRelay(member.Pid);
             }
-            BroadcastSimulationChannelLocked(new ChangeGameStateBC
+            BroadcastSimulationChannelLocked(room.Channel, new ChangeGameStateBC
                 { RoomId = room.Id, GameState = room.State });
         }
         BroadcastSimulationLocked(room, new LeavePlayerBCRoom { Pid = pid, RoomId = room.Id });
-        BroadcastSimulationChannelLocked(new LeavePlayerBCChannel { RoomId = room.Id });
+        BroadcastSimulationChannelLocked(room.Channel, new LeavePlayerBCChannel { RoomId = room.Id });
         if (room.Members.Count == 0)
         {
             _simulationRooms.Remove(roomId);
-            BroadcastSimulationChannelLocked(new DestroyRoomBC { RoomId = roomId });
+            BroadcastSimulationChannelLocked(room.Channel, new DestroyRoomBC { RoomId = roomId });
         }
         else
         {
@@ -509,7 +518,7 @@ public sealed partial class SimulationManager
                     PrivateAddress = newOwner.Address, PrivatePort = newOwner.Port
                 });
             }
-            BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room));
+            BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room));
             if (rehost && Game.TryGetClient(room.OwnerPid, out var newOwnerClient))
             {
                 _logger.LogInformation("[Simulation] room {0} host PID {1} left a running match; PID {2} hosts it again ({3}:{4}, {5} s left).",

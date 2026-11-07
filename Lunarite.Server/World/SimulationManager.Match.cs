@@ -242,9 +242,9 @@ public sealed partial class SimulationManager
         {
             SendSimulationPermissionRegisterLocked(transport, memberPid);
         }
-        BroadcastSimulationChannelLocked(new ChangeGameStateBC
+        BroadcastSimulationChannelLocked(room.Channel, new ChangeGameStateBC
             { RoomId = room.Id, GameState = room.State });
-        BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room));
+        BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room));
         _logger.LogInformation("[Simulation] started room {0} host PID {1}, map '{2}', members [{3}], IP {4}.",
             room.Id, pid, zone.LevelName, string.Join(",", transport.Members), hostAddress);
     }
@@ -371,9 +371,9 @@ public sealed partial class SimulationManager
                 Unsettled = transport.Members.ToHashSet()
             };
         }
-        BroadcastSimulationChannelLocked(new ChangeGameStateBC
+        BroadcastSimulationChannelLocked(room.Channel, new ChangeGameStateBC
             { RoomId = room.Id, GameState = room.State });
-        BroadcastSimulationChannelLocked(BuildSimulationRoomBroadcast(room));
+        BroadcastSimulationChannelLocked(room.Channel, BuildSimulationRoomBroadcast(room));
     }
 
     public static bool IsSimulationEndpointListening(int packedIp, int port,

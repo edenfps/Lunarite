@@ -910,7 +910,7 @@ begin object name="HuxleyBattleZoneData_53" class=HuxleyGame.HuxleyBattleZoneDat
 	LevelName="BZT-009-Pipes"
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZT-009-Pipes'
-	bEnabled=false
+
 	EntryIndex=109
 end object
 
@@ -1041,7 +1041,7 @@ begin object name="HuxleyBattleZoneData_64" class=HuxleyGame.HuxleyBattleZoneDat
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=Texture2D'TextureDummy.dummyMap'
 	IconCoordinates=(UL=195.0000000,VL=170.0000000)
-	bEnabled=false
+
 	EntryIndex=191
 end object
 
@@ -1107,7 +1107,7 @@ begin object name="HuxleyBattleZoneData_9" class=HuxleyGame.HuxleyBattleZoneData
 	LevelName="BZC-014-Slums"
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZC-014-Slums'
-	bEnabled=false
+
 	EntryIndex=174
 end object
 
