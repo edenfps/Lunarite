@@ -31,6 +31,35 @@ internal sealed partial class TestSuite
             byte[] seen = ReceivePresence(stayLink);
             Check(seen.SequenceEqual(new DelPlayer { Pid = leaver.Pid }.Serialize()),
                 "a player who disconnects is removed from the screens of others in the same city");
+
+            // City travel: the new link selects and spawns the character before the old link closes.
+            var oldLink = OpenPresenceSocket(939847003, "127.0.0.6");
+            var newLink = OpenPresenceSocket(939847004, "127.0.0.7");
+            try
+            {
+                _ = ReceivePresence(oldLink);
+                _ = ReceivePresence(newLink);
+                oldLink.Client.Player = _playerManager.Get(leaver.Pid);
+                newLink.Client.Player = _playerManager.Get(leaver.Pid);
+                _playerManager.SetOnline(leaver.Pid, newLink.Client);
+                _playerManager.Get(leaver.Pid).CityMap = 18;
+                _playerManager.Get(leaver.Pid).TryMarkSpawned();
+                DisconnectHandler.HandleDisconnect(oldLink.Client);
+                stayLink.Peer.ReceiveTimeout = 500;
+                bool quiet;
+                try { _ = ReceivePresence(stayLink); quiet = false; }
+                catch (System.IO.IOException) { quiet = true; }
+                Check(quiet && _playerManager.Get(leaver.Pid).IsSpawned && _playerManager.Get(leaver.Pid).CityMap == 18
+                    && _playerManager.TryGetClient(leaver.Pid, out var live) && ReferenceEquals(live, newLink.Client),
+                    "an old Game link closing after city travel leaves the live character in the world");
+            }
+            finally
+            {
+                newLink.Client.Player = null;
+                oldLink.Client.Player = null;
+                oldLink.Client.Dispose(); newLink.Client.Dispose();
+                oldLink.Peer.Dispose(); newLink.Peer.Dispose();
+            }
         }
         catch (System.IO.IOException)
         {

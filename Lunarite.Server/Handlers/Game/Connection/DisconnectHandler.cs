@@ -180,20 +180,27 @@ public static class DisconnectHandler
     // reservation, position and mounted vehicle.
     private static void ReleaseCharacterState(Client client, int pid, bool expectedCityTravel)
     {
-        _cityManager.LeaveCurrentPresence(client, pid);
+        // City travel and quest returns open a new Game link before the old one closes. An old link
+        // that closes after the new one has selected and spawned the character must not take the
+        // live character out of the world (DelPlayer, position, city map, tram, mount).
+        bool currentLink = !Game.TryGetClient(pid, out var selected) || ReferenceEquals(selected, client);
+        if (currentLink) _cityManager.LeaveCurrentPresence(client, pid);
         _tradeManager.CancelTradeOnLeave(pid);
         _simulationManager.LeaveSimulationCenter(pid);
-        if (Game.TryGetClient(pid, out var selected) && ReferenceEquals(selected, client))
+        if (selected != null && ReferenceEquals(selected, client))
             _playerManager.SetOffline(pid);
         _battleManager.CancelReservation(pid);
-        Game.PlayerFor(pid).Position = null;
-        Game.PlayerFor(pid).CityMap = null;
-        Game.PlayerFor(pid).TryLeaveTransport();
-        // HuxleySubsystem.OnLoadMap and LoadCityZone use ClientTravel(TRAVEL_Absolute), so the
-        // destination pawn has no DrivenVehicle; keeping the toggle would invert the next update.
-        if (VehicleManager.ClearMountedVehicleOnPresenceExit(pid, out int mountedVehicle))
-            _logger.LogInformation("[Vehicle] PID {0} disconnect clears mounted {1}; city travel {2}.",
-                pid, mountedVehicle, expectedCityTravel);
+        if (currentLink)
+        {
+            Game.PlayerFor(pid).Position = null;
+            Game.PlayerFor(pid).CityMap = null;
+            Game.PlayerFor(pid).TryLeaveTransport();
+            // HuxleySubsystem.OnLoadMap and LoadCityZone use ClientTravel(TRAVEL_Absolute), so the
+            // destination pawn has no DrivenVehicle; keeping the toggle would invert the next update.
+            if (VehicleManager.ClearMountedVehicleOnPresenceExit(pid, out int mountedVehicle))
+                _logger.LogInformation("[Vehicle] PID {0} disconnect clears mounted {1}; city travel {2}.",
+                    pid, mountedVehicle, expectedCityTravel);
+        }
         Game.PlayerFor(pid).UndoSales = null;
         _questInstanceManager.ForgetAcceptedGroup(pid);
     }
