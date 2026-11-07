@@ -28,7 +28,7 @@ public sealed class SimulationMapOverrides
     ];
 
     // Table rows with no usable level of their own carry the maps that have no row; the patched client
-    // labels them (tools/patches/skirmish_maps.py).
+    // labels them (its HuxleyBattleZoneTable.upk).
     private static readonly IReadOnlyDictionary<int, string> BuiltIn = new Dictionary<int, string>
     {
         [109] = "BZC-008-LargeQuake",
