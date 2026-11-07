@@ -120,6 +120,7 @@ public sealed partial class SimulationManager
     {
         [1] = ([0, 80, 100, 120, 150], [8, 10, 12, 15]),
         [2] = ([0, 500, 600, 800, 1000, 1200], [12, 14, 16, 18]),
+        [3] = ([0, 80, 100, 120, 150], [8, 10, 12, 15]),
         [4] = ([0, 2, 3, 5], [10, 12, 15]),
         [5] = ([0, 15, 20, 30, 40], [8, 10, 12, 15]),
         [8] = ([0, 80, 100, 120, 150], [8, 10, 12, 15]),
@@ -209,8 +210,8 @@ public sealed partial class SimulationManager
     }
 
     // HuxleySimulationCenterRule.ActiveGameTypes (and DevActiveGameTypes) in HuxleyMMOGame.ini:
-    // the only modes the room menu offers, (1, 5, 4, 2, 9, 8).
-    public static bool IsSimulationGameType(byte gameType) => gameType is 1 or 2 or 4 or 5 or 8 or 9;
+    // the only modes the room menu offers: retail's (1, 5, 4, 2, 9, 8), plus Pickup 3 for the BZP maps.
+    public static bool IsSimulationGameType(byte gameType) => gameType is 1 or 2 or 3 or 4 or 5 or 8 or 9;
 
     // HuxleySimulationCenterRule.CheckStartCondition with HuxleyMMOGame.ini's
     // ActiveGameStartConditions: at least 2 players, and for team modes the larger side may be at
@@ -223,7 +224,7 @@ public sealed partial class SimulationManager
         float? maxProportion = gameType switch
         {
             1 or 8 => 2.0f,
-            2 or 4 => 1.3f,
+            2 or 3 or 4 => 1.3f,
             5 or 9 or 10 => 0.0f,
             _ => null
         };

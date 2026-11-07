@@ -185,19 +185,26 @@ internal sealed partial class TestSuite
                 pids.Add(pid);
             }
             var solo = OpenLink(pids[0]);
-            _simulationManager.CreateRoom(solo.Client, "Solo", 2, 102, 3, 8, 0, 1, 3, "");
+            _simulationManager.CreateRoom(solo.Client, "Solo", 2, 102, 6, 8, 0, 1, 3, "");
             byte[]? otherType = ReceiveOp(solo, 131);
             _simulationManager.CreateRoom(solo.Client, "Solo", 2, 102, 5, 8, 0, 1, 3, "");
             byte[]? created = ReceiveOp(solo, 131);
-            _simulationManager.ChangeRoomInfo(solo.Client, 102, 3, 0, 8, 2, 3);
+            _simulationManager.ChangeRoomInfo(solo.Client, 102, 6, 0, 8, 2, 3);
             byte[]? changed = ReceiveOp(solo, 135);
             _simulationManager.Ready(solo.Client);
             byte[]? soloStart = ReceiveOp(solo, 143);
             Check(otherType is [131, SimulationAnswer.Error, ..] && created is [131, 0, ..]
                 && changed is [135, SimulationAnswer.Error]
                 && soloStart is [143, SimulationAnswer.PlayerProportion]
-                && !SimulationManager.CheckStartCondition(3, 2, new byte[] { 1, 3 }),
+                && !SimulationManager.CheckStartCondition(6, 2, new byte[] { 1, 3 }),
                 "Simulation rooms take only the room menu's game types and a lone owner cannot start a match");
+            Check(SimulationManager.IsSimulationGameType(3) && SimulationManager.IsSimulationGoal(3, 100, 12)
+                && SimulationManager.CheckStartCondition(3, 2, new byte[] { 1, 3 })
+                && _battleZoneCatalog.SupportsRoom(171, 8) && _battleZoneCatalog.SupportsRoom(180, 8)
+                && _battleZoneCatalog.SupportsRoom(183, 8) && !_battleZoneCatalog.SupportsRoom(174, 8)
+                && _simulationMapOverrides.LevelFor(180) == "BZC-007-Docks"
+                && _simulationMapOverrides.LevelFor(183) == "BZP-005-Harbor",
+                "Skirmish offers Pickup and the BZC and BZP maps, but not the empty BZC-014-Slums");
             _simulationManager.LeaveRoom(pids[0]);
 
             var host = OpenLink(pids[1]);

@@ -159,7 +159,7 @@ begin object name="HuxleyBattleZoneData_17" class=HuxleyGame.HuxleyBattleZoneDat
 	LevelName="BZC-011-Crater"
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZC-011-Crater'
-	bEnabled=false
+
 	EntryIndex=171
 end object
 
@@ -822,7 +822,7 @@ begin object name="HuxleyBattleZoneData_46" class=HuxleyGame.HuxleyBattleZoneDat
 	LevelName="BZC-012-Rig"
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZC-012-Rig'
-	bEnabled=false
+
 	EntryIndex=172
 end object
 
@@ -853,7 +853,7 @@ begin object name="HuxleyBattleZoneData_49" class=HuxleyGame.HuxleyBattleZoneDat
 	LevelName="BZP-003-Slums"
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZP-003-Slums'
-	bEnabled=false
+
 	EntryIndex=183
 end object
 
@@ -1074,7 +1074,7 @@ begin object name="HuxleyBattleZoneData_67" class=HuxleyGame.HuxleyBattleZoneDat
 	ActiveGameTypes=/* Array type was not detected. */
 	IconTexture=TextureMovie'TextureMovieStream.BZC-002-Pipes'
 	bRookie=true
-	bEnabled=false
+
 	EntryIndex=180
 end object
 

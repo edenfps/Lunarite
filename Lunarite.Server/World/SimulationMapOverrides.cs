@@ -27,6 +27,14 @@ public sealed class SimulationMapOverrides
         "BZT-Test-CuttleFish", "BZP-005-Harbor", "BZC-007-Docks", "SQ-Game"
     ];
 
+    // Two table rows with no level of their own carry the maps that have no row; the patched client
+    // labels them (tools/patches/skirmish_maps.py).
+    private static readonly IReadOnlyDictionary<int, string> BuiltIn = new Dictionary<int, string>
+    {
+        [180] = "BZC-007-Docks",
+        [183] = "BZP-005-Harbor"
+    };
+
     private static readonly object Lock = new();
     private static readonly string PathName = Path.Combine(AppContext.BaseDirectory, "simmaps.json");
     private Dictionary<int, string>? _overrides;
@@ -44,7 +52,7 @@ public sealed class SimulationMapOverrides
 
     public string? LevelFor(int entryIndex)
     {
-        lock (Lock) return Current().GetValueOrDefault(entryIndex);
+        lock (Lock) return Current().GetValueOrDefault(entryIndex) ?? BuiltIn.GetValueOrDefault(entryIndex);
     }
 
     public IReadOnlyDictionary<int, string> All
