@@ -553,9 +553,9 @@ End-of-run random rewards remain deliberately inactive for this client data set.
 
 Quest return fallback now preserves the exported per-quest exit metadata. Explicit valid client
 destinations still win; sentinel or invalid destinations use an explicit quest exit zone/area before
-the character's faction training camp. The parser distinguishes an omitted Unreal default from an
+the character's faction training camp. The departure spot beats a cooked exit area with no zone. The parser distinguishes an omitted Unreal default from an
 explicit zero by storing absent exit fields as `-1`, covering tutorial zones 10/110 and the
-Alternatives `890022` scout return area 13 without redirecting unrelated missions.
+Alternatives `890022` scout, which now returns to the departure spot, without redirecting unrelated missions.
 
 Direct field/scout reward settlement now observes the retail completion state boundary. Rally telemetry in states 0, 1, or 3 remains valid progress traffic but cannot grant BP/QT or consume the per-run settlement guard; only state 2 (`QUESTCOMPLETE_REWARD`) may commit the reward after telemetry and BP validation. This prevents an early PLAYING packet from paying the run and blocking its eventual completion reward.
 

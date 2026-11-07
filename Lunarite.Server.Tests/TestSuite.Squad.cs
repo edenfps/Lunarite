@@ -250,7 +250,7 @@ internal sealed partial class TestSuite
             "field-instance kill reports for an acquired FreeQuest (e.g. 820706 Diseased Covoxes) are accepted from the instance");
         Check(_questManager.ResolveQuestExit(-1, -1, 10, departure: (-1, 0)) == (10, 0)
             && _questManager.ResolveQuestExit(-1, -1, 10, departure: (0, 40)) == (0, 40)
-            && _questManager.ResolveQuestExit(-1, -1, 110, -1, 13, departure: (100, 25)) == (100, 13)
+            && _questManager.ResolveQuestExit(-1, -1, 110, -1, 13, departure: (100, 25)) == (100, 25)
             && _questManager.ResolveQuestExit(-1, -1, 10, departure: (8, 0)) == (10, 0)
             && _questManager.ResolveQuestExit(-1, -1, 10, 110, 4, departure: (0, 40)) == (110, 4)
             && _questManager.ResolveQuestExit(14, 2, 10, departure: (0, 40)) == (14, 2),
