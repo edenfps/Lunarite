@@ -867,6 +867,7 @@ begin object name="HuxleyBattleZoneData_5" class=HuxleyGame.HuxleyBattleZoneData
 	IconTexture=TextureMovie'TextureMovieStream.BZT-006-Wooden'
 	TimeLimit=60.0000000
 	MinPlayerLevel=16
+	bEnabled=false
 	EntryIndex=106
 end object
 
