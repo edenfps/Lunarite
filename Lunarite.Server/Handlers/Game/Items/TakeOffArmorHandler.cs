@@ -57,7 +57,7 @@ public static class TakeOffArmorHandler
             TuneUpOptions = item?.TuneUpOptions ?? 0,
             Skill0 = item?.Skill ?? 0,
             Skill1 = item?.Skill1 ?? 0,
-            Durability = item?.Durability ?? 0
+            Durability = item?.WireDurability ?? 0
         });
         if (item != null)
         {

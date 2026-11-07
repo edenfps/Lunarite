@@ -128,7 +128,8 @@ internal sealed partial class TestSuite
         Check(_itemCatalog.Get(664001) is { ClassName: "HuxleyCityItemData_ItemColorSpray", CityItemGroup: 1 }
             && _playerStore.TryUseColorSpray(sprayPid, 3, 664001, out var sprayRemaining, out var sprayedArmor)
             && sprayRemaining is { Count: 1 }
-            && sprayedArmor is { InventoryIndex: 4, InventoryCell: 1, LimitTime: 664001 }
+            && sprayedArmor is { InventoryIndex: 4, InventoryCell: 1, LimitTime: 0, Spray: 1 }
+            && BitConverter.ToInt32(Lunarite.World.ItemManager.SerializeGenericItem(sprayedArmor!), 28) == (sprayedArmor!.Durability | 1 << 16)
             && _playerStore.PruneExpiredInventory(sprayPid, 2_000_000_000).Count == 0
             && _playerStore.GetInventory(sprayPid, () => []).Any(x => x.InventoryIndex == 4 && x.InventoryCell == 1)
             && new UseItem { Result = 0, UseType = 1, ItemData = Enumerable.Range(0, 32).Select(i => (byte)i).ToArray() }

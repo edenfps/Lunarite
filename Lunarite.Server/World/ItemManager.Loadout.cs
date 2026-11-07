@@ -124,7 +124,7 @@ public sealed partial class ItemManager
                 TuneUpOptions = i.TuneUpOptions,
                 Skill0 = i.Skill,
                 Skill1 = i.Skill1,
-                Durability = i.Durability
+                Durability = i.WireDurability
             }).ToList();
     }
 }

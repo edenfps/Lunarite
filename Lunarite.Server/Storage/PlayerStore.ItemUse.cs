@@ -50,12 +50,14 @@ public sealed partial class PlayerStore
         }
     }
 
-    // ItemArmor.nSpray aliases GenericItem.nLimitTime: the upper-body armor stores the spray's item
-    // ID, which HuxleyMultiGame resolves to HuxleyCityItemData_ItemColorSpray.ItemColor.
+    // The upper-body armor keeps the spray, which HuxleyMultiGame resolves through ItemArmor.nSpray to
+    // HuxleyCityItemData_ItemColorSpray.ItemColor. See GenericItem.WireDurability.
     public bool TryUseColorSpray(int pid, byte sprayCell, int sprayItemId,
         out GenericItem? remainingSpray, out GenericItem? upbody)
     {
         remainingSpray = null; upbody = null;
+        // The client can only name a spray in the 16 bits above SprayItemBase; 9011xxxx rows cannot be shown.
+        if (sprayItemId <= SprayItemBase || sprayItemId > SprayItemBase + 0xFFFF) return false;
         lock (_lock)
         {
             if (!_inventory.TryGetValue(pid, out var list)) return false;
@@ -63,7 +65,7 @@ public sealed partial class PlayerStore
             var armor = ItemAt(list, InventoryType.Armor, 1); // Pos_Upbody
             if (spray == null || spray.ItemId != sprayItemId || spray.Count < 1 || armor == null) return false;
 
-            armor.LimitTime = sprayItemId;
+            armor.Spray = sprayItemId - SprayItemBase;
             remainingSpray = ConsumeOne(pid, list, spray);
             upbody = Clone(armor);
             SaveItemTotals(); SaveInventory();

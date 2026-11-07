@@ -13,6 +13,8 @@ public sealed partial class PlayerStore
 {
     // The server copy of the client's GenericItem (HuxleyItemSystem.uc), one per inventory slot.
     // Saved inventories predate the bInventoryIndex/bInventoryCell names, hence the JSON names.
+    public const int SprayItemBase = 664000;
+
     public sealed class GenericItem
     {
         [JsonPropertyName("Inven")] public byte InventoryIndex { get; set; }
@@ -30,6 +32,13 @@ public sealed partial class PlayerStore
         public int TuneUpOptions { get; set; }
 
         public int Durability { get; set; } = 100;
+
+        // Color spray item ID less SprayItemBase; 0 for none.
+        public int Spray { get; set; }
+
+        // Native ConvertGeneric2Armor reads GenericItem +28 as durability in the low word and, in the
+        // high word, the spray: nSpray = high word + 664000.
+        [JsonIgnore] public int WireDurability => Durability & 0xFFFF | Spray << 16;
 
         public int Skill { get; set; }
 

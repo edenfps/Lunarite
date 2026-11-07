@@ -136,6 +136,7 @@ static class Program
         // Quest rooms never survive a restart, so any entry-item reservation still on disk was
         // consumed but never committed; give the items back.
         questEntryReservationStore.RefundAbandoned();
+        playerStore.MigrateArmorSprays();
         playerStore.MigrateCorruptMissionDurability();
         if (Environment.GetEnvironmentVariable("QUEST_CATALOG_AUDIT") == "1")
         {

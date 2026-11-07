@@ -53,6 +53,24 @@ public sealed partial class PlayerStore
 
     // Equipped durability above 100 marks a character whose quest results were decoded from
     // displaced bytes; only those characters are reset, so genuinely broken gear elsewhere survives.
+    // Sprays were once written to the armor's LimitTime, where the client never reads them.
+    public int MigrateArmorSprays()
+    {
+        int moved = 0;
+        lock (_lock)
+        {
+            foreach (var item in _inventory.Values.SelectMany(x => x).Where(x => x.InventoryIndex == InventoryType.Armor
+                         && x.LimitTime > SprayItemBase && x.LimitTime < SprayItemBase + 0x10000))
+            {
+                item.Spray = item.LimitTime - SprayItemBase;
+                item.LimitTime = 0;
+                moved++;
+            }
+            if (moved != 0) SaveInventory();
+        }
+        return moved;
+    }
+
     public int MigrateCorruptMissionDurability()
     {
         lock (_lock)

@@ -181,6 +181,6 @@ public sealed partial class PlayerStore
     {
         InventoryIndex = item.InventoryIndex, InventoryCell = item.InventoryCell, ItemId = item.ItemId, Count = item.Count,
         State = item.State, LimitTime = item.LimitTime, TuneUpOptions = item.TuneUpOptions,
-        Durability = item.Durability, Skill = item.Skill, Skill1 = item.Skill1
+        Durability = item.Durability, Spray = item.Spray, Skill = item.Skill, Skill1 = item.Skill1
     };
 }

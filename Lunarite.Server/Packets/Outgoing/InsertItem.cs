@@ -12,11 +12,11 @@ namespace Lunarite.Packets.Outgoing;
 //   +9  byte bInventoryCell    (armor part 0-4 / weapon slot 0-2)
 //   +10 byte byState
 //   +11 byte (padding, struct alignment)
-//   +12 int  nLimitTime        (-> ItemArmor.nSpray)
+//   +12 int  nLimitTime
 //   +16 int  nTuneUpOptions
 //   +20 int  nGeneral1         (-> ItemArmor.Skill[0], socket skill)
 //   +24 int  nGeneral2         (-> ItemArmor.Skill[1])
-//   +28 int  nGeneral3         (-> nDurability; SetItemDurability sets this)
+//   +28 int  nGeneral3         (low word nDurability; high word ItemArmor.nSpray - 664000)
 public class InsertItem : IPacketSerialize
 {
     public int ItemID;

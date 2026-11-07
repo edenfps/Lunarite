@@ -48,7 +48,7 @@ public sealed class AddPlayer : IPacketSerialize
             writer.Write(item.InventoryCell);
             writer.Write((byte)0); writer.Write((byte)0); writer.Write((byte)0);
             writer.Write(item.ItemId);
-            writer.Write(item.Durability);
+            writer.Write(item.WireDurability);
         }
         return writer.Buffer;
     }

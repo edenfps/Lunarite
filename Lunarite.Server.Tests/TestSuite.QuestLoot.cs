@@ -134,12 +134,9 @@ internal sealed partial class TestSuite
             new PlayerStore.GenericItem { InventoryIndex = 4, InventoryCell = 1, ItemId = 200199, Count = 1, Durability = 100 }
         ]);
         Check(_itemCatalog.Get(90110001) is { ClassName: "HuxleyCityItemData_ItemColorSpray" }
-            && _playerStore.TryUseColorSpray(normalSprayPid, 3, 90110001, out var normalSprayRemainder,
-                out var normalSprayedArmor)
-            && normalSprayRemainder == null
-            && normalSprayedArmor is { InventoryIndex: 4, InventoryCell: 1, LimitTime: 90110001 }
-            && _playerStore.GetInventory(normalSprayPid, () => []).All(x => x.ItemId != 90110001),
-            "master-indexed normal-table color spray can be consumed and persists on upper-body armor");
+            && !_playerStore.TryUseColorSpray(normalSprayPid, 3, 90110001, out _, out _)
+            && _playerStore.GetInventory(normalSprayPid, () => []).Any(x => x.ItemId == 90110001),
+            "a color spray outside the client's 16-bit spray range is refused and kept");
         // HuxleySeqAct_SpawnItem in cooked quest maps calls HuxleyItemFactory.RequestItem(GroupIndex),
         // which sends op57 directly. These references are absent from the enemy->group table audited
         // above. A scan of 68 .war packages found 19 literal IDs plus 16 bound through linked

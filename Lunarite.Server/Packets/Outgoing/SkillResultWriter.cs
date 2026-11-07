@@ -11,6 +11,6 @@ internal static class SkillResultWriter
         w.Write(item?.InventoryIndex ?? (byte)0); w.Write(item?.InventoryCell ?? (byte)0);
         w.Write(item?.State ?? (byte)0); w.Write((byte)0);
         w.Write(item?.LimitTime ?? 0); w.Write(item?.TuneUpOptions ?? 0);
-        w.Write(item?.Skill ?? 0); w.Write(item?.Skill1 ?? 0); w.Write(item?.Durability ?? 0);
+        w.Write(item?.Skill ?? 0); w.Write(item?.Skill1 ?? 0); w.Write(item?.WireDurability ?? 0);
     }
 }

@@ -240,7 +240,7 @@ public sealed class CharacterManager
                 TuneUpOptions = item.TuneUpOptions,
                 Skill0 = item.Skill,
                 Skill1 = item.Skill1,
-                Durability = item.Durability
+                Durability = item.WireDurability
             }).ToList()
         };
     }

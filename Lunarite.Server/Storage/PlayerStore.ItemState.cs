@@ -8,7 +8,6 @@ using Lunarite.Resources;
 namespace Lunarite.Storage;
 
 // Item ownership state: binding bits, timed ownership, and newly acquired records.
-// GenericItem +12 is a tagged union: nLimitTime for timed items, ItemArmor.nSpray for armor.
 public sealed partial class PlayerStore
 {
     public sealed record ExpiredItem(byte Inventory, byte Cell, int ItemId, int TuneUpOptions, byte Type);

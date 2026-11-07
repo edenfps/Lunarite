@@ -113,7 +113,7 @@ public sealed partial class ItemManager
                 State = it.State,
                 LimitTime = it.LimitTime,
                 TuneUpOptions = it.TuneUpOptions,
-                Durability = it.Durability,
+                Durability = it.WireDurability,
                 Skill0 = it.Skill,
                 Skill1 = it.Skill1
             });
@@ -133,7 +133,7 @@ public sealed partial class ItemManager
     {
         InventoryIndex = item.InventoryIndex, InventoryCell = item.InventoryCell, ItemId = item.ItemId, Count = item.Count,
         State = item.State, LimitTime = item.LimitTime, TuneUpOptions = item.TuneUpOptions,
-        Durability = item.Durability, Skill = item.Skill, Skill1 = item.Skill1
+        Durability = item.Durability, Spray = item.Spray, Skill = item.Skill, Skill1 = item.Skill1
     };
 
     internal static InsertItem ToInsertItem(PlayerStore.GenericItem item) => new()
@@ -145,7 +145,7 @@ public sealed partial class ItemManager
         State = item.State,
         LimitTime = item.LimitTime,
         TuneUpOptions = item.TuneUpOptions,
-        Durability = item.Durability,
+        Durability = item.WireDurability,
         Skill0 = item.Skill,
         Skill1 = item.Skill1
     };
@@ -278,7 +278,7 @@ public sealed partial class ItemManager
         writer.Write(item.TuneUpOptions);
         writer.Write(item.Skill);
         writer.Write(item.Skill1);
-        writer.Write(item.Durability);
+        writer.Write(item.WireDurability);
         return writer.Buffer;
     }
 
