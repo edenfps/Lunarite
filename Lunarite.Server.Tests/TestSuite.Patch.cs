@@ -221,6 +221,12 @@ internal sealed partial class TestSuite
         Check(Lunarite.World.OnlineStatus.Json(["A", "B"], ["C"], 1, 1793849213)
                 == "{\"online\":3,\"sapiens\":2,\"alternative\":1,\"sapiensNames\":[\"A\",\"B\"],\"alternativeNames\":[\"C\"],\"inMission\":1,\"updated\":1793849213}\n",
             "HUXLEY_STATUS_FILE holds players online per faction as one JSON line");
+        string korean = System.Text.Encoding.Latin1.GetString(new byte[] { 0xB4, 0xEB, 0xC7, 0xD1 }); // CP949 "대한"
+        string western = System.Text.Encoding.Latin1.GetString(new byte[] { 0x43, 0x61, 0x66, 0xE9 }); // CP1252 "Café"
+        Check(Lunarite.World.OnlineStatus.DisplayName(korean) == "대한"
+            && Lunarite.World.OnlineStatus.DisplayName(western) == "Café"
+            && Lunarite.World.OnlineStatus.DisplayName("EdenFPS") == "EdenFPS",
+            "status names decode the client's code page: CP949 Korean, else CP1252");
         var parsed = Lunarite.SettingsFile.Parse([
             "# comment", "", "HUXLEY_SERVER_NAME=Test Server", "  HUXLEY_WINE = xvfb-run -a wine ",
             "QUOTED=\"a b\"", "no equals sign", "=no key"]).ToList();
