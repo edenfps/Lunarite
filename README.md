@@ -92,7 +92,6 @@ data tables, persistence, and game flows over a real encrypted connection.
 
 - **Eden** ([edenfps](https://github.com/edenfps)), who created and leads the project, and develops and runs the server.
 - **EDITz** ([EDITzDev](https://github.com/EDITzDev)), for their contributions to the private server.
-- **pixellegolas**, for providing the Korean level packages.
 
 ## License
 
