@@ -45,6 +45,32 @@ internal sealed partial class TestSuite
         Check(CharacterStore.SimulationCenterMap(1) == 18 && CharacterStore.SimulationCenterMap(6) == 18
             && CharacterStore.SimulationCenterMap(11) == 118 && CharacterStore.SimulationCenterMap(16) == 118,
             "retail species route to the correct Sapiens or Alternatives simulation-center map");
+        Check(DiscordPresence.TryParse(new byte[] { (byte)'L', (byte)'R', (byte)'P', (byte)'1', 0x34, 0x12 }, out ushort presencePort)
+            && presencePort == 0x1234 && !DiscordPresence.TryParse(new byte[12], out _),
+            "Discord status: request carries the game link's port and differs from a server-list ping");
+        Check(DiscordPresence.SameHost(IPAddress.Parse("::ffff:1.2.3.4"), IPAddress.Parse("1.2.3.4"))
+            && !DiscordPresence.SameHost(IPAddress.Parse("1.2.3.4"), IPAddress.Parse("1.2.3.5")),
+            "Discord status: only the link's own address gets an answer");
+        var presenceJson = System.Text.Json.JsonDocument.Parse(DiscordPresence.ActivityJson(new string('x', 200), "state", "Lv 1 Sapiens", 5)).RootElement;
+        Check(presenceJson.GetProperty("details").GetString()!.Length == 128 && presenceJson.GetProperty("timestamps").GetProperty("start").GetInt64() == 5
+            && presenceJson.GetProperty("assets").GetProperty("large_image").GetString() == "huxley",
+            "Discord status: activity fits Discord's limits and uses the uploaded logo");
+        const int PlayedPid = 77_001;
+        long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
+        _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);
+        _playerStore.AddPlayedSeconds([PlayedPid], 60);
+        Check(_playerStore.GetProgress(PlayedPid).PlayedSeconds == playedBefore + 120,
+            "play time adds up per character and skips invalid PIDs");
+        Check(SimulationManager.SkirmishBotsPerTeam(1, 8, "room", new byte[] { 1 }, true) == 4
+            && SimulationManager.SkirmishBotsPerTeam(1, 2, "room", new byte[] { 1 }, true) == 1
+            && SimulationManager.SkirmishBotsPerTeam(2, 16, "room", new byte[] { 1, 1, 1, 1, 2, 3 }, true) == 8
+            && SimulationManager.SkirmishBotsPerTeam(1, 8, "room", new byte[] { 1 }, false) == 0
+            && SimulationManager.SkirmishBotsPerTeam(1, 8, "My NoBots room", new byte[] { 1 }, true) == 0
+            && SimulationManager.SkirmishBotsPerTeam(5, 8, "room", new byte[] { 1 }, true) == 4
+            && SimulationManager.SkirmishBotsPerTeam(6, 8, "room", new byte[] { 1 }, true) == 0
+            && SimulationManager.SkirmishBotOptions(0) == ""
+            && SimulationManager.SkirmishBotOptions(4) == "?Mutator=LunariteBots.LunariteBotMutator?BotsPerTeam=4",
+            "Skirmish bots: team modes, DM and HM, opt-out by room name, sides filled and capped by the room size");
         Check(SimulationManager.CheckStartCondition(1, 8, new byte[] { 1, 3 })
             && SimulationManager.CheckStartCondition(1, 8, new byte[] { 1, 2, 3 })
             && !SimulationManager.CheckStartCondition(1, 8, new byte[] { 1, 2, 2, 3 })

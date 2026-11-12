@@ -164,7 +164,9 @@ public sealed partial class SimulationManager
         }
         // Sides are the two factions (Tribe One/Syn vs Alterlabor/Alternix). Same start rule
         // as the room menu (SC_ANSWER_PLAYER_PROPORTION).
-        if (restore == null
+        int botsPerTeam = SkirmishBotsPerTeam(room.GameType, room.MaxPlayers, room.Name,
+            room.Members.Values.Select(x => x.Species), SkirmishBotsEnabled);
+        if (restore == null && botsPerTeam == 0
             && !CheckStartCondition(room.GameType, room.MaxPlayers, room.Members.Values.Select(x => x.Species)))
         {
             client.SendPacket(new OwnerStart { Result = SimulationAnswer.PlayerProportion });
@@ -223,7 +225,7 @@ public sealed partial class SimulationManager
                 P2PManager.PackedIp(firstMemberClient.IPAddress.MapToIPv4().ToString())));
         client.SendPacket(new SimulationCreateMatch
         {
-            Map = _simulationMapOverrides.LevelFor(room.Map) ?? zone.LevelName,
+            Map = (_simulationMapOverrides.LevelFor(room.Map) ?? zone.LevelName) + SkirmishBotOptions(botsPerTeam),
             Key = key,
             MinPlayers = 1,
             GameType = room.GameType,
@@ -368,6 +370,7 @@ public sealed partial class SimulationManager
                 TimeLimitSeconds = transport.TimeLimitSeconds,
                 Seconds = transport.StartedAtUtc is { } start ? Math.Max(0, (int)(now - start).TotalSeconds) : 0,
                 JoinedAtSeconds = transport.JoinedAtSeconds,
+                Solo = transport.Members.Count < 2,
                 Unsettled = transport.Members.ToHashSet()
             };
         }

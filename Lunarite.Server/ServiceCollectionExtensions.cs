@@ -79,6 +79,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<QuestInstanceManager>();
         services.AddSingleton<QuestManager>();
         services.AddSingleton<SimulationManager>();
+        services.AddSingleton<DiscordPresence>();
         services.AddSingleton<SquadManager>();
         services.AddSingleton<AuctionManager>();
         services.AddSingleton<TradeManager>();

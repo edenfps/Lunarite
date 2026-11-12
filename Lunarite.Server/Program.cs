@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Threading;
 
@@ -21,6 +22,7 @@ static class Program
     static Timer? _itemExpiryTimer;
     static Timer? _squadSweepTimer;
     static Timer? _statusFileTimer;
+    static Timer? _playTimeTimer;
     static Timer? _noticeFileTimer;
     static Timer? _stateBackupTimer;
     static CashShopWebServer? _cashShopWebServer;
@@ -191,6 +193,16 @@ static class Program
         var squadManager = serviceProvider.GetRequiredService<SquadManager>();
         _squadSweepTimer = new Timer(_ => squadManager.SweepOfflineMembers(), null,
             TimeSpan.FromSeconds(30), TimeSpan.FromSeconds(30));
+
+        if (_serverPingService != null)
+            _serverPingService.Query = serviceProvider.GetRequiredService<DiscordPresence>().Reply;
+
+        // Total time played per character (PlayerProgress.PlayedSeconds). Counted here rather than at
+        // logout so a crash loses a minute at most, and city travel's relinks do not matter.
+        var playTimeStore = serviceProvider.GetRequiredService<PlayerStore>();
+        var playTimePlayers = serviceProvider.GetRequiredService<PlayerManager>();
+        _playTimeTimer = new Timer(_ => playTimeStore.AddPlayedSeconds(playTimePlayers.OnlinePids.ToArray(), 60), null,
+            TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60));
 
         // HUXLEY_STATUS_FILE: players online per faction, rewritten every 15 s for outside status
         // tools (deploy/linux/alert.sh posts it to Discord). Unset = off.

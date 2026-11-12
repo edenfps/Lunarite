@@ -28,6 +28,9 @@ public sealed class ServerPingService : IDisposable
         _listener = new UdpClient(new IPEndPoint(IPAddress.Any, port));
     }
 
+    // Other small requests on this port (DiscordPresence); null answers nothing.
+    public Func<byte[], IPEndPoint, byte[]?>? Query { get; set; }
+
     public ushort Port => checked((ushort)((IPEndPoint)_listener.Client.LocalEndPoint!).Port);
 
     // HUXLEY_SERVER_PING_PORT, default 56983 (the shipped HuxleyMMOGame.ini); 0 turns it off.
@@ -77,7 +80,7 @@ public sealed class ServerPingService : IDisposable
             try
             {
                 UdpReceiveResult request = await _listener.ReceiveAsync(cancel);
-                if (BuildReply(request.Buffer) is { } reply)
+                if ((BuildReply(request.Buffer) ?? Query?.Invoke(request.Buffer, request.RemoteEndPoint)) is { } reply)
                     await _listener.SendAsync(reply, request.RemoteEndPoint, cancel);
             }
             catch (OperationCanceledException) when (cancel.IsCancellationRequested) { break; }

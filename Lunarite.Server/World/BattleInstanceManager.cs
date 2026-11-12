@@ -192,6 +192,11 @@ public sealed class BattleInstanceManager
         lock (_lock) return _instances.TryGetValue(serverId, out var instance) && instance.Members.Count != 0;
     }
 
+    public int ServerOf(int pid)
+    {
+        lock (_lock) return _pidServers.GetValueOrDefault(pid);
+    }
+
     public bool IsInBattle(int pid)
     {
         lock (_lock) return _pidServers.ContainsKey(pid);

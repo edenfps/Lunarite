@@ -94,6 +94,7 @@ public sealed partial class SimulationManager
         public int Seconds;
         public Dictionary<int, int> JoinedAtSeconds = [];
         public HashSet<int> Unsettled = [];
+        public bool Solo;
     }
 
     internal static readonly TimeSpan SimulationResultWindow = TimeSpan.FromMinutes(2);
@@ -238,6 +239,26 @@ public sealed partial class SimulationManager
         return proportion <= 0 || sapiens * proportion >= alternatives && alternatives * proportion >= sapiens;
     }
 
+    // Bots run on the listen host (tools/bots), switched on by HUXLEY_SKIRMISH_BOTS=1 for clients that have
+    // LunariteBots.u. A room with "nobots" in its name plays without them.
+    internal static bool SkirmishBotsEnabled =>
+        Environment.GetEnvironmentVariable("HUXLEY_SKIRMISH_BOTS") == "1";
+
+    // Bots per side (DM and HM: half the bots), 0 for none. Fills the room; real players replace bots one for one,
+    // and the host can pick another count in the Skirmish settings window (LunariteBotSettings, on the host's client).
+    public static int SkirmishBotsPerTeam(byte gameType, int maxPlayers, string roomName, IEnumerable<byte> tribes,
+        bool enabled)
+    {
+        if (!enabled || gameType is not (1 or 2 or 3 or 4 or 5 or 8 or 9)) return 0;
+        if (roomName.Contains("nobots", StringComparison.OrdinalIgnoreCase)) return 0;
+        return maxPlayers / 2;
+    }
+
+    // Appended to the level name in op155: the host's START url carries it to GameInfo.InitGame.
+    public static string SkirmishBotOptions(int botsPerTeam) => botsPerTeam <= 0 ? ""
+        : $"?Mutator=LunariteBots.LunariteBotMutator?BotsPerTeam={botsPerTeam}"
+          + (Environment.GetEnvironmentVariable("HUXLEY_SKIRMISH_BOT_TRACE") == "1" ? "?BotTrace=1" : "");
+
     public static bool IsSimulationSquadBalanced(IEnumerable<byte> squads)
     {
         int squad0 = 0, squad1 = 0;
@@ -295,6 +316,16 @@ public sealed partial class SimulationManager
 
     internal int RoomCount => _simulationRooms.Count;
 
+    internal (byte GameType, int Map, int Players, int MaxPlayers, bool InMatch)? PresenceOf(int pid)
+    {
+        lock (_simulationLock)
+        {
+            if (!_simulationPidRoom.TryGetValue(pid, out byte roomId) || !_simulationRooms.TryGetValue(roomId, out var room))
+                return null;
+            return (room.GameType, room.Map, room.Members.Count, room.MaxPlayers, room.State != 0);
+        }
+    }
+
     // HuxleySCSelectChannelMenu.ChannelNames: Beginner (C class), B, A, S, Free. The native join sends
     // only the channel ID, so each group's one channel has its group number as ID.
     internal const byte SimulationChannelCount = 5;
@@ -349,11 +380,12 @@ public sealed partial class SimulationManager
             }
             if (!match.Unsettled.Remove(pid)) return false;
             if (match.Unsettled.Count == 0) _finishedSimulationMatches.Remove(hostPid);
-            seconds = match.Seconds;
+            // A human alone against bots earns nothing: zero seconds takes the handler's no-reward path.
+            seconds = match.Solo ? 0 : match.Seconds;
             goalScore = match.GoalScore;
             timeLimitSeconds = match.TimeLimitSeconds;
             joinedAtSeconds = match.JoinedAtSeconds.GetValueOrDefault(pid);
-            ranFullTime = match.Seconds >= SimulationMinRewardSeconds
+            ranFullTime = !match.Solo && match.Seconds >= SimulationMinRewardSeconds
                 && SimulationSlackedSeconds(match.Seconds) >= match.TimeLimitSeconds;
             return true;
         }

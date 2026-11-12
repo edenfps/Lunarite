@@ -30,6 +30,8 @@ public class Client : IDisposable
 
     public IPAddress IPAddress => _socket.RemoteEndPoint is IPEndPoint ipEndPoint ? ipEndPoint.Address : IPAddress.None;
 
+    public int RemotePort => _socket.RemoteEndPoint is IPEndPoint ipEndPoint ? ipEndPoint.Port : 0;
+
     public IPAddress LocalIPAddress => _socket.LocalEndPoint is IPEndPoint ipEndPoint ? ipEndPoint.Address : IPAddress.None;
 
     private byte _recvCodeNum = 0;

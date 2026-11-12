@@ -47,6 +47,9 @@ public sealed partial class PlayerStore
 
         public int RespawnCount { get; set; }
 
+        // Total time online on this character, in seconds, counted by the server while it is connected.
+        public long PlayedSeconds { get; set; }
+
         public int AMedalsDonated { get; set; }
 
         public int BMedalsDonated { get; set; }
@@ -175,6 +178,21 @@ public sealed partial class PlayerStore
             EnsureLevelLp(progress);
             SaveProgress();
             return progress;
+        }
+    }
+
+    public void AddPlayedSeconds(IEnumerable<int> pids, int seconds)
+    {
+        lock (_lock)
+        {
+            bool any = false;
+            foreach (int pid in pids)
+            {
+                if (pid <= 0) continue;
+                ProgressFor(pid).PlayedSeconds += seconds;
+                any = true;
+            }
+            if (any) SaveProgress();
         }
     }
 
