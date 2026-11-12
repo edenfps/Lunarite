@@ -96,6 +96,58 @@ public sealed partial class PlayerStore
     }
 
     // A present PID key marks the inventory as initialized; an empty list is a valid state.
+    // The bank is shared by the account (decided 2026-11-10). Only one character of an account is ever selected, so
+    // selecting one pulls every other character's bank items into its own bank (free cells, in cell order) and gives
+    // it the account's largest bank. Items that do not fit stay where they are and come over on a later selection;
+    // nothing is copied, so nothing can be duplicated. Returns how many item lines moved.
+    public int GatherAccountBank(int pid, IEnumerable<int> otherPids)
+    {
+        lock (_lock)
+        {
+            if (!_inventory.TryGetValue(pid, out var list)) return 0;
+            var others = otherPids.Where(other => other > 0 && other != pid).Distinct().ToList();
+            var progress = ProgressFor(pid);
+            byte step = (byte)Math.Clamp(others.Select(other => (int)ProgressFor(other).BankExpandStep)
+                .Append(progress.BankExpandStep).Max(), 1, 4);
+            bool stepChanged = progress.BankExpandStep != step;
+            progress.BankExpandStep = step;
+            int capacity = step * 10;
+            var used = list.Where(item => item.InventoryIndex == InventoryType.Bank)
+                .Select(item => (int)item.InventoryCell).ToHashSet();
+            if (!_itemTotals.TryGetValue(pid, out var totals)) totals = _itemTotals[pid] = [];
+            int moved = 0;
+            foreach (int other in others)
+            {
+                if (!_inventory.TryGetValue(other, out var otherList)) continue;
+                _itemTotals.TryGetValue(other, out var otherTotals);
+                foreach (var item in otherList.Where(item => item.InventoryIndex == InventoryType.Bank)
+                             .OrderBy(item => item.InventoryCell).ToList())
+                {
+                    int cell = Enumerable.Range(0, capacity).FirstOrDefault(c => !used.Contains(c), -1);
+                    if (cell < 0) break;
+                    otherList.Remove(item);
+                    item.InventoryCell = (byte)cell;
+                    list.Add(item);
+                    used.Add(cell);
+                    if (otherTotals != null && otherTotals.TryGetValue(item.ItemId, out int had))
+                    {
+                        if (had <= item.Count) otherTotals.Remove(item.ItemId);
+                        else otherTotals[item.ItemId] = had - item.Count;
+                    }
+                    totals[item.ItemId] = totals.GetValueOrDefault(item.ItemId) + item.Count;
+                    moved++;
+                }
+            }
+            if (moved > 0)
+            {
+                SaveInventory();
+                SaveItemTotals();
+            }
+            if (stepChanged) SaveProgress();
+            return moved;
+        }
+    }
+
     public List<GenericItem> GetInventory(int pid, Func<List<GenericItem>> buildInitial)
     {
         lock (_lock)

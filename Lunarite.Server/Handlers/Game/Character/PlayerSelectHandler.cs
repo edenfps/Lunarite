@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -17,6 +18,7 @@ public static class PlayerSelectHandler
     private static CharacterManager _characterManager = null!;
     private static ILogger _logger = null!;
     private static CharacterStore _characterStore = null!;
+    private static PlayerStore _playerStore = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -24,6 +26,7 @@ public static class PlayerSelectHandler
         _logger = loggerFactory.CreateLogger(nameof(PlayerSelectHandler));
 
         _characterStore = serviceProvider.GetRequiredService<CharacterStore>();
+        _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
         _characterManager = serviceProvider.GetRequiredService<CharacterManager>();
     }
 
@@ -54,6 +57,12 @@ public static class PlayerSelectHandler
         int selectionUnixSeconds = checked((int)Math.Min(int.MaxValue, DateTimeOffset.UtcNow.ToUnixTimeSeconds()));
         _characterManager.BindSelectedCharacter(client, packet.Pid, selectionUnixSeconds,
             out var expiredItems, out var expiredAttachments);
+        // Account-wide bank: the selected character takes over the other characters' bank items.
+        int bankMoved = _playerStore.GatherAccountBank(packet.Pid,
+            _characterStore.All(userId).Select(other => other.Pid));
+        if (bankMoved > 0)
+            _logger.LogInformation("[Bank] PID {0} took {1} bank item line(s) from the account's other characters.",
+                packet.Pid, bankMoved);
         client.SendPacket(new SelectPlayer { Pid = packet.Pid });
 
         var entryMap = _characterManager.ResolveEntryMap(client, packet.Pid, packet.DirectSimul);

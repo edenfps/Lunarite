@@ -82,6 +82,20 @@ internal sealed partial class TestSuite
             && !Lunarite.Handlers.SellItemHandler.IsNeededByActiveQuest(pickQuest, 603042)
             && !Lunarite.Handlers.SellItemHandler.IsNeededByActiveQuest([], 603072),
             "a collected quest item stays unsellable while an acquired quest still collects it");
+        // Account-wide bank: the selected character pulls the others' bank items into free cells, never copies.
+        const int BankA = 77_101, BankB = 77_102, BankC = 77_103;
+        _playerStore.GetInventory(BankA, () => [new PlayerStore.GenericItem { ItemId = 500001, Count = 3, InventoryIndex = InventoryType.Bank, InventoryCell = 0 }]);
+        _playerStore.GetInventory(BankB, () => [new PlayerStore.GenericItem { ItemId = 500002, Count = 1, InventoryIndex = InventoryType.Bank, InventoryCell = 0 },
+            new PlayerStore.GenericItem { ItemId = 500001, Count = 2, InventoryIndex = InventoryType.Main, InventoryCell = 0 }]);
+        _playerStore.GetInventory(BankC, () => []);
+        int bankMoved = _playerStore.GatherAccountBank(BankA, [BankA, BankB, BankC]);
+        var bankA = _playerStore.GetInventory(BankA, () => []);
+        var bankB = _playerStore.GetInventory(BankB, () => []);
+        Check(bankMoved == 1 && bankA.Count(i => i.InventoryIndex == InventoryType.Bank) == 2
+            && bankA.Any(i => i.ItemId == 500002 && i.InventoryCell == 1)
+            && !bankB.Any(i => i.InventoryIndex == InventoryType.Bank) && bankB.Any(i => i.InventoryIndex == InventoryType.Main)
+            && _playerStore.GatherAccountBank(BankA, [BankB, BankC]) == 0,
+            "account bank: selecting a character moves the others' bank items into free cells, main bags untouched");
         const int PlayedPid = 77_001;
         long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
         _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);
