@@ -47,6 +47,68 @@ public sealed class AccountStore
         public int Cash { get; set; }
 
         public bool Banned { get; set; }
+
+        // "Remember me" logins (LunariteLoginGame): SHA-256 of each client-made token, newest last.
+        public List<RememberedLogin> RememberedLogins { get; set; } = [];
+    }
+
+    public sealed class RememberedLogin
+    {
+        public string Hash { get; set; } = "";
+
+        public long CreatedUnixSeconds { get; set; }
+    }
+
+    public const int MaxRememberedLogins = 5;
+    public static readonly TimeSpan RememberedLoginLifetime = TimeSpan.FromDays(90);
+
+    // The client stores the token in place of the password and sends it through SendLogin, which keeps
+    // at most 12 characters of a password.
+    public static bool IsRememberToken(string token) =>
+        token.Length is >= 10 and <= 12
+        && token.All(c => c is (>= 'A' and <= 'Z') or (>= 'a' and <= 'z') or (>= '0' and <= '9'));
+
+    private static string TokenHash(string token) =>
+        Convert.ToBase64String(SHA256.HashData(System.Text.Encoding.UTF8.GetBytes(token)));
+
+    private static void PurgeRememberedLocked(Account account, DateTimeOffset now) =>
+        account.RememberedLogins.RemoveAll(x =>
+            DateTimeOffset.FromUnixTimeSeconds(x.CreatedUnixSeconds) + RememberedLoginLifetime <= now);
+
+    // GM logins never get one: a copied token would be a GM session.
+    public bool Remember(int userId, string token)
+    {
+        if (!IsRememberToken(token)) return false;
+        lock (_lock)
+        {
+            var account = _accounts.FirstOrDefault(x => x.UserId == userId);
+            if (account == null
+                || World.GmCommands.IsGmLogin(account.Login, Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS")))
+                return false;
+            var now = DateTimeOffset.UtcNow;
+            PurgeRememberedLocked(account, now);
+            string hash = TokenHash(token);
+            account.RememberedLogins.RemoveAll(x => x.Hash == hash);
+            account.RememberedLogins.Add(new RememberedLogin { Hash = hash, CreatedUnixSeconds = now.ToUnixTimeSeconds() });
+            while (account.RememberedLogins.Count > MaxRememberedLogins) account.RememberedLogins.RemoveAt(0);
+            Save();
+            return true;
+        }
+    }
+
+    // Turning "remember" off sends the token back; whoever holds it could log in with it anyway.
+    public bool Forget(string token)
+    {
+        if (!IsRememberToken(token)) return false;
+        string hash = TokenHash(token);
+        lock (_lock)
+        {
+            bool removed = false;
+            foreach (var account in _accounts)
+                removed |= account.RememberedLogins.RemoveAll(x => x.Hash == hash) > 0;
+            if (removed) Save();
+            return removed;
+        }
     }
 
     private readonly string _path = Path.Combine(AppContext.BaseDirectory, "accounts.json");
@@ -178,6 +240,20 @@ public sealed class AccountStore
             storedHashText = account.PasswordHash;
             accountUserId = account.UserId;
             banned = account.Banned;
+            // A remembered login: the password box holds the token. Anything else falls through to the password.
+            if (account.RememberedLogins.Count > 0 && IsRememberToken(password)
+                && !World.GmCommands.IsGmLogin(account.Login, Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS")))
+            {
+                PurgeRememberedLocked(account, DateTimeOffset.UtcNow);
+                byte[] tokenHash = Convert.FromBase64String(TokenHash(password));
+                if (account.RememberedLogins.Any(x => CryptographicOperations.FixedTimeEquals(
+                        Convert.FromBase64String(x.Hash), tokenHash)))
+                {
+                    if (banned) return LoginResult.Disabled;
+                    userId = accountUserId;
+                    return LoginResult.Ok;
+                }
+            }
         }
         // PBKDF2 runs outside the lock so guesses cannot stall every account and cash lookup.
         byte[] storedSalt;
@@ -223,6 +299,8 @@ public sealed class AccountStore
             byte[] salt = RandomNumberGenerator.GetBytes(16);
             account.Salt = Convert.ToBase64String(salt);
             account.PasswordHash = Hash(password, salt);
+            // A new password signs out every remembered client.
+            account.RememberedLogins.Clear();
             userId = account.UserId;
             Save();
             return true;

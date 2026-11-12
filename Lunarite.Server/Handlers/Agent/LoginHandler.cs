@@ -18,6 +18,9 @@ public static class LoginHandler
     // Serialises the duplicate-login check and the account binding.
     private static readonly object LoginLock = new();
 
+    public const string RememberLogin = "#REMEMBER";
+    public const string ForgetLogin = "#FORGET";
+
     private static CharacterManager _characterManager = null!;
 
     private static QuestInstanceManager _questInstanceManager = null!;
@@ -49,6 +52,23 @@ public static class LoginHandler
         }
 
         _logger.LogDebug("Received {0} packet. ( {1} )", nameof(LoginRequest), packet);
+
+        // "Remember me" (LunariteLoginGame): right after its real login the client sends a second op7 with this
+        // name and a token it made, which the logged-in account then accepts in place of its password. Turning
+        // it off sends #FORGET with the token. Neither is answered; "#" is never in a login name.
+        if (packet.Id == RememberLogin)
+        {
+            if (client.Session.AccountId is int rememberUser && !client.Session.IsGm
+                && _accountStore.Remember(rememberUser, packet.Pwd ?? ""))
+                _logger.LogInformation("[Accounts] user {0} remembered a login.", rememberUser);
+            return true;
+        }
+        if (packet.Id == ForgetLogin)
+        {
+            if (_accountStore.Forget(packet.Pwd ?? ""))
+                _logger.LogInformation("[Accounts] a remembered login was forgotten.");
+            return true;
+        }
 
         // Too many wrong logins for this name or from this address: LOGIN_ERROR without hashing.
         int userId = 0;

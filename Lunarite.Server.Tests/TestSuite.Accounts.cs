@@ -151,6 +151,39 @@ internal sealed partial class TestSuite
             && _accountStore.Authenticate(banLogin, "pw-123", out _) == AccountStore.LoginResult.Ok
             && _accountStore.SetBanned("no-such-login-" + Environment.ProcessId, true) == 0,
             "GM bans return native LOGIN_DISABLED only after the password checks, and unban restores login");
+        string rememberLogin = "remember" + Environment.ProcessId;
+        _accountStore.Register(rememberLogin, "pw-remember", out int rememberUser);
+        const string token = "Ab3dE5gH9jK1";
+        bool unknownToken = _accountStore.Authenticate(rememberLogin, token, out _) == AccountStore.LoginResult.WrongPassword;
+        bool stored = _accountStore.Remember(rememberUser, token) && !_accountStore.Remember(rememberUser, "short")
+            && !_accountStore.Remember(rememberUser, "has-dash-123");
+        bool tokenLogin = _accountStore.Authenticate(rememberLogin, token, out int tokenUser) == AccountStore.LoginResult.Ok
+            && tokenUser == rememberUser;
+        bool passwordStillWorks = _accountStore.Authenticate(rememberLogin, "pw-remember", out _) == AccountStore.LoginResult.Ok;
+        _accountStore.SetBanned(rememberLogin, true);
+        bool bannedToken = _accountStore.Authenticate(rememberLogin, token, out _) == AccountStore.LoginResult.Disabled;
+        _accountStore.SetBanned(rememberLogin, false);
+        bool forgotten = _accountStore.Forget(token)
+            && _accountStore.Authenticate(rememberLogin, token, out _) == AccountStore.LoginResult.WrongPassword;
+        for (int i = 0; i < AccountStore.MaxRememberedLogins + 1; i++) _accountStore.Remember(rememberUser, "Token00000" + i + "x");
+        bool oldestDropped = _accountStore.Authenticate(rememberLogin, "Token000000x", out _) == AccountStore.LoginResult.WrongPassword
+            && _accountStore.Authenticate(rememberLogin, "Token000005x", out _) == AccountStore.LoginResult.Ok;
+        bool resetClears = _accountStore.TryResetPassword(rememberLogin, "pw-new", out _)
+            && _accountStore.Authenticate(rememberLogin, "Token000005x", out _) == AccountStore.LoginResult.WrongPassword;
+        string? previousGms = Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS");
+        Environment.SetEnvironmentVariable("HUXLEY_GM_LOGINS", rememberLogin);
+        bool gmRefused = !_accountStore.Remember(rememberUser, token);
+        Environment.SetEnvironmentVariable("HUXLEY_GM_LOGINS", previousGms);
+        Check(unknownToken && stored && tokenLogin && passwordStillWorks && bannedToken && forgotten && oldestDropped
+            && resetClears && gmRefused,
+            "remembered logins: hashed token stands in for the password, ban still applies, forget and a password "
+            + "reset revoke it, at most five per account, never for a GM login");
+        Check(Lunarite.Handlers.ChatHandler.IsPlayedCommand(" /Played ") && Lunarite.Handlers.ChatHandler.IsPlayedCommand("!played")
+            && !Lunarite.Handlers.ChatHandler.IsPlayedCommand("/played now")
+            && Lunarite.Handlers.ChatHandler.FormatPlayed(0) == "0 h 0 min"
+            && Lunarite.Handlers.ChatHandler.FormatPlayed(3 * 3600 + 25 * 60 + 59) == "3 h 25 min"
+            && Lunarite.Handlers.ChatHandler.FormatPlayed(2 * 86400 + 5 * 3600 + 60) == "2 d 5 h 1 min",
+            "/played answers the time played as days, hours and minutes");
         var relayReport = new P2PNetworkAddressesReport();
         relayReport.Entries.Add(new P2PNetworkAddressesReport.Entry(0x0100007F, 51405, 0x0100007F, 7777));
         var relayPublic = new P2PNetworkAddressesReport();

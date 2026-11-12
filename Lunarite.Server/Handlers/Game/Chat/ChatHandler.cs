@@ -24,6 +24,7 @@ public static class ChatHandler
     private static CharacterStore _characterStore = null!;
     private static ClanStore _clanStore = null!;
     private static PlayerManager _playerManager = null!;
+    private static PlayerStore _playerStore = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -38,6 +39,32 @@ public static class ChatHandler
         _gmCommands = serviceProvider.GetRequiredService<GmCommands>();
         _simulationManager = serviceProvider.GetRequiredService<SimulationManager>();
         _squadManager = serviceProvider.GetRequiredService<SquadManager>();
+        _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
+    }
+
+    // "/played" (not retail): like /unstuck, the client sends unknown "/" commands as chat and hides them.
+    public static bool IsPlayedCommand(string message) =>
+        message.Trim() is var text && (text.Equals("/played", StringComparison.OrdinalIgnoreCase)
+            || text.Equals("!played", StringComparison.OrdinalIgnoreCase));
+
+    public static string FormatPlayed(long seconds)
+    {
+        long minutes = Math.Max(0, seconds) / 60;
+        long days = minutes / 1440, hours = minutes / 60 % 24, mins = minutes % 60;
+        return days > 0 ? $"{days} d {hours} h {mins} min" : $"{minutes / 60} h {mins} min";
+    }
+
+    private static string PlayedText(Client client, int pid)
+    {
+        long character = _playerStore.PlayedSecondsOf(pid);
+        string text = "Time played on this character: " + FormatPlayed(character) + ".";
+        if (client.Session.AccountId is int userId)
+        {
+            var pids = _characterStore.All(userId).Select(c => c.Pid).ToList();
+            if (pids.Count > 1)
+                text += " All characters: " + FormatPlayed(pids.Sum(_playerStore.PlayedSecondsOf)) + ".";
+        }
+        return text;
     }
 
     public static bool HandlePacket(Client client, ref PacketReader reader)
@@ -56,6 +83,7 @@ public static class ChatHandler
             return true;
         }
         if (CityManager.IsUnstuckCommand(message)) { _cityManager.Unstuck(client, senderPid); return true; }
+        if (IsPlayedCommand(message)) { ChatManager.SendSystemChat(client, PlayedText(client, senderPid)); return true; }
         if (message.StartsWith('!') && _gmCommands.IsGm(client) && _gmCommands.RunGmCommand(client, from, message)) return true;
 
         // Exported AllowTextMessage permits five messages in ten seconds, then blocks for 59.

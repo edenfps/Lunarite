@@ -220,6 +220,11 @@ public sealed partial class PlayerStore
         }
     }
 
+    public long PlayedSecondsOf(int pid)
+    {
+        lock (_lock) return pid > 0 ? ProgressFor(pid).PlayedSeconds : 0;
+    }
+
     public bool TrySpendMoney(int pid, int amount)
     {
         if (amount < 0) return false;
