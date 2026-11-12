@@ -19,6 +19,8 @@ public static class SellItemHandler
     private static ItemCatalog _itemCatalog = null!;
     private static ItemManager _itemManager = null!;
     private static PlayerStore _playerStore = null!;
+    private static QuestStore _questStore = null!;
+    private static QuestCatalog _questCatalog = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -26,7 +28,15 @@ public static class SellItemHandler
         _itemManager = serviceProvider.GetRequiredService<ItemManager>();
         _itemCatalog = serviceProvider.GetRequiredService<ItemCatalog>();
         _multiStoreTransaction = serviceProvider.GetRequiredService<MultiStoreTransaction>();
+        _questStore = serviceProvider.GetRequiredService<QuestStore>();
+        _questCatalog = serviceProvider.GetRequiredService<QuestCatalog>();
     }
+
+    // A collected quest item (ItemCatalog.IsSellableQuestPickup) stays unsellable while a quest in the journal still
+    // collects it, so nobody sells away an active quest's progress.
+    public static bool IsNeededByActiveQuest(System.Collections.Generic.IEnumerable<QuestCatalog.Quest?> acquired, int itemId) =>
+        acquired.Any(quest => quest?.Objectives.Any(objective =>
+            objective.BattleZoneObjective == "FQOType_PickItem" && objective.ExtraParam == itemId) == true);
 
     public static bool HandlePacket(Client client, ref PacketReader reader)
     {
@@ -41,6 +51,12 @@ public static class SellItemHandler
         long saleProceeds = 0;
         bool sold = false;
         byte sellResult = PlayerStore.SellNotExist;
+        if (data != null && ItemCatalog.IsSellableQuestPickup(data.EntryIndex, data.SellPrice)
+            && IsNeededByActiveQuest(_questStore.Acquired(pid).Select(_questCatalog.Get), data.EntryIndex))
+        {
+            data = null;
+            sellResult = PlayerStore.SellCannotSell;
+        }
         if (data != null)
             _multiStoreTransaction.Run(() =>
             {

@@ -77,6 +77,11 @@ internal sealed partial class TestSuite
         Check(_itemCatalog.Get(603042)?.PermitSell == true && _itemCatalog.Get(603042)?.SellPrice > 0
             && Lunarite.Resources.ItemCatalog.IsSellableQuestPickup(603042, 30) && !Lunarite.Resources.ItemCatalog.IsSellableQuestPickup(871904, 30),
             "collected quest items can be sold; quest-given items keep their table rule");
+        var pickQuest = new Lunarite.Resources.QuestCatalog.Quest[] { _questCatalog.Get(821406)! };
+        Check(Lunarite.Handlers.SellItemHandler.IsNeededByActiveQuest(pickQuest, 603072)
+            && !Lunarite.Handlers.SellItemHandler.IsNeededByActiveQuest(pickQuest, 603042)
+            && !Lunarite.Handlers.SellItemHandler.IsNeededByActiveQuest([], 603072),
+            "a collected quest item stays unsellable while an acquired quest still collects it");
         const int PlayedPid = 77_001;
         long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
         _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);
