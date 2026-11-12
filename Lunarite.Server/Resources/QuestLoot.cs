@@ -42,7 +42,7 @@ public sealed class QuestLoot
     // Color sprays from bosses (user, 2026-11-11). Retail drops only Red (Coldblooded Romeo) and Blue (one level 30
     // named enemy); the other 21 colors had no source at all. Each boss here also rolls BossSprayChance for one color of
     // its level band, on top of its own drop groups (several bosses share group 80099, so the groups stay as they are).
-    // Softer colors at low levels, darker ones late (docs/DYE.md).
+    // Softer colors at low levels, darker ones late.
     public const double BossSprayChance = 80_000; // 8 %, as retail's Red
     private static readonly int[] SprayBand11 = [664003, 664004, 664006, 664007];   // Yellow, Green, White, Black
     private static readonly int[] SprayBand15 = [664008, 664009, 664014];           // Pink, Dark Red, Light Yellow

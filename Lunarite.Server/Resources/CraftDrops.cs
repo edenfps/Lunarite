@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Lunarite.Resources;
 
-// Crafting materials and schematics from quest enemies (analysis/audit/crafting.md, option A; user 2026-11-12).
+// Crafting materials and schematics from quest enemies.
 // Retail data has no source for 77 of the 79 materials and sells 16 of the 158 schematics, so crafting could not be
 // used. Every enemy of level 10+ now also rolls, by its level band (B 10-19, A 20-29, S 30+):
 // - MaterialChance for one material of that tier, picked by weight: the square root of how many of it the tier's
