@@ -58,6 +58,13 @@ internal sealed partial class TestSuite
         Check(_characterManager.BuildAnotherPlayerInfo(_ownedA.Pid)?.Species == 1
             && _characterManager.BuildAnotherPlayerInfo(_ownedB.Pid)?.Species == 6,
             "player inspection preserves exact species TypeIndex for profile camp and species art");
+        // Customize Character: an existing character of this account, same species, gets a new look.
+        var face = new Custom { Hair = 4, Color = 7 };
+        Check(_characterStore.TrySetCustom(_accountB, _ownedB.Name.ToUpperInvariant(), _ownedB.Index, face)?.Pid == _ownedB.Pid
+                && _characterStore.Get(_ownedB.Pid)?.Custom.Hair == 4
+                && _characterStore.TrySetCustom(_accountB, _ownedB.Name, 16, face) == null
+                && _characterStore.TrySetCustom(_accountB, _ownedA.Name, _ownedA.Index, face) == null,
+            "customize changes only this account's own character of the same species");
     }
 
     private void CharacterRosterLimit()

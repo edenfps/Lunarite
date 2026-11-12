@@ -41,6 +41,16 @@ public sealed partial class ItemManager
 
     public static IReadOnlyList<int> TutorialArmorItemIds() => StartingArmor.Select(x => x.id).ToArray();
 
+    // The character's equipped armor in the CreatePlayer packet's five-record form (Customize Character reply).
+    public GenericItemBase[] EquippedArmorPreview(int pid)
+    {
+        var inventory = _playerStore.GetInventory(pid, () => BuildInitialInventory(pid));
+        var armor = Enumerable.Range(0, 5).Select(_ => new GenericItemBase()).ToArray();
+        foreach (var item in inventory.Where(x => x.InventoryIndex == InventoryType.Armor && x.InventoryCell < 5))
+            armor[item.InventoryCell] = new GenericItemBase { InventoryCell = item.InventoryCell, ItemID = item.ItemId, General3 = item.Durability };
+        return armor;
+    }
+
     public static GenericItemBase[] InitialArmorPreview()
     {
         var armor = Enumerable.Range(0, 5).Select(_ => new GenericItemBase()).ToArray();

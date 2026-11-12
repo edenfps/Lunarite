@@ -281,6 +281,21 @@ public sealed class CharacterStore
         }
     }
 
+    // Customize Character (LunariteMenus): new face/hair data for an existing character of this account.
+    public Character? TrySetCustom(int ownerUserId, string name, byte index, Custom custom)
+    {
+        lock (_lock)
+        {
+            var character = _chars.FirstOrDefault(x => x.OwnerUserId == ownerUserId && x.Index == index
+                && x.DeleteAtUnixSeconds == 0 && string.Equals(x.Name, name, StringComparison.OrdinalIgnoreCase));
+            if (character == null) return null;
+            character.Custom = custom;
+            Save();
+            _logger.LogInformation("[Chars] PID {0} '{1}' appearance customized.", character.Pid, character.Name);
+            return character;
+        }
+    }
+
     public void SetStyle(int pid, byte style)
     {
         lock (_lock)

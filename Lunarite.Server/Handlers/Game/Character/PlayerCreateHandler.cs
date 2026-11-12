@@ -21,6 +21,12 @@ public static class PlayerCreateHandler
     private static PlayerStore _playerStore = null!;
     private static QuestStore _questStore = null!;
     private static AccountStore _accountStore = null!;
+    private static ItemManager _itemManager = null!;
+
+    // Customize Character (LunariteMenus on the character select screen) reuses this request: the name is the
+    // character's own name behind this marker, and the reply is that character with its new appearance (same PID),
+    // which the menu swaps into its list. So no new name may start with '~'.
+    public const char CustomizeMarker = '~';
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -33,6 +39,7 @@ public static class PlayerCreateHandler
         _questStore = serviceProvider.GetRequiredService<QuestStore>();
         _multiStoreTransaction = serviceProvider.GetRequiredService<MultiStoreTransaction>();
         _accountStore = serviceProvider.GetRequiredService<AccountStore>();
+        _itemManager = serviceProvider.GetRequiredService<ItemManager>();
     }
 
     public static bool HandlePacket(Client client, ref PacketReader reader)
@@ -46,6 +53,12 @@ public static class PlayerCreateHandler
         _logger.LogDebug("Received {0} packet. ( {1} )", nameof(PlayerCreateRequest), packet);
 
         if (client.Session.AccountId is not int userId) return true;
+        if (packet.Name is { Length: > 1 } marked && marked[0] == CustomizeMarker)
+        {
+            var edited = _characterStore.TrySetCustom(userId, marked[1..], packet.Index, packet.Custom);
+            client.SendPacket(edited == null ? new CreatePlayer { Answer = CharacterStore.CreateError } : Reply(edited, _itemManager.EquippedArmorPreview(edited.Pid)));
+            return true;
+        }
         byte createResult = CharacterStore.CreateError;
         CharacterStore.Character? character = null;
         _multiStoreTransaction.Run(() =>
@@ -62,9 +75,14 @@ public static class PlayerCreateHandler
             client.SendPacket(new CreatePlayer { Answer = createResult });
             return true;
         }
-        var progress = _playerStore.GetProgress(character.Pid);
+        client.SendPacket(Reply(character, ItemManager.InitialArmorPreview()));
+        return true;
+    }
 
-        var createPlayer = new CreatePlayer
+    private static CreatePlayer Reply(CharacterStore.Character character, Packets.Common.GenericItemBase[] armor)
+    {
+        var progress = _playerStore.GetProgress(character.Pid);
+        return new CreatePlayer
         {
             Answer = 0,
             Pid = character.Pid,
@@ -80,11 +98,7 @@ public static class PlayerCreateHandler
             Custom = character.Custom,
             // Native OnCreatePlayer always consumes five 12-byte GenericItemBase records in
             // ARMORPART order. Tutorial gear has no helmet, so slot 0 is empty.
-            ArmorList = ItemManager.InitialArmorPreview()
+            ArmorList = armor
         };
-
-        client.SendPacket(createPlayer);
-
-        return true;
     }
 }
