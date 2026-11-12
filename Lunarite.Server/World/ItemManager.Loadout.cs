@@ -34,7 +34,7 @@ public sealed partial class ItemManager
             writer.Write(item.TuneUpOptions);
             writer.Write(item.Skill);
             writer.Write(item.Skill1);
-            writer.Write(item.Durability);
+            writer.Write(item.WireDurability); // high word = color spray, so the select screen shows it
         }
         return writer.Buffer;
     }
@@ -47,7 +47,7 @@ public sealed partial class ItemManager
         var inventory = _playerStore.GetInventory(pid, () => BuildInitialInventory(pid));
         var armor = Enumerable.Range(0, 5).Select(_ => new GenericItemBase()).ToArray();
         foreach (var item in inventory.Where(x => x.InventoryIndex == InventoryType.Armor && x.InventoryCell < 5))
-            armor[item.InventoryCell] = new GenericItemBase { InventoryCell = item.InventoryCell, ItemID = item.ItemId, General3 = item.Durability };
+            armor[item.InventoryCell] = new GenericItemBase { InventoryCell = item.InventoryCell, ItemID = item.ItemId, General3 = item.WireDurability };
         return armor;
     }
 
