@@ -229,10 +229,14 @@ static class Program
             _noticeFileTimer = new Timer(_ =>
             {
                 if (OnlineStatus.TakeNotice(noticeFile) is not { } text) return;
-                var notice = new Lunarite.Packets.Outgoing.Message
-                    { Kind = Lunarite.Packets.Outgoing.ServerMessageKind.Notice, Text = text, LifeSeconds = 10 };
-                foreach (var target in onlinePlayers.OnlineClients) target.SendPacket(notice);
-                Console.WriteLine($"[Notice] {text}");
+                var (english, korean) = OnlineStatus.SplitNotice(text);
+                foreach (var target in onlinePlayers.OnlineClients)
+                    target.SendPacket(new Lunarite.Packets.Outgoing.Message
+                    {
+                        Kind = Lunarite.Packets.Outgoing.ServerMessageKind.Notice,
+                        Text = PlayerLanguage.Pick(target, english, korean), LifeSeconds = 10
+                    });
+                Console.WriteLine($"[Notice] {english}");
             }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
         }
 

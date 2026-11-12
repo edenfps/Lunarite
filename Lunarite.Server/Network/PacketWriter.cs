@@ -45,13 +45,28 @@ public class PacketWriter : IDisposable
             return;
         }
 
-        var bytes = Encoding.Latin1.GetBytes(value); // byte for byte, see PacketReader.TryRead(out string)
+        // Byte for byte (see PacketReader.TryRead(out string)): text from the client stays in its code page.
+        // Text the server writes in Hangul (Korean messages, PlayerLanguage) holds chars above 0xFF, which
+        // Latin-1 would turn into '?': that goes out as CP949, what a Korean client reads.
+        var bytes = HasWideChars(value) ? Cp949.Value.GetBytes(value) : Encoding.Latin1.GetBytes(value);
 
         _writer.Write(bytes);
         _writer.Write('\0');
     }
 
     public void Write(byte[] value) => _writer.Write(value);
+
+    private static bool HasWideChars(string value)
+    {
+        foreach (char c in value) if (c > 0xFF) return true;
+        return false;
+    }
+
+    private static readonly Lazy<Encoding> Cp949 = new(() =>
+    {
+        Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+        return Encoding.GetEncoding(949);
+    });
 
     public void Write(Span<byte> value) => _writer.Write(value);
 

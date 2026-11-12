@@ -66,9 +66,18 @@ public static class OnlineStatus
     }
 
     // notice.txt next to the status file is a server-wide notice from outside the game (restart
-    // announcements): taken once, then gone.
+    // announcements): taken once, then gone. A line starting "ko:" is the Korean text for Korean players
+    // (PlayerLanguage); the other lines are the English text.
     public static string NoticePath(string statusFile) =>
         Path.Combine(Path.GetDirectoryName(statusFile) ?? "", "notice.txt");
+
+    public static (string English, string Korean) SplitNotice(string text)
+    {
+        var lines = text.Replace("\r", "").Split('\n');
+        string english = string.Join(" ", lines.Where(l => !l.StartsWith("ko:", StringComparison.Ordinal)).Select(l => l.Trim()).Where(l => l.Length > 0));
+        string korean = string.Join(" ", lines.Where(l => l.StartsWith("ko:", StringComparison.Ordinal)).Select(l => l[3..].Trim()).Where(l => l.Length > 0));
+        return (english, korean.Length > 0 ? korean : english);
+    }
 
     public static string? TakeNotice(string path)
     {

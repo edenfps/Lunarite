@@ -65,6 +65,16 @@ internal sealed partial class TestSuite
                 && _characterStore.TrySetCustom(_accountB, _ownedB.Name, 16, face) == null
                 && _characterStore.TrySetCustom(_accountB, _ownedA.Name, _ownedA.Index, face) == null,
             "customize changes only this account's own character of the same species");
+        var (noticeEn, noticeKo) = OnlineStatus.SplitNotice("Restarting in 1 minute.\nko:1분 후 재시작합니다.\n");
+        var (onlyEn, onlyEnKo) = OnlineStatus.SplitNotice("Restart postponed.");
+        var hangul = new PacketWriter(); hangul.Write("재시작");
+        var latin = new PacketWriter(); latin.Write("\u00C7\u00D1");
+        System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+        Check(noticeEn == "Restarting in 1 minute." && noticeKo == "1분 후 재시작합니다."
+                && onlyEn == "Restart postponed." && onlyEnKo == "Restart postponed."
+                && hangul.Buffer.SequenceEqual(System.Text.Encoding.GetEncoding(949).GetBytes("재시작").Append((byte)0))
+                && latin.Buffer.SequenceEqual(new byte[] { 0xC7, 0xD1, 0 }),
+            "restart notices carry a Korean line, and server Hangul goes out as CP949 while client bytes stay byte for byte");
     }
 
     private void CharacterRosterLimit()
