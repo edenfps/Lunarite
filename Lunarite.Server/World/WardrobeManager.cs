@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lunarite.World;
 
-// Wardrobe (transmog), docs/WARDROBE.md. Rules, the "/wardrobe" chat protocol of the LunariteMenus Wardrobe menu,
+// Wardrobe (transmog). Rules, the "/wardrobe" chat protocol of the LunariteMenus Wardrobe menu,
 // and the item IDs other players' clients get for a character's armor.
 //
 // Protocol (stock chat drops received lines that start with "/", so none of this shows in the chat box):
@@ -22,7 +22,7 @@ namespace Lunarite.World;
 //   server: /wardrobe begin | /wardrobe looks <h> <u> <l> <g> <b> | /wardrobe items <part> <id>,<id>,...
 //           | /wardrobe end | /wardrobe ok <part> <look> | /wardrobe error <text>
 // A look is 0 (own armor), -1 (hidden helmet) or an item ID. Parts are ARMOR cells 0-4.
-// Cross-race looks (docs/WARDROBE.md, "Cross-race looks"): an item ID with OtherRace set shows the item's mesh for the
+// Cross-race looks: an item ID with OtherRace set shows the item's mesh for the
 // other race of the wearer's gender (an Alternative woman in the Sapiens version, a Sapiens woman in the Alternative one,
 // Union and Atreides men likewise). Only the wearer's own LunariteMenus client draws it; other players' clients get
 // the plain item ID and show the wearer's own race version.
@@ -35,7 +35,7 @@ public sealed class WardrobeManager
     // own-race version. The client support stays in LunariteMenus.
     public static bool CrossRaceLooks = false;
 
-    // Head items whose other-race mesh clips too much on this wearer (docs/wardrobe/head-audit.md: needs over 6 % size or
+    // Head items whose other-race mesh clips too much on this wearer (head-item audit: needs over 6 % size or
     // never fits). Key: wearer species TypeIndex; value: item IDs (from the MeshLinks resource names) not offered cross-race.
     private static readonly Dictionary<byte, HashSet<int>> SameRaceOnly = new()
     {

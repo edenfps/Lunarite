@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Lunarite.Storage;
 
-// Wardrobe (transmog, docs/WARDROBE.md): armor looks collected per account and gender, and the look each
+// Wardrobe (transmog): armor looks collected per account and gender, and the look each
 // character shows per armor slot. Stats always come from the armor really equipped.
 public sealed class WardrobeStore
 {

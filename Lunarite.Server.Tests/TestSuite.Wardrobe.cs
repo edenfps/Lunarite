@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal sealed partial class TestSuite
 {
-    // docs/WARDROBE.md: collection per account and gender, cross-race looks, looks shown to other players.
+    // collection per account and gender, cross-race looks, looks shown to other players.
     private void WardrobeLooks()
     {
         var wardrobe = _services.GetRequiredService<WardrobeManager>();

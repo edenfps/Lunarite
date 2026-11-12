@@ -234,7 +234,7 @@ public sealed class BattleInstanceManager
             serverId, instance.LevelName, instance.Port);
     }
 
-    // Battlefield bots (tools/bots, LunariteBots.u in the payload): HUXLEY_BATTLEFIELD_BOTS=1 adds the bot mutator to
+    // Battlefield bots (LunariteBots.u in the payload): HUXLEY_BATTLEFIELD_BOTS=1 adds the bot mutator to
     // the instance URL, BotsPerTeam bots a side (HUXLEY_BATTLEFIELD_BOTS_PER_TEAM, default 8, at most half the
     // field). Real players replace bots one for one. The instance itself runs them, so no player's PC carries the load.
     internal const int DefaultBattlefieldBotsPerTeam = 8;

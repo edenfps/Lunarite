@@ -201,7 +201,7 @@ static class Program
         // logout so a crash loses a minute at most, and city travel's relinks do not matter.
         var playTimeStore = serviceProvider.GetRequiredService<PlayerStore>();
         var playTimePlayers = serviceProvider.GetRequiredService<PlayerManager>();
-        // Same minute: armor now held joins the account's wardrobe (docs/WARDROBE.md).
+        // Same minute: armor now held joins the account's wardrobe.
         var wardrobe = serviceProvider.GetRequiredService<WardrobeManager>();
         wardrobe.BackfillOnce(Environment.GetEnvironmentVariable("HUXLEY_WARDROBE_HISTORY") is { Length: > 0 } history
             ? history : Path.Combine(AppContext.BaseDirectory, "wardrobe-history.json"));

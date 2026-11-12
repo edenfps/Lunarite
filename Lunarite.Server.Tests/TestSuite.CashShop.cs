@@ -67,7 +67,7 @@ internal sealed partial class TestSuite
             string indexResponse = await http.GetStringAsync($"http://127.0.0.1:{cashHttp.Port}/ss/");
             Check(categoryResponse == CashShopCatalog.CategoryFile() && indexResponse.Contains("Huxley Private Shop"),
                 "cash-shop HTTP endpoint serves native catalog paths and the local storefront page");
-            // The Wayback mirror is a local download (tools/website), not part of the repository.
+            // The Wayback mirror is a local download, not part of the repository.
             if (ArchivedWebsite.Root != null)
             {
                 using var noRedirect = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });

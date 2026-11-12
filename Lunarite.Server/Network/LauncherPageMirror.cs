@@ -8,7 +8,7 @@ namespace Lunarite.Network;
 
 // Plain-HTTP copy of the website's launcher news page, for Windows XP and Vista. Their Internet Explorer can't open
 // the site (its host needs TLS 1.2) and the launcher panel shows "Navigation to the webpage was canceled", so the
-// launcher sends those systems to the patch server's /launcher.html instead (tools/launcher, WebUrlFor). The page and
+// launcher sends those systems to the patch server's /launcher.html instead (the Lunarite launcher). The page and
 // its img/ files are fetched from HUXLEY_LAUNCHER_PAGE (default the live site) and kept for ten minutes; links to
 // other site pages become absolute so they still open the site in the player's browser.
 public sealed partial class LauncherPageMirror

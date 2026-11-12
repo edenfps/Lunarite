@@ -293,7 +293,7 @@ public sealed partial class SimulationManager
         return proportion <= 0 || sapiens * proportion >= alternatives && alternatives * proportion >= sapiens;
     }
 
-    // Bots run on the listen host (tools/bots), switched on by HUXLEY_SKIRMISH_BOTS=1 for clients that have
+    // Bots run on the listen host, switched on by HUXLEY_SKIRMISH_BOTS=1 for clients that have
     // LunariteBots.u. A room with "nobots" in its name plays without them.
     internal static bool SkirmishBotsEnabled =>
         Environment.GetEnvironmentVariable("HUXLEY_SKIRMISH_BOTS") == "1";
