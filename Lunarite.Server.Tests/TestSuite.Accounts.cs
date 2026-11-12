@@ -172,12 +172,13 @@ internal sealed partial class TestSuite
             && _accountStore.Authenticate(rememberLogin, "Token000005x", out _) == AccountStore.LoginResult.WrongPassword;
         string? previousGms = Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS");
         Environment.SetEnvironmentVariable("HUXLEY_GM_LOGINS", rememberLogin);
-        bool gmRefused = !_accountStore.Remember(rememberUser, token);
+        bool gmRemembered = _accountStore.Remember(rememberUser, "GmToken0001x")
+            && _accountStore.Authenticate(rememberLogin, "GmToken0001x", out _) == AccountStore.LoginResult.Ok;
         Environment.SetEnvironmentVariable("HUXLEY_GM_LOGINS", previousGms);
         Check(unknownToken && stored && tokenLogin && passwordStillWorks && bannedToken && forgotten && oldestDropped
-            && resetClears && gmRefused,
+            && resetClears && gmRemembered,
             "remembered logins: hashed token stands in for the password, ban still applies, forget and a password "
-            + "reset revoke it, at most five per account, never for a GM login");
+            + "reset revoke it, at most five per account, GM logins too");
         Check(Lunarite.Handlers.ChatHandler.IsPlayedCommand(" /Played ") && Lunarite.Handlers.ChatHandler.IsPlayedCommand("!played")
             && !Lunarite.Handlers.ChatHandler.IsPlayedCommand("/played now")
             && Lunarite.Handlers.ChatHandler.FormatPlayed(0) == "0 h 0 min"

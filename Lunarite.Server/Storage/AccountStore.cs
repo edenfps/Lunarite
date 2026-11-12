@@ -75,16 +75,15 @@ public sealed class AccountStore
         account.RememberedLogins.RemoveAll(x =>
             DateTimeOffset.FromUnixTimeSeconds(x.CreatedUnixSeconds) + RememberedLoginLifetime <= now);
 
-    // GM logins never get one: a copied token would be a GM session.
+    // GM logins may be remembered too (user, 2026-11-11): the client saves the token either way, and a refused one
+    // made every GM start fail with "incorrect password". A copied token is a GM session, as a copied password is.
     public bool Remember(int userId, string token)
     {
         if (!IsRememberToken(token)) return false;
         lock (_lock)
         {
             var account = _accounts.FirstOrDefault(x => x.UserId == userId);
-            if (account == null
-                || World.GmCommands.IsGmLogin(account.Login, Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS")))
-                return false;
+            if (account == null) return false;
             var now = DateTimeOffset.UtcNow;
             PurgeRememberedLocked(account, now);
             string hash = TokenHash(token);
@@ -241,8 +240,7 @@ public sealed class AccountStore
             accountUserId = account.UserId;
             banned = account.Banned;
             // A remembered login: the password box holds the token. Anything else falls through to the password.
-            if (account.RememberedLogins.Count > 0 && IsRememberToken(password)
-                && !World.GmCommands.IsGmLogin(account.Login, Environment.GetEnvironmentVariable("HUXLEY_GM_LOGINS")))
+            if (account.RememberedLogins.Count > 0 && IsRememberToken(password))
             {
                 PurgeRememberedLocked(account, DateTimeOffset.UtcNow);
                 byte[] tokenHash = Convert.FromBase64String(TokenHash(password));

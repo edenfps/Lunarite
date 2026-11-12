@@ -58,7 +58,7 @@ public static class LoginHandler
         // it off sends #FORGET with the token. Neither is answered; "#" is never in a login name.
         if (packet.Id == RememberLogin)
         {
-            if (client.Session.AccountId is int rememberUser && !client.Session.IsGm
+            if (client.Session.AccountId is int rememberUser
                 && _accountStore.Remember(rememberUser, packet.Pwd ?? ""))
                 _logger.LogInformation("[Accounts] user {0} remembered a login.", rememberUser);
             return true;
