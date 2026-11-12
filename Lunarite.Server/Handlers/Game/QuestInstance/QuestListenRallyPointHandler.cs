@@ -57,17 +57,20 @@ public static class QuestListenRallyPointHandler
             packet.Complete, packet.SquadBP, packet.BP, packet.QT, packet.KilledMonsters,
             packet.SpawnedMonsters, packet.PlayTime);
         bool bpValid = ownerPid > 0 && _playerStore.CanApplyMissionBp(ownerPid, packet.BP);
+        int instanceToken = _questRoomMembers.InstanceOf(client.Id);
+        // A helper's run is settled like a field mission's: its kill BP, no quest progress.
+        bool helper = ownerPid > 0 && packet.QuestIndex == _questRoomMembers.QuestOf(client.Id)
+            && _questInstanceManager.IsQuestHelper(ownerPid, packet.QuestIndex, instanceToken);
         bool directField = ownerPid > 0
             && packet.QuestIndex == _questRoomMembers.QuestOf(client.Id)
-            && string.Equals(_questCatalog.Get(packet.QuestIndex)?.QuestType, "QuestType_Free", StringComparison.Ordinal)
+            && (helper || string.Equals(_questCatalog.Get(packet.QuestIndex)?.QuestType, "QuestType_Free", StringComparison.Ordinal))
             && !_questStore.Acquired(ownerPid).Contains(packet.QuestIndex);
         bool canApply = directField ? telemetryValid && bpValid : ownerPid > 0 && bpValid;
-        int instanceToken = _questRoomMembers.InstanceOf(client.Id);
         // A guest's report arrives on the host's link: the host may not take more of the guest's
         // BP than its death penalties allow (QuestInstanceManager.ClampRunReward).
         bool otherParticipant = ownerPid != selectedPid;
         var (valid, settledProgress, previousLevel, credited) = canApply
-            ? ApplyRally(ownerPid, instanceToken, packet, directField, telemetryValid, bpValid, otherParticipant)
+            ? ApplyRally(ownerPid, instanceToken, packet, directField, telemetryValid, bpValid, otherParticipant, helper)
             : (false, null, 0, (0, 0));
         if (valid) _questInstanceManager.CommitQuestEntryOnReward(instanceToken, ownerPid);
         if (settledProgress != null)
@@ -105,7 +108,7 @@ public static class QuestListenRallyPointHandler
     // recorded without a journal acquisition.
     private static (bool Valid, PlayerStore.PlayerProgress? Settled, int PreviousLevel, (int BP, int QT) Credited)
         ApplyRally(int ownerPid, int instanceToken, QuestListenRallyPointRequest packet, bool directField,
-            bool telemetryValid, bool bpValid, bool otherParticipant)
+            bool telemetryValid, bool bpValid, bool otherParticipant, bool helper = false)
     {
         long questRewardBp = _questRewards.Get(ownerPid, packet.QuestIndex).BP;
         var (storedBp, storedQt) = QuestStore.IsSettlementReport(packet.RallyPoint, packet.MaxRallyPoint, packet.Complete)
@@ -123,7 +126,7 @@ public static class QuestListenRallyPointHandler
             valid = directField
                 ? _questStore.UpdateDirectFieldRally(ownerPid, packet.QuestIndex, packet.RallyPoint,
                     packet.MaxRallyPoint, packet.Complete, packet.SquadBP, storedBp, storedQt,
-                    packet.KilledMonsters, packet.SpawnedMonsters, packet.PlayTime, instanceToken, runStarted)
+                    packet.KilledMonsters, packet.SpawnedMonsters, packet.PlayTime, instanceToken, runStarted, helper)
                 : _questStore.UpdateRally(ownerPid, packet.QuestIndex, packet.RallyPoint,
                     packet.MaxRallyPoint, packet.Complete, packet.SquadBP, storedBp, storedQt,
                     packet.KilledMonsters, packet.SpawnedMonsters, packet.PlayTime, instanceToken, runStarted);

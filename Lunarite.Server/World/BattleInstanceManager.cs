@@ -234,6 +234,19 @@ public sealed class BattleInstanceManager
             serverId, instance.LevelName, instance.Port);
     }
 
+    // Battlefield bots (tools/bots, LunariteBots.u in the payload): HUXLEY_BATTLEFIELD_BOTS=1 adds the bot mutator to
+    // the instance URL, BotsPerTeam bots a side (HUXLEY_BATTLEFIELD_BOTS_PER_TEAM, default 8, at most half the
+    // field). Real players replace bots one for one. The instance itself runs them, so no player's PC carries the load.
+    internal const int DefaultBattlefieldBotsPerTeam = 8;
+
+    internal static string BattlefieldBotOptions(int maxPlayers, string? enabled, string? perTeam)
+    {
+        if (enabled != "1") return "";
+        int bots = int.TryParse(perTeam, out int configured) ? configured : DefaultBattlefieldBotsPerTeam;
+        bots = Math.Clamp(bots, 0, Math.Max(0, maxPlayers / 2));
+        return bots == 0 ? "" : $"?Mutator=LunariteBots.LunariteBotMutator?BotsPerTeam={bots}";
+    }
+
     // Runs outside _lock: the boot takes 10-120 s and must not hold up other players' entries.
     private bool TryStart(BattleZoneCatalog.Zone zone, ushort port, out Instance instance)
     {
@@ -262,7 +275,9 @@ public sealed class BattleInstanceManager
         // UHuxleyServerCommandlet::Main constructs CServerTcpLink; the generic Server
         // commandlet does not.
         start.ArgumentList.Add("HuxleyServer");
-        start.ArgumentList.Add(zone.LevelName);
+        start.ArgumentList.Add(zone.LevelName + BattlefieldBotOptions(zone.MaxPlayers,
+            Environment.GetEnvironmentVariable("HUXLEY_BATTLEFIELD_BOTS"),
+            Environment.GetEnvironmentVariable("HUXLEY_BATTLEFIELD_BOTS_PER_TEAM")));
         start.ArgumentList.Add($"-port={port}");
         // HuxleyEngine only constructs CServerTcpLink when SERVERS is present; the link reads
         // these command-line keys and connects the instance to the backend result service.

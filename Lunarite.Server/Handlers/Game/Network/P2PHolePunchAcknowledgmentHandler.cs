@@ -29,6 +29,7 @@ public static class P2PHolePunchAcknowledgmentHandler
             return true;
         }
         client.Session.HolePunchAcknowledged = true;
+        client.Session.LastHolePunchAckUtc = DateTime.UtcNow;
         _logger.LogInformation("[P2P] client {0} confirmed UDP hole-punch test ACK.", client.Id);
         return true;
     }

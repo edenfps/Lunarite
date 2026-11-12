@@ -69,6 +69,11 @@ internal sealed partial class TestSuite
         int soloNextDay = _playerStore.TakeSoloBotAllowance(SoloPid, 700, 1000, 20261111);
         Check(soloFirst == 700 && soloSecond == 300 && soloNextDay == 700,
             "Skirmish: bot-only BP stops at the daily limit and starts again the next UTC day");
+        Check(BattleInstanceManager.BattlefieldBotOptions(48, "1", null) == "?Mutator=LunariteBots.LunariteBotMutator?BotsPerTeam=8"
+            && BattleInstanceManager.BattlefieldBotOptions(48, "1", "30") == "?Mutator=LunariteBots.LunariteBotMutator?BotsPerTeam=24"
+            && BattleInstanceManager.BattlefieldBotOptions(48, null, "8") == ""
+            && BattleInstanceManager.BattlefieldBotOptions(48, "1", "0") == "",
+            "Battlefield bots: off by default, eight a side when on, never more than half the field");
         const int PlayedPid = 77_001;
         long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
         _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);

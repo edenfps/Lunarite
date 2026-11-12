@@ -209,6 +209,13 @@ internal sealed partial class TestSuite
             && !QuestManager.AreQuestPartyMembersEligible([7, 9], pid => pid == 7)
             && !QuestManager.AreQuestPartyMembersEligible([], _ => true),
             "cooperative quest creation revalidates the accepted party independently of listen-host ownership");
+        // Helpers (2026-11-10): only the leader needs the quest; a member without it is paid kill BP like a field run.
+        Check(QuestManager.AreQuestPartyMembersEligible([7, 9], pid => pid != 7 || pid == 7)
+            && !QuestManager.AreQuestPartyMembersEligible([7, 9], pid => pid != 7),
+            "quest helpers: members need not hold the quest, the leader still must");
+        Check(!_questStore.UpdateDirectFieldRally(77_003, 871300, 0, 0, 0, 0, 120, 30, 5, 5, 60)
+            && _questStore.UpdateDirectFieldRally(77_003, 871300, 0, 0, 0, 0, 120, 30, 5, 5, 60, helper: true),
+            "quest helpers: a journal quest's run is recorded for a helper only");
         Check(QuestInstanceManager.IsQuestDifficultyValid(0) && QuestInstanceManager.IsQuestDifficultyValid(1)
             && QuestInstanceManager.IsQuestDifficultyValid(2) && !QuestInstanceManager.IsQuestDifficultyValid(3)
             && !QuestInstanceManager.IsQuestDifficultyValid(byte.MaxValue),

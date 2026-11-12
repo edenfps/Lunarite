@@ -539,9 +539,10 @@ public sealed class QuestStore
     // live instance before recording op54 telemetry.
     public bool UpdateDirectFieldRally(int pid, int questIndex, byte rallyPoint,
         byte maxRallyPoint, byte complete, int squadBp, int bp, int qt, int killedMonsters,
-        int spawnedMonsters, int playTime, int runInstance = 0, long runStarted = 0)
+        int spawnedMonsters, int playTime, int runInstance = 0, long runStarted = 0, bool helper = false)
     {
-        if (pid <= 0 || questIndex <= 0 || _questCatalog.Get(questIndex)?.QuestType != "QuestType_Free"
+        // A helper (QuestInstanceManager.IsQuestHelper) is paid its kill BP like a field run, on any quest.
+        if (pid <= 0 || questIndex <= 0 || (!helper && _questCatalog.Get(questIndex)?.QuestType != "QuestType_Free")
             || complete > 3 || rallyPoint > maxRallyPoint || squadBp < 0 || qt < 0
             || killedMonsters < 0 || spawnedMonsters < 0 || playTime < 0) return false;
         lock (_lock)

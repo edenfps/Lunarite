@@ -112,7 +112,10 @@ public sealed partial class QuestInstanceManager
         if (!_playerManager.IsOnline(memberPid)) return QuestResultCode.NotfoundPlayer;
         if (memberPid != leaderPid && (Game.PlayerFor(memberPid).CityMap ?? 0) != (Game.PlayerFor(leaderPid).CityMap ?? 0))
             return QuestResultCode.FarFromOwner;
-        if (!_questManager.CanEnterQuest(memberPid, questIndex)) return _questManager.QuestUnavailableAnswer(memberPid, questIndex);
+        // A member who finished the quest, or never took it, comes along as a helper (decided 2026-11-10): kill BP and
+        // loot, no quest progress. Only the leader must be able to run it.
+        if (memberPid == leaderPid && !_questManager.CanEnterQuest(memberPid, questIndex))
+            return _questManager.QuestUnavailableAnswer(memberPid, questIndex);
         byte answer = ValidateQuestEquipment(_playerStore.GetInventory(memberPid, () => []));
         if (answer == 0 && quest != null && !_playerStore.HasQuestEntryItems(memberPid,
                 quest.EnterRequestItems.Select(x => (x.ItemIndex, x.ItemCount))))

@@ -222,7 +222,8 @@ public sealed partial class QuestInstanceManager
                 selectedPid, questRequestIndex, difficultyLevel);
             return QuestResultCode.Error;
         }
-        if (!QuestManager.AreQuestPartyMembersEligible(entryPids, pid => _questManager.CanEnterQuest(pid, questRequestIndex)))
+        if (!QuestManager.AreQuestPartyMembersEligible(entryPids,
+                pid => pid != selectedPid || _questManager.CanEnterQuest(pid, questRequestIndex)))
         {
             _logger.LogWarning("[Quest] party [{0}] attempted to create unavailable quest {1} through host PID {2}.",
                 string.Join(",", entryPids), questRequestIndex, selectedPid);

@@ -278,6 +278,9 @@ public sealed partial class SimulationManager
                     P2PManager.PackedIp(memberClient.IPAddress.MapToIPv4().ToString())), owner));
             memberClient.SendPacket(hostEndpoints);
         }
+        var lastAck = memberClient.Session.LastHolePunchAckUtc;
+        _logger.LogInformation("[Simulation] room {0} PID {1} last hole-punch ACK {2}.", transport.RoomId, memberPid,
+            lastAck == default ? "never" : $"{(int)(DateTime.UtcNow - lastAck).TotalSeconds} s ago");
         memberClient.Session.HolePunchAcknowledged = false;
         Probe();
         _ = _p2pManager.SendAfterHolePunch(memberClient, memberPid, ownerPid, join, "op156", Probe,

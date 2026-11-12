@@ -37,6 +37,9 @@ public sealed class ClientSession
         set => _holePunchAcknowledged = value;
     }
 
+    // When op118 last arrived (UTC); also set by punches made in a Skirmish lobby.
+    public System.DateTime LastHolePunchAckUtc;
+
     // Set when this link is about to drop for quest travel (op42/op52) or a city map change,
     // so the disconnect keeps the character's quest room and squad.
     public bool ExpectedQuestTravel;

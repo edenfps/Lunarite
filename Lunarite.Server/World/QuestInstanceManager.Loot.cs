@@ -32,7 +32,16 @@ public sealed partial class QuestInstanceManager
         // Scout/field missions can be entered without acquiring them. Entry conditions were
         // checked when the instance token was issued and are not re-evaluated per drop.
         return string.Equals(_questCatalog.Get(questIndex)?.QuestType,
-            "QuestType_Free", StringComparison.Ordinal);
+            "QuestType_Free", StringComparison.Ordinal) || IsQuestHelper(pid, questIndex, instanceToken);
+    }
+
+    // A squad member in this quest's room without the quest in its journal: it came along to help.
+    public bool IsQuestHelper(int pid, int questIndex, int instanceToken)
+    {
+        if (pid <= 0 || questIndex <= 0 || instanceToken <= 0 || _questStore.Acquired(pid).Contains(questIndex)) return false;
+        int clientId = Game.TryGetClient(pid, out var client) ? client.Id : _questRoomMembers.DetachedClientOf(pid);
+        return clientId != 0 && _questRoomMembers.QuestOf(clientId) == questIndex
+            && _questRoomMembers.InstanceOf(clientId) == instanceToken;
     }
 
     public static int ResolveQuestReportPid(int selectedPid, int wirePid, int activeQuest,

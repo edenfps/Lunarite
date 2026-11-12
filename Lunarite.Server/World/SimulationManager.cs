@@ -218,6 +218,47 @@ public sealed partial class SimulationManager
         _p2pManager = p2pManager;
         _battleZoneCatalog = battleZoneCatalog;
         _simulationMapOverrides = simulationMapOverrides;
+        if (Environment.GetEnvironmentVariable("HUXLEY_LOBBY_PUNCH") == "1")
+            _lobbyPunchTimer = new System.Threading.Timer(_ => PunchLobbies(), null, LobbyPunchInterval, LobbyPunchInterval);
+    }
+
+    // Skirmish guests mostly fell back to the VPS relay (44 of 53 joins, 2026-11-07..10): the punch at match start
+    // gets four 3-second rounds. While a room waits in the lobby, each guest and the owner punch toward each other
+    // every few seconds (op128 both ways, as the match-start probe does), so both routers already know the other side
+    // when the match starts. The join itself is unchanged and still falls back to the relay. HUXLEY_LOBBY_PUNCH=1.
+    internal static readonly TimeSpan LobbyPunchInterval = TimeSpan.FromSeconds(8);
+    private readonly System.Threading.Timer? _lobbyPunchTimer;
+
+    private void PunchLobbies()
+    {
+        try
+        {
+            lock (_simulationLock)
+            {
+                foreach (var room in _simulationRooms.Values)
+                {
+                    if (room.State != 0 || room.Members.Count < 2
+                        || !Game.TryGetClient(room.OwnerPid, out var owner) || owner.Session.NatEndpoint == null)
+                        continue;
+                    string? hostOverride = Environment.GetEnvironmentVariable("SIMULATION_HOST_IP");
+                    var hostEndpoints = P2PManager.BuildClientPeerEndpoints(owner, hostOverride,
+                        P2PManager.PackedIp(hostOverride ?? owner.IPAddress.MapToIPv4().ToString()));
+                    foreach (int memberPid in room.Members.Keys)
+                    {
+                        if (memberPid == room.OwnerPid || !Game.TryGetClient(memberPid, out var member)
+                            || member.Session.NatEndpoint == null)
+                            continue;
+                        owner.SendPacket(P2PManager.HostEndpointsFor(P2PManager.BuildClientPeerEndpoints(member, null,
+                            P2PManager.PackedIp(member.IPAddress.MapToIPv4().ToString())), owner));
+                        member.SendPacket(P2PManager.HostEndpointsFor(hostEndpoints, member));
+                    }
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("[Simulation] lobby punch failed: {0}", ex.Message);
+        }
     }
 
     internal bool IsInSimulationRoom(Client client)
