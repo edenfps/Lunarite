@@ -123,5 +123,8 @@ public static class EquipArmorHandler
                 ? inventory.FirstOrDefault(i => i.InventoryIndex == InventoryType.Main && i.InventoryCell == to) : null;
             if (returned != null) ItemManager.SendInventoryItem(client, returned);
         }
+        // The client takes the records but its open Equipment/Inventory windows keep the old picture until reopened;
+        // the LunariteMenus Wardrobe channel redraws them (hidden: stock chat drops lines starting with '/').
+        client.SendPacket(new Chat { Type = ChatType.NormalRecv, From = "", To = "", Message = "/wardrobe refresh" });
     }
 }
