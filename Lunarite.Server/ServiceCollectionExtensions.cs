@@ -45,6 +45,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<AuctionStore>();
         services.AddSingleton<BattleResultStore>();
         services.AddSingleton<BlockStore>();
+        services.AddSingleton<WardrobeStore>();
         services.AddSingleton<CharacterStore>();
         services.AddSingleton<ClanStore>();
         services.AddSingleton<CraftStore>();
@@ -75,6 +76,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<ClanManager>();
         services.AddSingleton<GmCommands>();
         services.AddSingleton<ItemManager>();
+        services.AddSingleton<WardrobeManager>();
         services.AddSingleton<P2PManager>();
         services.AddSingleton<QuestInstanceManager>();
         services.AddSingleton<QuestManager>();

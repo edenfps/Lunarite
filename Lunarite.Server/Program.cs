@@ -201,7 +201,16 @@ static class Program
         // logout so a crash loses a minute at most, and city travel's relinks do not matter.
         var playTimeStore = serviceProvider.GetRequiredService<PlayerStore>();
         var playTimePlayers = serviceProvider.GetRequiredService<PlayerManager>();
-        _playTimeTimer = new Timer(_ => playTimeStore.AddPlayedSeconds(playTimePlayers.OnlinePids.ToArray(), 60), null,
+        // Same minute: armor now held joins the account's wardrobe (docs/WARDROBE.md).
+        var wardrobe = serviceProvider.GetRequiredService<WardrobeManager>();
+        wardrobe.BackfillOnce(Environment.GetEnvironmentVariable("HUXLEY_WARDROBE_HISTORY") is { Length: > 0 } history
+            ? history : Path.Combine(AppContext.BaseDirectory, "wardrobe-history.json"));
+        _playTimeTimer = new Timer(_ =>
+        {
+            var online = playTimePlayers.OnlinePids.ToArray();
+            playTimeStore.AddPlayedSeconds(online, 60);
+            wardrobe.CollectOnline(online);
+        }, null,
             TimeSpan.FromSeconds(60), TimeSpan.FromSeconds(60));
 
         // HUXLEY_STATUS_FILE: players online per faction, rewritten every 15 s for outside status

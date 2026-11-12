@@ -44,14 +44,18 @@ public sealed class CharacterManager
 
     private readonly QuestRoomMembers _questRoomMembers;
 
+    private readonly WardrobeManager _wardrobeManager;
+
     public CharacterManager(ILogger<CharacterManager> logger, AccountStore accountStore,
         BattleResultStore battleResultStore, CharacterDataLifecycle characterDataLifecycle,
         CharacterStore characterStore, ClanStore clanStore, DurativeItemStore durativeItemStore,
         EconomyRates economyRates, LicenseStore licenseStore, PersonalBuffStore personalBuffStore,
         PlayerManager playerManager, PlayerStore playerStore, QuestStore questStore,
         TransmitStore transmitStore, CityManager cityManager, ClanManager clanManager,
-        ItemManager itemManager, QuestInstanceManager questInstanceManager, CityZoneCatalog cityZoneCatalog, QuestCatalog questCatalog, QuestManager questManager, ServerEvents serverEvents, MultiStoreTransaction multiStoreTransaction, QuestRoomMembers questRoomMembers)
+        ItemManager itemManager, QuestInstanceManager questInstanceManager, CityZoneCatalog cityZoneCatalog, QuestCatalog questCatalog, QuestManager questManager, ServerEvents serverEvents, MultiStoreTransaction multiStoreTransaction, QuestRoomMembers questRoomMembers,
+        WardrobeManager wardrobeManager)
     {
+        _wardrobeManager = wardrobeManager;
         _questRoomMembers = questRoomMembers;
         _logger = logger;
         _accountStore = accountStore;
@@ -435,7 +439,9 @@ public sealed class CharacterManager
             ClanName = clan?.Name ?? "",
             UserStatus = UserStatusFor(character),
             // Native OnAddPlayer reads this as an armor preview and puts every record in InventoryType.Armor.
-            EquippedItems = inventory.Where(x => x.InventoryIndex == InventoryType.Armor).ToList()
+            // Wardrobe looks replace the pieces other players see (a hidden helmet is left out).
+            EquippedItems = inventory.Where(x => x.InventoryIndex == InventoryType.Armor)
+                .Select(x => _wardrobeManager.ShownItem(pid, x)).OfType<PlayerStore.GenericItem>().ToList()
         };
     }
 
@@ -445,7 +451,9 @@ public sealed class CharacterManager
         _playerStore.GetInventory(pid, () => _itemManager.BuildInitialInventory(pid))
             .Where(item => item.InventoryIndex == InventoryType.Armor)
             .OrderBy(item => item.InventoryCell)
-            .Select(item => new UpdateArmorOther { Pid = pid, Part = item.InventoryCell, Item = item })
+            .Select(item => (item.InventoryCell, Shown: _wardrobeManager.ShownItem(pid, item)))
+            .Where(x => x.Shown != null)
+            .Select(x => new UpdateArmorOther { Pid = pid, Part = x.InventoryCell, Item = x.Shown })
             .ToArray();
 
     internal void SendOtherPlayerSnapshot(Client target, int pid)

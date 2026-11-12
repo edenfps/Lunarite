@@ -18,6 +18,7 @@ public sealed partial class ItemManager
 {
     private readonly ILogger _logger;
     private readonly CityManager _cityManager;
+    private readonly WardrobeManager _wardrobeManager;
 
     private readonly AccountStore _accountStore;
     private readonly BattleResultStore _battleResultStore;
@@ -63,8 +64,10 @@ public sealed partial class ItemManager
         BattleResultStore battleResultStore, CharacterStore characterStore, CraftStore craftStore,
         DurativeItemStore durativeItemStore, LicenseStore licenseStore, PayItemStore payItemStore,
         PersonalBuffStore personalBuffStore, PlayerManager playerManager, PlayerStore playerStore,
-        TransmitStore transmitStore, CityManager cityManager, CraftCatalog craftCatalog, ItemCatalog itemCatalog, LicenseCatalog licenseCatalog, MultiStoreTransaction multiStoreTransaction, QuestStore questStore, CashShopCatalog cashShopCatalog)
+        TransmitStore transmitStore, CityManager cityManager, CraftCatalog craftCatalog, ItemCatalog itemCatalog, LicenseCatalog licenseCatalog, MultiStoreTransaction multiStoreTransaction, QuestStore questStore, CashShopCatalog cashShopCatalog,
+        WardrobeManager wardrobeManager)
     {
+        _wardrobeManager = wardrobeManager;
         _cashShopCatalog = cashShopCatalog;
         _questStore = questStore;
         _logger = logger;

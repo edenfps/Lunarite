@@ -26,6 +26,7 @@ public static class EquipArmorHandler
     private static ILogger _logger = null!;
     private static EquipmentRules _equipmentRules = null!;
     private static PlayerStore _playerStore = null!;
+    private static WardrobeManager _wardrobeManager = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -38,6 +39,7 @@ public static class EquipArmorHandler
         _cityManager = serviceProvider.GetRequiredService<CityManager>();
         _itemManager = serviceProvider.GetRequiredService<ItemManager>();
         _itemCatalog = serviceProvider.GetRequiredService<ItemCatalog>();
+        _wardrobeManager = serviceProvider.GetRequiredService<WardrobeManager>();
         _multiStoreTransaction = serviceProvider.GetRequiredService<MultiStoreTransaction>();
     }
 
@@ -82,7 +84,7 @@ public static class EquipArmorHandler
                 });
             int itemId = _playerStore.GetInventory(pid, () => [])
                 .FirstOrDefault(x => x.InventoryIndex == InventoryType.Armor && x.InventoryCell == armorCell)?.ItemId ?? 0;
-            _cityManager.BroadcastPresence(client, new EquipArmorOther { Pid = pid, Part = armorCell, ItemId = itemId });
+            _cityManager.BroadcastPresence(client, new EquipArmorOther { Pid = pid, Part = armorCell, ItemId = _wardrobeManager.Shown(pid, armorCell, itemId) });
             var equippedArmor = _characterManager.BuildOtherPlayerArmorSnapshot(pid)
                 .FirstOrDefault(update => update.Part == armorCell);
             if (equippedArmor != null)

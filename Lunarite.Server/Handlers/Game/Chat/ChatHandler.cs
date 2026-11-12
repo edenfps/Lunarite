@@ -25,6 +25,7 @@ public static class ChatHandler
     private static ClanStore _clanStore = null!;
     private static PlayerManager _playerManager = null!;
     private static PlayerStore _playerStore = null!;
+    private static WardrobeManager _wardrobeManager = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -40,6 +41,7 @@ public static class ChatHandler
         _simulationManager = serviceProvider.GetRequiredService<SimulationManager>();
         _squadManager = serviceProvider.GetRequiredService<SquadManager>();
         _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
+        _wardrobeManager = serviceProvider.GetRequiredService<WardrobeManager>();
     }
 
     // "/played" (not retail): like /unstuck, the client sends unknown "/" commands as chat and hides them.
@@ -83,6 +85,8 @@ public static class ChatHandler
             return true;
         }
         if (CityManager.IsUnstuckCommand(message)) { _cityManager.Unstuck(client, senderPid); return true; }
+        // The LunariteMenus Wardrobe menu talks over chat; no echo, no flood limit (WardrobeManager).
+        if (WardrobeManager.IsCommand(message)) { _wardrobeManager.HandleCommand(client, senderPid, message); return true; }
         if (IsPlayedCommand(message)) { ChatManager.SendSystemChat(client, PlayedText(client, senderPid)); return true; }
         if (message.StartsWith('!') && _gmCommands.IsGm(client) && _gmCommands.RunGmCommand(client, from, message)) return true;
 

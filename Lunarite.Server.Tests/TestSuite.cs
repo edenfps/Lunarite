@@ -299,6 +299,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         AtomicMoneyCredit();
         HandoffConnectBudget();
         SettingsFileParsing();
+        WardrobeLooks();
     }
 
     public async ValueTask DisposeAsync()

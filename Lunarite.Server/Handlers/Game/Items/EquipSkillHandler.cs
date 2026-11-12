@@ -21,6 +21,7 @@ public static class EquipSkillHandler
     private static ItemManager _itemManager = null!;
     private static EquipmentRules _equipmentRules = null!;
     private static PlayerStore _playerStore = null!;
+    private static WardrobeManager _wardrobeManager = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
@@ -29,6 +30,7 @@ public static class EquipSkillHandler
         _cityManager = serviceProvider.GetRequiredService<CityManager>();
         _itemManager = serviceProvider.GetRequiredService<ItemManager>();
         _itemCatalog = serviceProvider.GetRequiredService<ItemCatalog>();
+        _wardrobeManager = serviceProvider.GetRequiredService<WardrobeManager>();
         _multiStoreTransaction = serviceProvider.GetRequiredService<MultiStoreTransaction>();
     }
 
@@ -64,7 +66,7 @@ public static class EquipSkillHandler
         {
             if (_playerStore.TryBindEquipped(pid, InventoryType.Skill, skillCell, out byte skillState))
                 client.SendPacket(new UpdatedItemState { Inventory = InventoryType.Skill, Cell = skillCell, State = skillState });
-            _cityManager.BroadcastPresence(client, new UpdateArmorOther { Pid = pid, Part = armorCell, Item = armor });
+            _cityManager.BroadcastPresence(client, _wardrobeManager.ArmorOther(pid, armorCell, armor));
             _cityManager.BroadcastPresence(client, new QuestUpdateItem { Pid = pid, Item = armor });
         }
         return true;

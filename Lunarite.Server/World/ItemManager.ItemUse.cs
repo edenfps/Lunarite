@@ -54,7 +54,7 @@ public sealed partial class ItemManager
         client.SendPacket(new RemoveItem { InventoryIndex = InventoryType.Main, Cell = mainCell });
         if (remaining != null) SendInventoryItem(client, remaining);
         if (upbody == null) return new(ItemResultCode.Ok, UseItemResultCode.Spray);
-        _cityManager.BroadcastPresence(client, new UpdateArmorOther { Pid = pid, Part = 1, Item = upbody });
+        _cityManager.BroadcastPresence(client, _wardrobeManager.ArmorOther(pid, 1, upbody));
         _cityManager.BroadcastPresence(client, new QuestUpdateItem { Pid = pid, Item = upbody });
         return new(ItemResultCode.Ok, UseItemResultCode.Spray, SerializeGenericItem(upbody));
     }

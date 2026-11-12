@@ -18,12 +18,14 @@ public static class RepairHandler
     private static CityManager _cityManager = null!;
     private static LicenseStore _licenseStore = null!;
     private static PlayerStore _playerStore = null!;
+    private static WardrobeManager _wardrobeManager = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
         _licenseStore = serviceProvider.GetRequiredService<LicenseStore>();
         _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
         _cityManager = serviceProvider.GetRequiredService<CityManager>();
+        _wardrobeManager = serviceProvider.GetRequiredService<WardrobeManager>();
     }
 
     public static bool HandlePacket(Client client, ref PacketReader reader)
@@ -57,8 +59,8 @@ public static class RepairHandler
             // ProcUpdateArmorOther (server op80) takes the full 32-byte item, so nearby pawns
             // refresh durability and sockets in place.
             foreach (var armor in repaired.Where(item => item.InventoryIndex == InventoryType.Armor))
-                _cityManager.BroadcastPresence(client, new UpdateArmorOther
-                    { Pid = pid, Part = armor.InventoryCell, Item = armor });
+                _cityManager.BroadcastPresence(client,
+                    _wardrobeManager.ArmorOther(pid, armor.InventoryCell, armor));
         }
         else client.SendPacket(new UpdateRepair { Inventory = 8 });
         return true;

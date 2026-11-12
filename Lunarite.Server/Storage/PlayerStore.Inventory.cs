@@ -167,6 +167,27 @@ public sealed partial class PlayerStore
         }
     }
 
+    // Item IDs held by a character in any inventory (bags, belt, equipped, bank), without creating one.
+    public List<int> ItemIdsOf(int pid)
+    {
+        lock (_lock) return _inventory.TryGetValue(pid, out var list) ? list.Select(x => x.ItemId).ToList() : [];
+    }
+
+    // Item ID equipped in an ARMOR cell, or 0.
+    public int ItemIdsOfArmorCell(int pid, byte cell)
+    {
+        lock (_lock)
+            return _inventory.TryGetValue(pid, out var list)
+                ? list.FirstOrDefault(x => x.InventoryIndex == InventoryType.Armor && x.InventoryCell == cell)?.ItemId ?? 0
+                : 0;
+    }
+
+    // Every character that has an inventory.
+    public List<int> InventoryPids()
+    {
+        lock (_lock) return _inventory.Keys.ToList();
+    }
+
     public List<GenericItem> GetInventorySnapshot(int pid, Func<List<GenericItem>> buildInitial)
     {
         lock (_lock) return GetInventory(pid, buildInitial).Select(Clone).ToList();

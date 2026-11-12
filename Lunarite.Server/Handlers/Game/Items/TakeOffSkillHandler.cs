@@ -18,11 +18,13 @@ public static class TakeOffSkillHandler
     private static CityManager _cityManager = null!;
     private static ItemManager _itemManager = null!;
     private static PlayerStore _playerStore = null!;
+    private static WardrobeManager _wardrobeManager = null!;
 
     public static void ConfigureServices(IServiceProvider serviceProvider)
     {
         _playerStore = serviceProvider.GetRequiredService<PlayerStore>();
         _cityManager = serviceProvider.GetRequiredService<CityManager>();
+        _wardrobeManager = serviceProvider.GetRequiredService<WardrobeManager>();
         _itemManager = serviceProvider.GetRequiredService<ItemManager>();
         _multiStoreTransaction = serviceProvider.GetRequiredService<MultiStoreTransaction>();
     }
@@ -51,7 +53,7 @@ public static class TakeOffSkillHandler
         });
         if (moved && armor != null)
         {
-            _cityManager.BroadcastPresence(client, new UpdateArmorOther { Pid = pid, Part = armorCell, Item = armor });
+            _cityManager.BroadcastPresence(client, _wardrobeManager.ArmorOther(pid, armorCell, armor));
             _cityManager.BroadcastPresence(client, new QuestUpdateItem { Pid = pid, Item = armor });
         }
         return true;
