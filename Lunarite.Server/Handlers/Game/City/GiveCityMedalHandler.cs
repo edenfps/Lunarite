@@ -55,8 +55,13 @@ public static class GiveCityMedalHandler
             .Where(x => x.InventoryIndex == InventoryType.Main).ToDictionary(x => x.InventoryCell);
         foreach (byte cell in before.Keys.Where(cell => !after.ContainsKey(cell)))
             client.SendPacket(new RemoveItem { InventoryIndex = 0, Cell = cell });
+        // A medal stack that only got smaller takes UpdateItemNum: the client refuses op82 InsertItem on an occupied
+        // cell, so it kept showing the old count and the next larger turn-in asked for medals that were gone.
+        foreach (var item in after.Values.Where(item => before.TryGetValue(item.InventoryCell, out var old)
+                     && old.ItemId == item.ItemId && old.Count != item.Count))
+            client.SendPacket(new UpdateItemNum { Inventory = InventoryType.Main, Cell = item.InventoryCell, Count = item.Count });
         foreach (var item in after.Values.Where(item => !before.TryGetValue(item.InventoryCell, out var old)
-                     || old.ItemId != item.ItemId || old.Count != item.Count))
+                     || old.ItemId != item.ItemId))
             client.SendPacket(new InsertItem
             {
                 ItemID = item.ItemId, Count = item.Count, InventoryIndex = item.InventoryIndex, Cell = item.InventoryCell,
