@@ -38,6 +38,41 @@ public sealed class QuestLoot
     }
 
     private const double ProbScale = 1_000_000.0;
+
+    // Color sprays from bosses (user, 2026-11-11). Retail drops only Red (Coldblooded Romeo) and Blue (one level 30
+    // named enemy); the other 21 colors had no source at all. Each boss here also rolls BossSprayChance for one color of
+    // its level band, on top of its own drop groups (several bosses share group 80099, so the groups stay as they are).
+    // Softer colors at low levels, darker ones late (docs/DYE.md).
+    public const double BossSprayChance = 80_000; // 8 %, as retail's Red
+    private static readonly int[] SprayBand11 = [664003, 664004, 664006, 664007];   // Yellow, Green, White, Black
+    private static readonly int[] SprayBand15 = [664008, 664009, 664014];           // Pink, Dark Red, Light Yellow
+    private static readonly int[] SprayBand19 = [664005, 664010];                   // Fuchsia, E. Pink
+    private static readonly int[] SprayBand21 = [664011, 664012];                   // Emerald Green, Fluorescent Blue
+    private static readonly int[] SprayBand23 = [664013, 664015, 664016];           // Canary, Amber, Lime
+    private static readonly int[] SprayBand26 = [664017, 664018];                   // Khaki, Deep Pink
+    private static readonly int[] SprayBand28 = [664019, 664021, 664002];           // Blue Violet, Dark Blue, Blue
+    private static readonly int[] SprayBand30 = [664020, 664022, 664023];           // Golden Olive, Dark Purple, Dark Wine
+    public static readonly IReadOnlyDictionary<int, int[]> BossSprays = new Dictionary<int, int[]>
+    {
+        // L11 Spitfire Othello, Baneful Brabantio
+        [9021118] = SprayBand11, [9021119] = SprayBand11, [9021128] = SprayBand11, [9021129] = SprayBand11,
+        // L15-16 Jackal, Platoon Leader Balta, Platoon Commander Solan
+        [9191549] = SprayBand15, [9111690] = SprayBand15, [9111691] = SprayBand15,
+        // L19 Romeo (Coldblooded Romeo keeps its table Red)
+        [9011010] = SprayBand19,
+        // L21 Macbeth Guf, Knighted Romeo
+        [9032129] = SprayBand21, [9012121] = SprayBand21,
+        // L23-25 Nightmare King, Firestorm Romeo
+        [9052310] = SprayBand23, [9052311] = SprayBand23, [9062518] = SprayBand23, [9062519] = SprayBand23,
+        [9012510] = SprayBand23, [9012511] = SprayBand23,
+        // L26-27 Invincible / Bloodthirsty Panthino, Hermit Grantino
+        [9042610] = SprayBand26, [9042611] = SprayBand26, [9042720] = SprayBand26,
+        // L28-29 Shadowed Othello / Brabantio, Romeo Core
+        [9022819] = SprayBand28, [9022829] = SprayBand28, [9012910] = SprayBand28, [9012920] = SprayBand28,
+        // L30-32 Romeo the Angler / the Swindler, Desert Romeo, Macbeth Feng
+        [9013099] = SprayBand30, [9013098] = SprayBand30, [9013097] = SprayBand30, [9013010] = SprayBand30,
+        [9033259] = SprayBand30,
+    };
     // Groups used by HuxleySeqAct_SpawnItem in the US-client cooked .war packages (68 packages):
     // 19 literal GroupIndex properties, 16 reached through SeqVar_Int, SeqVar_Named (across
     // sublevels) or a prefab SeqVar_External. Includes Deep Blue treasure/Tarconium Red
@@ -312,6 +347,7 @@ public sealed class QuestLoot
     public bool EnemyCanDrop(int enemyId, int itemIndex, int difficulty)
     {
         EnsureLoaded();
+        if (BossSprays.TryGetValue(enemyId, out var sprays) && sprays.Contains(itemIndex)) return true;
         return _enemyGroups.TryGetValue(enemyId, out var groups)
             && groups.Any(groupIndex => _groups.TryGetValue(groupIndex, out var group)
                 && group.DropItems.Concat(group.SpecialDropItems)
@@ -339,6 +375,8 @@ public sealed class QuestLoot
         if (!_enemyGroups.TryGetValue(enemyId, out var groupIndices)) return null;
         var result = new List<(int, int)>();
         foreach (var groupIndex in groupIndices) result.AddRange(Roll(groupIndex, difficulty));
+        if (BossSprays.TryGetValue(enemyId, out var sprays) && ProbabilityHit(BossSprayChance))
+            result.Add((sprays[Random.Shared.Next(sprays.Length)], 1));
         return result;
     }
 

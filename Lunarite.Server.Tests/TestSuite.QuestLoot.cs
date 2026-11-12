@@ -65,6 +65,16 @@ internal sealed partial class TestSuite
     {
         Check(_questLoot.RollForEnemy(int.MaxValue, 0) is null,
             "unknown enemy identities cannot produce fabricated fallback loot");
+        // Boss sprays: every boss in the table can drop its band's colors at about 8 %, and nothing else gets them.
+        var sprayRolls = Enumerable.Range(0, 4000).SelectMany(_ => _questLoot.RollForEnemy(9021118, 0) ?? [])
+            .Where(drop => drop.item / 1000 == 664).ToList();
+        var allSprays = Enumerable.Range(664001, 23).ToHashSet();
+        var offered = QuestLoot.BossSprays.Values.SelectMany(x => x).ToHashSet();
+        Check(sprayRolls.Count is > 200 and < 450 && sprayRolls.All(d => d.num == 1 && QuestLoot.BossSprays[9021118].Contains(d.item))
+                && _questLoot.EnemyCanDrop(9021118, 664007, 0) && !_questLoot.EnemyCanDrop(9021118, 664023, 0)
+                && allSprays.Except(offered).OrderBy(x => x).SequenceEqual([664001])
+                && QuestLoot.BossSprays.Keys.All(id => _questLoot.EnemyLevel(id) > 0),
+            "bosses drop one spray of their level band at about 8 %; every spray color except retail's Red has a boss");
         QuestLootGrants.ClearInstance(923001);
         QuestLootGrants.Issue(923001, 923002, [(603056, 2), (603056, 1)]);
         Check(!QuestLootGrants.TryClaim(923001, 923003, [(603056, 1)], () => true)
