@@ -7,7 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 internal sealed partial class TestSuite
 {
-    // docs/WARDROBE.md: collection per account and species, style filter, looks shown to other players.
+    // docs/WARDROBE.md: collection per account and gender, cross-race looks, looks shown to other players.
     private void WardrobeLooks()
     {
         var wardrobe = _services.GetRequiredService<WardrobeManager>();
@@ -41,11 +41,25 @@ internal sealed partial class TestSuite
 
         Check(wardrobe.CollectFrom(holder.Pid) == 3, "wardrobe collects every armor piece held, not weapons");
         Check(wardrobe.CollectFrom(holder.Pid) == 0, "wardrobe collecting again adds nothing");
-        int[] bothHelmets = new[] { enforcerHelmet, avengerHelmet }.OrderBy(x => x).ToArray();
+        const int other = WardrobeManager.OtherRace;
+        int[] bothHelmets = new[] { enforcerHelmet, avengerHelmet }.OrderBy(x => x)
+            .SelectMany(x => new[] { x, x | other }).ToArray();
         Check(wardrobe.Available(sameSpecies.Pid, 0).SequenceEqual(bothHelmets),
-            "wardrobe: another character of the same gender on the account sees every piece, any combat style");
-        Check(wardrobe.Available(otherRaceMale.Pid, 0).SequenceEqual(bothHelmets),
+            "wardrobe: another character of the same gender on the account sees every piece, any combat style, in both races");
+        Check(wardrobe.Available(otherRaceMale.Pid, 0).Select(WardrobeManager.ItemOf).Distinct().SequenceEqual(
+                new[] { enforcerHelmet, avengerHelmet }.OrderBy(x => x)),
             "wardrobe: the other faction's male on the same account shares the male collection");
+
+        // Cross-race: the Union helmet SK_ONE_M_A_H_002_HM (item 221001) clips on an Atreides head (head-item audit).
+        if (_itemCatalog.Get(221001) is { } union && WardrobeManager.PartOf(union) == 0)
+        {
+            store.Collect(WardrobeStore.Key(owner, 1), [221001]);
+            Check(wardrobe.Available(sameSpecies.Pid, 0).Contains(221001 | other)
+                    && wardrobe.Available(otherRaceMale.Pid, 0).Contains(221001)
+                    && !wardrobe.Available(otherRaceMale.Pid, 0).Contains(221001 | other),
+                "wardrobe: a same-race-only head item is not offered cross-race to that wearer");
+        }
+
         Check(wardrobe.Available(otherSpecies.Pid, 0).Count == 0,
             "wardrobe: a female character on the same account does not see the male collection");
 
@@ -63,6 +77,9 @@ internal sealed partial class TestSuite
             && wardrobe.ArmorOther(sameSpecies.Pid, 0, new PlayerStore.GenericItem
                 { InventoryIndex = InventoryType.Armor, InventoryCell = 0, ItemId = enforcerHelmet2 }) is EquipArmorOther { ItemId: 0 },
             "hidden helmet: other players get an empty head");
+        store.SetLook(sameSpecies.Pid, 0, enforcerHelmet | other);
+        Check(wardrobe.Shown(sameSpecies.Pid, 0, enforcerHelmet2) == enforcerHelmet,
+            "cross-race look: other players get the plain item ID");
         store.SetLook(sameSpecies.Pid, 4, avengerHelmet);
         Check(wardrobe.Shown(sameSpecies.Pid, 4, enforcerBoots) == enforcerBoots,
             "a stored look of the wrong slot is ignored");

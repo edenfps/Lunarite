@@ -22,10 +22,38 @@ namespace Lunarite.World;
 //   server: /wardrobe begin | /wardrobe looks <h> <u> <l> <g> <b> | /wardrobe items <part> <id>,<id>,...
 //           | /wardrobe end | /wardrobe ok <part> <look> | /wardrobe error <text>
 // A look is 0 (own armor), -1 (hidden helmet) or an item ID. Parts are ARMOR cells 0-4.
+// Cross-race looks (docs/WARDROBE.md, "Cross-race looks"): an item ID with OtherRace set shows the item's mesh for the
+// other race of the wearer's gender (an Alternative woman in the Sapiens version, a Sapiens woman in the Alternative one,
+// Union and Atreides men likewise). Only the wearer's own LunariteMenus client draws it; other players' clients get
+// the plain item ID and show the wearer's own race version.
 public sealed class WardrobeManager
 {
     private const string Prefix = "/wardrobe";
     private const int IdsPerLine = 24;
+    public const int OtherRace = 1 << 30;
+
+    // Head items whose other-race mesh clips too much on this wearer (docs/wardrobe/head-audit.md: needs over 6 % size or
+    // never fits). Key: wearer species TypeIndex; value: item IDs (from the MeshLinks resource names) not offered cross-race.
+    private static readonly Dictionary<byte, HashSet<int>> SameRaceOnly = new()
+    {
+        // ATN-F wearer, SYN-F mesh: SK_SYN_F_C_L_002_GL
+        [16] = [225504, 225506, 225507, 225512, 225514, 225516, 225517, 225522, 225524, 225526, 225527],
+        // SYN-F wearer, ATN-F meshes: A_H_001, A_H_002, A_L_002, A_M_001, B_M_001 (_MK), C_M_002_HM, D_M_001_MK
+        [6] = [211501, 211502, 211503, 211504, 211505, 211506, 217001, 217502, 217503, 217504, 217505, 217506, 217511,
+            217512, 217513, 217514, 217515, 217516, 217521, 217522, 217523, 217524, 217525, 217526, 218501, 218502, 218503,
+            218504, 226503, 226513, 226523, 227504, 227506, 227507, 227512, 227514, 227516, 227517, 227522, 227524, 227526,
+            227527, 231501, 231502, 231503, 231504, 231505, 231506, 231508, 231509, 231510, 231511, 231512, 231513, 232501,
+            232502, 232503, 232504, 232505, 232506, 232508, 232509, 232510, 232511, 232512, 232513, 237513, 237514, 237521,
+            237522, 237523, 237524, 238501, 238502, 238503, 238504, 238505, 238506, 238507, 239501, 239502, 239503, 239504,
+            239505, 239506, 239507, 240501, 241501, 246001, 247001, 248001],
+        // ATR-M wearer, ONE-M meshes: A_H_002_HM, A_L_002_HM, C_L_002_GL, C_M_001_HM
+        [11] = [221001, 221002, 221003, 221004, 221005, 221006, 221008, 221009, 221010, 221011, 221012, 224001, 224503,
+            224505, 224511, 224513, 224515, 224521, 224523, 224525, 225504, 225506, 225507, 225512, 225514, 225516, 225517,
+            225522, 225524, 225526, 225527, 228001, 228002, 228003, 228004, 228005, 243001, 245001],
+    };
+
+    public static int ItemOf(int look) => look > 0 ? look & ~OtherRace : look;
+    public static bool IsOtherRace(int look) => look > 0 && (look & OtherRace) != 0;
 
     private readonly ILogger _logger;
     private readonly WardrobeStore _wardrobeStore;
@@ -118,22 +146,36 @@ public sealed class WardrobeManager
     }
 
     // Looks this character may pick for a slot: anything collected on the account by a character of the same gender, any
-    // combat style (user, 2026-11-11). The item shows in the wearer's own body variant, as every armor item has all four.
+    // combat style (user, 2026-11-11). Every armor item has all four body meshes.
+    // Each item comes twice: the wearer's own race version, then (OtherRace set) the other race's version, unless the
+    // head-item audit found that one clips on this wearer.
     public List<int> Available(int pid, int part)
     {
         string? key = KeyFor(pid);
         if (key == null) return [];
-        return _wardrobeStore.Collection(key)
-            .Where(id => _itemCatalog.Get(id) is { } data && PartOf(data) == part)
-            .ToList();
+        byte species = _characterStore.Get(pid)?.Index ?? 0;
+        var result = new List<int>();
+        foreach (int id in _wardrobeStore.Collection(key))
+        {
+            if (_itemCatalog.Get(id) is not { } data || PartOf(data) != part) continue;
+            result.Add(id);
+            if (CrossAllowed(species, id)) result.Add(id | OtherRace);
+        }
+        return result;
     }
+
+    private static bool CrossAllowed(byte species, int itemId) =>
+        !(SameRaceOnly.TryGetValue(species, out var blocked) && blocked.Contains(itemId));
 
     private bool IsValidLook(int pid, int part, int look)
     {
         if (look == WardrobeStore.OwnArmor) return true;
         if (look == WardrobeStore.HiddenHelmet) return part == 0;
-        return KeyFor(pid) is { } key && _wardrobeStore.Has(key, look)
-            && _itemCatalog.Get(look) is { } data && PartOf(data) == part;
+        if (look < 0) return false;
+        int item = ItemOf(look);
+        if (IsOtherRace(look) && !CrossAllowed(_characterStore.Get(pid)?.Index ?? 0, item)) return false;
+        return KeyFor(pid) is { } key && _wardrobeStore.Has(key, item)
+            && _itemCatalog.Get(item) is { } data && PartOf(data) == part;
     }
 
     // The item ID other players see in a slot whose equipped piece is realItemId (0 = nothing shown).
@@ -143,7 +185,7 @@ public sealed class WardrobeManager
         if (realItemId == 0 || part < 0 || part >= WardrobeStore.PartCount) return realItemId;
         int look = _wardrobeStore.Looks(pid)[part];
         if (look == WardrobeStore.OwnArmor || !IsValidLook(pid, part, look)) return realItemId;
-        return look == WardrobeStore.HiddenHelmet ? 0 : look;
+        return look == WardrobeStore.HiddenHelmet ? 0 : ItemOf(look);
     }
 
     // An equipped ARMOR item as other players should get it: the look's ID, or null when hidden.
