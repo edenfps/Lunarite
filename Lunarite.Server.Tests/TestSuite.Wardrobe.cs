@@ -30,6 +30,7 @@ internal sealed partial class TestSuite
         var holder = _characterStore.Create(owner, "WardrobeA", 1, new Custom());
         var sameSpecies = _characterStore.Create(owner, "WardrobeB", 1, new Custom());
         var otherSpecies = _characterStore.Create(owner, "WardrobeC", 6, new Custom());
+        var otherRaceMale = _characterStore.Create(owner, "WardrobeD", 11, new Custom());
         _characterStore.SetStyle(holder.Pid, 1);
         _characterStore.SetStyle(sameSpecies.Pid, 1);
         _characterStore.SetStyle(otherSpecies.Pid, 1);
@@ -40,10 +41,13 @@ internal sealed partial class TestSuite
 
         Check(wardrobe.CollectFrom(holder.Pid) == 3, "wardrobe collects every armor piece held, not weapons");
         Check(wardrobe.CollectFrom(holder.Pid) == 0, "wardrobe collecting again adds nothing");
-        Check(wardrobe.Available(sameSpecies.Pid, 0).SequenceEqual([enforcerHelmet]),
-            "wardrobe: another character of the same species and account sees the piece, filtered to its style");
+        int[] bothHelmets = new[] { enforcerHelmet, avengerHelmet }.OrderBy(x => x).ToArray();
+        Check(wardrobe.Available(sameSpecies.Pid, 0).SequenceEqual(bothHelmets),
+            "wardrobe: another character of the same gender on the account sees every piece, any combat style");
+        Check(wardrobe.Available(otherRaceMale.Pid, 0).SequenceEqual(bothHelmets),
+            "wardrobe: the other faction's male on the same account shares the male collection");
         Check(wardrobe.Available(otherSpecies.Pid, 0).Count == 0,
-            "wardrobe: a character of another species (race/gender) on the same account sees nothing");
+            "wardrobe: a female character on the same account does not see the male collection");
 
         // Looks only cover an equipped piece; other players see the look's ID, or nothing for a hidden helmet.
         Check(wardrobe.Shown(sameSpecies.Pid, 0, enforcerHelmet2) == enforcerHelmet2, "no look: real armor shown");
@@ -61,7 +65,7 @@ internal sealed partial class TestSuite
             "hidden helmet: other players get an empty head");
         store.SetLook(sameSpecies.Pid, 4, avengerHelmet);
         Check(wardrobe.Shown(sameSpecies.Pid, 4, enforcerBoots) == enforcerBoots,
-            "a stored look of the wrong part or style is ignored");
+            "a stored look of the wrong slot is ignored");
         store.SetLook(sameSpecies.Pid, 0, WardrobeStore.OwnArmor);
         store.SetLook(sameSpecies.Pid, 4, WardrobeStore.OwnArmor);
         Check(store.Looks(sameSpecies.Pid).All(x => x == 0), "reset restores own armor");

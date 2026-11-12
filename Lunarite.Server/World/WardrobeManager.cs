@@ -59,16 +59,6 @@ public sealed class WardrobeManager
         return character == null || character.Index == 0 ? null : WardrobeStore.Key(character.OwnerUserId, character.Index);
     }
 
-    private static string StyleName(byte style) => style switch
-    {
-        1 => "CombatStyle_Enforcer", 2 => "CombatStyle_Avenger", 3 => "CombatStyle_Phantom", _ => ""
-    };
-
-    // Same style rule as equipping armor (EquipmentRules.ValidateArmor), without level or rank.
-    private bool StyleAllows(int pid, ItemCatalog.Item data) =>
-        data.CombatStyle.Length == 0 || data.CombatStyle == "CombatStyle_None"
-        || data.CombatStyle == StyleName(_characterStore.Get(pid)?.Style ?? 0);
-
     // Collects every armor piece the character holds now. Returns how many looks were new.
     public int CollectFrom(int pid)
     {
@@ -127,13 +117,14 @@ public sealed class WardrobeManager
         _logger.LogInformation("[Wardrobe] backfill done: {0} inventories, {1} looks collected.", pids, added);
     }
 
-    // Looks this character may pick for a slot: collected on the account for its species, of its combat style.
+    // Looks this character may pick for a slot: anything collected on the account by a character of the same gender, any
+    // combat style (user, 2026-11-11). The item shows in the wearer's own body variant, as every armor item has all four.
     public List<int> Available(int pid, int part)
     {
         string? key = KeyFor(pid);
         if (key == null) return [];
         return _wardrobeStore.Collection(key)
-            .Where(id => _itemCatalog.Get(id) is { } data && PartOf(data) == part && StyleAllows(pid, data))
+            .Where(id => _itemCatalog.Get(id) is { } data && PartOf(data) == part)
             .ToList();
     }
 
@@ -142,7 +133,7 @@ public sealed class WardrobeManager
         if (look == WardrobeStore.OwnArmor) return true;
         if (look == WardrobeStore.HiddenHelmet) return part == 0;
         return KeyFor(pid) is { } key && _wardrobeStore.Has(key, look)
-            && _itemCatalog.Get(look) is { } data && PartOf(data) == part && StyleAllows(pid, data);
+            && _itemCatalog.Get(look) is { } data && PartOf(data) == part;
     }
 
     // The item ID other players see in a slot whose equipped piece is realItemId (0 = nothing shown).
