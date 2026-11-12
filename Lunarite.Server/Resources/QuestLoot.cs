@@ -100,10 +100,13 @@ public sealed class QuestLoot
     private readonly object _loadLock = new();
     private volatile bool _loaded;
 
-    public QuestLoot(ILogger<QuestLoot> logger, ItemCatalog itemCatalog)
+    private readonly CraftDrops _craftDrops;
+
+    public QuestLoot(ILogger<QuestLoot> logger, ItemCatalog itemCatalog, CraftDrops craftDrops)
     {
         _logger = logger;
         _itemCatalog = itemCatalog;
+        _craftDrops = craftDrops;
     }
 
     // Random.Shared: thread-safe and seeded per process, so restarts do not replay a loot sequence.
@@ -348,6 +351,7 @@ public sealed class QuestLoot
     {
         EnsureLoaded();
         if (BossSprays.TryGetValue(enemyId, out var sprays) && sprays.Contains(itemIndex)) return true;
+        if (_craftDrops.CanDrop(_enemyLevels.GetValueOrDefault(enemyId), itemIndex)) return true;
         return _enemyGroups.TryGetValue(enemyId, out var groups)
             && groups.Any(groupIndex => _groups.TryGetValue(groupIndex, out var group)
                 && group.DropItems.Concat(group.SpecialDropItems)
@@ -377,6 +381,7 @@ public sealed class QuestLoot
         foreach (var groupIndex in groupIndices) result.AddRange(Roll(groupIndex, difficulty));
         if (BossSprays.TryGetValue(enemyId, out var sprays) && ProbabilityHit(BossSprayChance))
             result.Add((sprays[Random.Shared.Next(sprays.Length)], 1));
+        result.AddRange(_craftDrops.Roll(_enemyLevels.GetValueOrDefault(enemyId), ProbabilityHit));
         return result;
     }
 

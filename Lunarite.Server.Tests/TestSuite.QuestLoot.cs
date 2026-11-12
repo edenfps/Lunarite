@@ -1,3 +1,4 @@
+using Microsoft.Extensions.DependencyInjection;
 using System.Buffers.Binary;
 
 using Lunarite.Network;
@@ -75,6 +76,27 @@ internal sealed partial class TestSuite
                 && allSprays.Except(offered).OrderBy(x => x).SequenceEqual([664001])
                 && QuestLoot.BossSprays.Keys.All(id => _questLoot.EnemyLevel(id) > 0),
             "bosses drop one spray of their level band at about 8 %; every spray color except retail's Red has a boss");
+        // Crafting: every material any recipe uses, and every schematic no vendor sells, drops from some level band.
+        var craftDrops = _services.GetRequiredService<CraftDrops>();
+        var craftCatalog = _services.GetRequiredService<CraftCatalog>();
+        var itemGroups = _services.GetRequiredService<ItemGroupCatalog>();
+        var bandTiers = new[] { 'B', 'A', 'S' }.Select(craftDrops.ForTier).ToList();
+        var droppedMaterials = bandTiers.SelectMany(t => t!.Materials.Select(m => m.Item)).ToHashSet();
+        var droppedSchematics = bandTiers.SelectMany(t => t!.Schematics).ToHashSet();
+        var usedMaterials = craftCatalog.All.Where(r => r.EntryIndex is not (611108 or 611109))
+            .SelectMany(r => r.Materials).Select(m => m.ItemId).Where(id => id / 1000 % 10 == 3 && id / 100000 == 6).ToHashSet();
+        var unsold = craftCatalog.All.Select(r => r.EntryIndex)
+            .Where(id => id is not (611108 or 611109 or 616300) && !itemGroups.IsVendorItem(id)).ToHashSet();
+        // 9191549 Jackal is level 15 (B band).
+        var craftRolls = Enumerable.Range(0, 5000).SelectMany(_ => _questLoot.RollForEnemy(9191549, 0) ?? [])
+            .Where(d => CraftDrops.TierOf(d.item) == 'B' && d.item / 1000 % 10 == 3).ToList();
+        Check(usedMaterials.Count >= 70 && usedMaterials.IsSubsetOf(droppedMaterials)
+                && unsold.Count > 100 && unsold.SetEquals(droppedSchematics)
+                && craftRolls.Count is > 750 and < 1250
+                && craftRolls.All(d => d.num == CraftDrops.QuantityOf(d.item))
+                && _questLoot.EnemyCanDrop(9191549, 613005, 0) && !_questLoot.EnemyCanDrop(9191549, 633005, 0)
+                && CraftDrops.TierForLevel(9) == '?' && CraftDrops.TierForLevel(25) == 'A' && CraftDrops.TierForLevel(31) == 'S',
+            "enemies of level 10+ drop their tier's crafting materials (~20 %) and unsold schematics (~1 %); every part and every unsold schematic has a source");
         QuestLootGrants.ClearInstance(923001);
         QuestLootGrants.Issue(923001, 923002, [(603056, 2), (603056, 1)]);
         Check(!QuestLootGrants.TryClaim(923001, 923003, [(603056, 1)], () => true)

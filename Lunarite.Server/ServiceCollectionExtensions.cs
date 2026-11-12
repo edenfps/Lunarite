@@ -25,6 +25,7 @@ public static class ServiceCollectionExtensions
         services.AddSingleton<CashShopCatalog>();
         services.AddSingleton<CityZoneCatalog>();
         services.AddSingleton<CraftCatalog>();
+        services.AddSingleton<CraftDrops>();
         services.AddSingleton<ItemCatalog>();
         services.AddSingleton<ItemGroupCatalog>();
         services.AddSingleton<LicenseCatalog>();
