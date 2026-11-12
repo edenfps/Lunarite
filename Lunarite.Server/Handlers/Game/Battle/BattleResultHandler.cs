@@ -55,7 +55,7 @@ public static class BattleResultHandler
         // Only the listen host of a Simulation match it just ended (op115) reports results, once
         // per member of that match; anything else would credit BP, QT and Skirmish items at will.
         if (!_simulationManager.TryClaimMatchResult(reporterPid, report.Pid, out int measuredSeconds,
-                out ushort skirmishGoal, out int timeLimitSeconds, out int joinedAtSeconds, out bool ranFullTime))
+                out ushort skirmishGoal, out int timeLimitSeconds, out int joinedAtSeconds, out bool ranFullTime, out bool solo))
         {
             _logger.LogWarning("[BattleResult] rejected result PID {0} from PID {1}: not the host of a just-finished match with that member, or already settled.",
                 report.Pid, reporterPid);
@@ -84,19 +84,27 @@ public static class BattleResultHandler
                 report.Pid, reporterPid, bp, report.QT, bpLimit, qtLimit, measuredSeconds);
         bp = Math.Min(bp, bpLimit);
         int qt = Math.Min(report.QT, qtLimit);
+        if (solo)
+        {
+            (bp, qt) = SimulationManager.SoloBotReward(bp, qt);
+            bp = _playerStore.TakeSoloBotAllowance(report.Pid, bp,
+                SimulationManager.SoloBotDailyBp(_playerStore.GetProgress(report.Pid).Level),
+                SimulationManager.UtcDay(DateTime.UtcNow));
+        }
         var progress = _playerStore.AddReward(report.Pid, 0, bp, 0, 0, qt, out int previousLevel);
         _characterManager.PublishLiveProgression(report.Pid, previousLevel, progress);
         if (QuestManager.QuestRewardLiveRecipient(report.Pid) is { } resultRecipient)
             _characterManager.SendTotalKillDeath(resultRecipient, report.Pid);
         _battleManager.ApplyBattleDurability(report);
-        if (skirmishGoal == 0 && ranFullTime)
+        if (skirmishGoal == 0 && ranFullTime && !solo)
             _simulationManager.GrantSkirmishRewards(report, progress.Level);
-        foreach (var update in _questStore.RecordBattleZoneMatch(report.Pid, true, report.GameType,
-                     report.Won, report.Kills))
-            _logger.LogInformation("[Quests] PID {0} battle result advanced quest {1} objective {2} to {3}.",
-                report.Pid, update.QuestIndex, update.ObjectiveIndex, update.Count);
-        _logger.LogInformation("[BattleResult] stored PID {0}, species {1}, result {2}; credited +{3} BP (total {4}, level {5}).",
-            report.Pid, report.Species, report.Result, bp, progress.BP, progress.Level);
+        if (!solo)
+            foreach (var update in _questStore.RecordBattleZoneMatch(report.Pid, true, report.GameType,
+                         report.Won, report.Kills))
+                _logger.LogInformation("[Quests] PID {0} battle result advanced quest {1} objective {2} to {3}.",
+                    report.Pid, update.QuestIndex, update.ObjectiveIndex, update.Count);
+        _logger.LogInformation("[BattleResult] stored PID {0}, species {1}, result {2}; credited +{3} BP (total {4}, level {5}){6}.",
+            report.Pid, report.Species, report.Result, bp, progress.BP, progress.Level, solo ? ", solo vs bots at half" : "");
         return true;
     }
 }

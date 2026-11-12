@@ -61,6 +61,14 @@ internal sealed partial class TestSuite
         Check(presenceJson.GetProperty("details").GetString()!.Length == 128 && presenceJson.GetProperty("timestamps").GetProperty("start").GetInt64() == 5
             && presenceJson.GetProperty("assets").GetProperty("large_image").GetString() == "huxley",
             "Discord status: activity fits Discord's limits and uses the uploaded logo");
+        Check(SimulationManager.SoloBotReward(1001, 40) == (500, 20),
+            "Skirmish: one human against bots earns half the match's BP and QT");
+        const int SoloPid = 77_002;
+        int soloFirst = _playerStore.TakeSoloBotAllowance(SoloPid, 700, 1000, 20261110);
+        int soloSecond = _playerStore.TakeSoloBotAllowance(SoloPid, 700, 1000, 20261110);
+        int soloNextDay = _playerStore.TakeSoloBotAllowance(SoloPid, 700, 1000, 20261111);
+        Check(soloFirst == 700 && soloSecond == 300 && soloNextDay == 700,
+            "Skirmish: bot-only BP stops at the daily limit and starts again the next UTC day");
         const int PlayedPid = 77_001;
         long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
         _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);

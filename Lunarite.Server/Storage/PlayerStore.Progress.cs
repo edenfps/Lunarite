@@ -50,6 +50,11 @@ public sealed partial class PlayerStore
         // Total time online on this character, in seconds, counted by the server while it is connected.
         public long PlayedSeconds { get; set; }
 
+        // BP from Skirmish matches against bots alone, on SoloBotDay (UTC yyyymmdd).
+        public int SoloBotDay { get; set; }
+
+        public long SoloBotBp { get; set; }
+
         public int AMedalsDonated { get; set; }
 
         public int BMedalsDonated { get; set; }
@@ -178,6 +183,25 @@ public sealed partial class PlayerStore
             EnsureLevelLp(progress);
             SaveProgress();
             return progress;
+        }
+    }
+
+    // How much of `wanted` BP a solo-vs-bots match may still pay today under `dailyLimit`, booked as paid.
+    public int TakeSoloBotAllowance(int pid, int wanted, long dailyLimit, int day)
+    {
+        if (wanted <= 0) return wanted;
+        lock (_lock)
+        {
+            var progress = ProgressFor(pid);
+            if (progress.SoloBotDay != day)
+            {
+                progress.SoloBotDay = day;
+                progress.SoloBotBp = 0;
+            }
+            int granted = (int)Math.Max(0, Math.Min(wanted, dailyLimit - progress.SoloBotBp));
+            progress.SoloBotBp += granted;
+            SaveProgress();
+            return granted;
         }
     }
 

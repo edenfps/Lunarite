@@ -111,6 +111,18 @@ public sealed partial class SimulationManager
     // Skirmish items or quest progress), so alt accounts cannot cycle near-zero matches.
     internal const int SimulationMinRewardSeconds = 60;
 
+    // One human with only bots (decided 2026-11-10): half of what the match would pay, so playing bots is worth
+    // it without beating real matches, and at most one level's worth of BP a day (SoloBotDailyBp), so nobody
+    // leaves the first camp at level 30 from bots. Battle Medals, Lunarite and quest progress need real opponents.
+    internal const int SoloBotRewardPercent = 50;
+
+    internal static (int BP, int QT) SoloBotReward(int bp, int qt) =>
+        (bp * SoloBotRewardPercent / 100, qt * SoloBotRewardPercent / 100);
+
+    internal static long SoloBotDailyBp(int level) => QuestInstanceManager.LevelSpanBp(level);
+
+    internal static int UtcDay(DateTime utc) => utc.Year * 10000 + utc.Month * 100 + utc.Day;
+
     // Above that minimum, BP follows retail: a score-goal match that legitimately ends early pays
     // members present from the start in full (BattleMaxBPLimit), so a host cycling minimal
     // matches can earn up to one full BP ceiling per minute; accepted to pay honest score-goal
@@ -363,9 +375,10 @@ public sealed partial class SimulationManager
     // that limit, as a time-limited (GoalScore 0) match must before EndGame pays its Battle
     // Medals and Lunarite.
     internal bool TryClaimMatchResult(int hostPid, int pid, out int seconds, out ushort goalScore,
-        out int timeLimitSeconds, out int joinedAtSeconds, out bool ranFullTime)
+        out int timeLimitSeconds, out int joinedAtSeconds, out bool ranFullTime, out bool solo)
     {
         seconds = 0;
+        solo = false;
         goalScore = ushort.MaxValue;
         timeLimitSeconds = 0;
         joinedAtSeconds = 0;
@@ -380,8 +393,9 @@ public sealed partial class SimulationManager
             }
             if (!match.Unsettled.Remove(pid)) return false;
             if (match.Unsettled.Count == 0) _finishedSimulationMatches.Remove(hostPid);
-            // A human alone against bots earns nothing: zero seconds takes the handler's no-reward path.
-            seconds = match.Solo ? 0 : match.Seconds;
+            // A human alone against bots earns SoloBotRewardPercent of the BP and QT, and no Skirmish items.
+            seconds = match.Seconds;
+            solo = match.Solo;
             goalScore = match.GoalScore;
             timeLimitSeconds = match.TimeLimitSeconds;
             joinedAtSeconds = match.JoinedAtSeconds.GetValueOrDefault(pid);
