@@ -113,7 +113,8 @@ public sealed partial class SimulationManager
 
     // One human with only bots (decided 2026-11-10): half of what the match would pay, so playing bots is worth
     // it without beating real matches, and at most one level's worth of BP a day (SoloBotDailyBp), so nobody
-    // leaves the first camp at level 30 from bots. Battle Medals, Lunarite and quest progress need real opponents.
+    // leaves the first camp at level 30 from bots. Battle Medals, Lunarite and quest progress are paid as usual:
+    // bots are there so players can earn them without a full room.
     internal const int SoloBotRewardPercent = 50;
 
     internal static (int BP, int QT) SoloBotReward(int bp, int qt) =>
@@ -393,13 +394,13 @@ public sealed partial class SimulationManager
             }
             if (!match.Unsettled.Remove(pid)) return false;
             if (match.Unsettled.Count == 0) _finishedSimulationMatches.Remove(hostPid);
-            // A human alone against bots earns SoloBotRewardPercent of the BP and QT, and no Skirmish items.
+            // A human alone against bots earns SoloBotRewardPercent of the BP and QT; items and quest progress as usual.
             seconds = match.Seconds;
             solo = match.Solo;
             goalScore = match.GoalScore;
             timeLimitSeconds = match.TimeLimitSeconds;
             joinedAtSeconds = match.JoinedAtSeconds.GetValueOrDefault(pid);
-            ranFullTime = !match.Solo && match.Seconds >= SimulationMinRewardSeconds
+            ranFullTime = match.Seconds >= SimulationMinRewardSeconds
                 && SimulationSlackedSeconds(match.Seconds) >= match.TimeLimitSeconds;
             return true;
         }

@@ -96,13 +96,12 @@ public static class BattleResultHandler
         if (QuestManager.QuestRewardLiveRecipient(report.Pid) is { } resultRecipient)
             _characterManager.SendTotalKillDeath(resultRecipient, report.Pid);
         _battleManager.ApplyBattleDurability(report);
-        if (skirmishGoal == 0 && ranFullTime && !solo)
+        if (skirmishGoal == 0 && ranFullTime)
             _simulationManager.GrantSkirmishRewards(report, progress.Level);
-        if (!solo)
-            foreach (var update in _questStore.RecordBattleZoneMatch(report.Pid, true, report.GameType,
-                         report.Won, report.Kills))
-                _logger.LogInformation("[Quests] PID {0} battle result advanced quest {1} objective {2} to {3}.",
-                    report.Pid, update.QuestIndex, update.ObjectiveIndex, update.Count);
+        foreach (var update in _questStore.RecordBattleZoneMatch(report.Pid, true, report.GameType,
+                     report.Won, report.Kills))
+            _logger.LogInformation("[Quests] PID {0} battle result advanced quest {1} objective {2} to {3}.",
+                report.Pid, update.QuestIndex, update.ObjectiveIndex, update.Count);
         _logger.LogInformation("[BattleResult] stored PID {0}, species {1}, result {2}; credited +{3} BP (total {4}, level {5}){6}.",
             report.Pid, report.Species, report.Result, bp, progress.BP, progress.Level, solo ? ", solo vs bots at half" : "");
         return true;
