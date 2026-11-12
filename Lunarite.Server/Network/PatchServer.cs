@@ -47,18 +47,19 @@ public sealed class PatchServer : IDisposable
     private readonly ILogger _logger;
     private readonly string _root;
     private readonly string? _base;
-    private readonly IReadOnlyList<string> _files;
+    // The file lists below are rebuilt by Reload (patch-reload trigger); file contents are re-checked per request anyway.
+    private IReadOnlyList<string> _files = [];
     // Request path (backslashes, any case) -> file as listed; manifest files come from _root.
-    private readonly Dictionary<string, string> _byPath = new(StringComparer.OrdinalIgnoreCase);
-    private readonly HashSet<string> _fromPayload = new(StringComparer.OrdinalIgnoreCase);
+    private Dictionary<string, string> _byPath = new(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> _fromPayload = new(StringComparer.OrdinalIgnoreCase);
     // Base files a Korean launcher gets instead of the payload's (patch/korean.txt).
-    private readonly HashSet<string> _korean = new(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> _korean = new(StringComparer.OrdinalIgnoreCase);
     // Manifest files with a GM variant in _gmRoot.
-    private readonly HashSet<string> _gm = new(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> _gm = new(StringComparer.OrdinalIgnoreCase);
     private readonly string? _gmRoot;
     // Korean files with a merged copy in _koreanRoot (Webzen's Korean text with
     // the keys it lacks filled from our English), served to Korean launchers instead of the base copy.
-    private readonly HashSet<string> _koreanOverride = new(StringComparer.OrdinalIgnoreCase);
+    private HashSet<string> _koreanOverride = new(StringComparer.OrdinalIgnoreCase);
     private readonly string? _koreanRoot;
     private readonly string _versionPath;
     private readonly ConcurrentDictionary<string, (long Length, DateTime Written, uint Crc)> _crcs = new();
@@ -96,25 +97,83 @@ public sealed class PatchServer : IDisposable
         _koreanRoot = koreanRoot;
         _base = baseRoot;
         _versionPath = versionPath;
+        BuildSets(files, korean);
+        LoadCrcCache();
+    }
+
+    // Manifest and korean.txt the sets were read from (StartFromEnvironment); Reload reads them again.
+    private string? _manifestPath, _koreanListPath;
+    private Timer? _reloadTimer;
+
+    // Every list the server answers from: manifest files, base files under them, Korean and GM variants.
+    private void BuildSets(IReadOnlyList<string> files, IReadOnlyList<string>? korean)
+    {
+        var byPath = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var fromPayload = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var koreanFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var gmFiles = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+        var koreanOverride = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
         var all = new List<string>(files);
-        foreach (string file in files) { _byPath[file] = file; _fromPayload.Add(file); }
-        if (baseRoot != null)
-            foreach (string file in BaseFiles(baseRoot))
+        foreach (string file in files) { byPath[file] = file; fromPayload.Add(file); }
+        if (_base != null)
+            foreach (string file in BaseFiles(_base))
             {
-                if (_byPath.TryAdd(file, file)) all.Add(file);
+                if (byPath.TryAdd(file, file)) all.Add(file);
                 if (korean != null && korean.Any(entry => entry.EndsWith('\\')
                         ? file.StartsWith(entry, StringComparison.OrdinalIgnoreCase)
                         : file.Equals(entry, StringComparison.OrdinalIgnoreCase)))
-                    _korean.Add(_byPath[file]);
+                    koreanFiles.Add(byPath[file]);
             }
-        _files = all;
-        if (gmRoot != null)
+        if (_gmRoot != null)
             foreach (string file in files)
-                if (File.Exists(ClientFolder.Resolve(gmRoot, file))) _gm.Add(file);
-        if (koreanRoot != null)
-            foreach (string file in _korean)
-                if (File.Exists(ClientFolder.Resolve(koreanRoot, file))) _koreanOverride.Add(file);
-        LoadCrcCache();
+                if (File.Exists(ClientFolder.Resolve(_gmRoot, file))) gmFiles.Add(file);
+        if (_koreanRoot != null)
+            foreach (string file in koreanFiles)
+                if (File.Exists(ClientFolder.Resolve(_koreanRoot, file))) koreanOverride.Add(file);
+        // Swapped whole, so a request in flight sees either the old lists or the new ones.
+        (_byPath, _fromPayload, _korean, _gm, _koreanOverride, _files) = (byPath, fromPayload, koreanFiles, gmFiles, koreanOverride, all);
+    }
+
+    // Re-reads the manifest, korean.txt and the GM/Korean variant folders without a restart, for a payload push that
+    // adds or removes files (deploy/deploy.sh --client-only touches the trigger file). Returns false with no manifest.
+    public bool Reload()
+    {
+        if (_manifestPath == null || !File.Exists(_manifestPath)) return false;
+        try
+        {
+            BuildSets(ReadManifest(_manifestPath),
+                _koreanListPath != null && File.Exists(_koreanListPath) ? ReadManifest(_koreanListPath) : null);
+            _logger.LogInformation("[Patch] reloaded: {0} files, {1} GM variants, version {2}, GM version {3}.",
+                _files.Count, _gm.Count, CurrentVersion(), GmVersion());
+            return true;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogWarning("[Patch] reload failed: {0}", ex.Message);
+            return false;
+        }
+    }
+
+    internal void UseManifest(string manifest, string? koreanList = null)
+    {
+        _manifestPath = manifest;
+        _koreanListPath = koreanList;
+    }
+
+    // Polls for the trigger file every few seconds; the file is deleted, then the lists are rebuilt.
+    private void WatchReloadTrigger(string triggerPath)
+    {
+        _reloadTimer = new Timer(_ =>
+        {
+            try
+            {
+                if (!File.Exists(triggerPath)) return;
+                File.Delete(triggerPath);
+            }
+            catch (IOException) { return; }
+            catch (UnauthorizedAccessException) { return; }
+            Reload();
+        }, null, TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(5));
     }
 
     private static readonly ConcurrentDictionary<IPAddress, DateTime> GmAddresses = new();
@@ -274,6 +333,11 @@ public sealed class PatchServer : IDisposable
         var server = new PatchServer(root, ReadManifest(manifest),
             Path.Combine(AppContext.BaseDirectory, "patch-version.txt"), logger, baseRoot,
             File.Exists(korean) ? ReadManifest(korean) : null, gmRoot, koreanRoot);
+        server._manifestPath = manifest;
+        server._koreanListPath = korean;
+        // HUXLEY_STATUS_FILE's folder also takes patch-reload (deploy/deploy.sh --client-only).
+        if (Environment.GetEnvironmentVariable("HUXLEY_STATUS_FILE") is { Length: > 0 } statusFile)
+            server.WatchReloadTrigger(Path.Combine(Path.GetDirectoryName(statusFile) ?? "", "patch-reload"));
         if (gmRoot != null) logger.LogInformation("[Patch] GM variants: {0} files from {1}.", server._gm.Count, gmRoot);
         if (koreanRoot != null)
             logger.LogInformation("[Patch] Korean overrides: {0} files from {1}.", server._koreanOverride.Count, koreanRoot);
@@ -668,6 +732,7 @@ public sealed class PatchServer : IDisposable
 
     public void Dispose()
     {
+        _reloadTimer?.Dispose();
         _stop?.Cancel();
         _listener?.Stop();
     }

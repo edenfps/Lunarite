@@ -75,6 +75,22 @@ internal sealed partial class TestSuite
         Check(lines.Length == 2 && restarted.FullFileList("127.0.0.1").Contains("\"Binaries\\Game.exe\" 3 DEADBEEF\r\n"),
             "patch server keeps file CRCs in <version file>.crc across restarts");
 
+        // A payload push that adds a file: Reload re-reads the manifest, no restart.
+        string reloadManifest = Path.Combine(root, "reload-manifest.txt");
+        File.WriteAllText(reloadManifest, "Map.war\n");
+        var reloading = new PatchServer(payload, PatchServer.ReadManifest(reloadManifest), Path.Combine(root, "version-reload.txt"),
+            _loggerFactory.CreateLogger<PatchServer>());
+        reloading.UseManifest(reloadManifest);
+        string beforeReload = reloading.CurrentVersion();
+        File.WriteAllBytes(Path.Combine(payload, "New.u"), [5, 5, 5]);
+        File.WriteAllText(reloadManifest, "Map.war\nNew.u\n");
+        bool listedBefore = reloading.FullFileList("127.0.0.1").Contains("New.u");
+        bool reloaded = reloading.Reload();
+        Check(!listedBefore && reloaded && reloading.FullFileList("127.0.0.1").Contains("\"New.u\" 3 ")
+            && string.CompareOrdinal(reloading.CurrentVersion(), beforeReload) > 0,
+            "patch server reload picks up a file added to the manifest and bumps the version without a restart");
+        File.Delete(Path.Combine(payload, "New.u"));
+
         // patch/korean.txt: Korean launchers get the clean client's Korean text and skin; English
         // ones keep the payload's KOR file and never get the Korean-only skin.
         Directory.CreateDirectory(Path.Combine(payload, "Loc", "KOR"));
