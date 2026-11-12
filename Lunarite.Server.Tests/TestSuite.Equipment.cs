@@ -51,6 +51,12 @@ internal sealed partial class TestSuite
         Check(DiscordPresence.SameHost(IPAddress.Parse("::ffff:1.2.3.4"), IPAddress.Parse("1.2.3.4"))
             && !DiscordPresence.SameHost(IPAddress.Parse("1.2.3.4"), IPAddress.Parse("1.2.3.5")),
             "Discord status: only the link's own address gets an answer");
+        var presenceHome = IPAddress.Parse("5.6.7.8");
+        var presenceLinks = new[] { (1, 10, presenceHome, 51000), (2, 11, IPAddress.Parse("9.9.9.9"), 51001), (3, 12, IPAddress.Parse("9.9.9.9"), 51002) };
+        Check(DiscordPresence.Choose(presenceLinks, 60000, presenceHome)?.Item1 == 1
+            && DiscordPresence.Choose(presenceLinks, 51002, IPAddress.Parse("9.9.9.9"))?.Item1 == 3
+            && DiscordPresence.Choose(presenceLinks, 60000, IPAddress.Parse("9.9.9.9")) == null,
+            "Discord status: a router-rewritten port still finds a lone character; shared addresses need the port");
         var presenceJson = System.Text.Json.JsonDocument.Parse(DiscordPresence.ActivityJson(new string('x', 200), "state", "Lv 1 Sapiens", 5)).RootElement;
         Check(presenceJson.GetProperty("details").GetString()!.Length == 128 && presenceJson.GetProperty("timestamps").GetProperty("start").GetInt64() == 5
             && presenceJson.GetProperty("assets").GetProperty("large_image").GetString() == "huxley",

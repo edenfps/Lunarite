@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -60,12 +61,22 @@ public sealed class DiscordPresence
     public byte[]? Reply(byte[] request, IPEndPoint from)
     {
         if (!TryParse(request, out ushort port)) return null;
+        var links = new List<(int Pid, int ClientId, IPAddress Address, int Port)>();
         foreach (var (pid, client) in _players.Online)
-        {
-            if (client.RemotePort == port && SameHost(client.IPAddress, from.Address))
-                return Encoding.UTF8.GetBytes(Describe(pid, client.Id));
-        }
-        return null;
+            links.Add((pid, client.Id, client.IPAddress, client.RemotePort));
+        return Choose(links, port, from.Address) is { } link
+            ? Encoding.UTF8.GetBytes(Describe(link.Pid, link.ClientId)) : null;
+    }
+
+    // The asker knows its own local port, which a home router rewrites, so the port only settles which of several
+    // characters behind one address is asking. A lone character on the address is the asker.
+    public static (int Pid, int ClientId, IPAddress Address, int Port)? Choose(
+        IEnumerable<(int Pid, int ClientId, IPAddress Address, int Port)> links, ushort localPort, IPAddress from)
+    {
+        var same = links.Where(link => SameHost(link.Address, from)).ToList();
+        foreach (var link in same)
+            if (link.Port == localPort) return link;
+        return same.Count == 1 ? same[0] : null;
     }
 
     public static bool SameHost(IPAddress a, IPAddress b)
