@@ -227,6 +227,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         MissionRunRecords();
         PatchManifestAndCrc();
         PatchBaseClient();
+        PatchLauncherPageMirror();
         PlayerLanguageChoice();
         BattleRecordResetAndInspection();
         GmAccountStatus();

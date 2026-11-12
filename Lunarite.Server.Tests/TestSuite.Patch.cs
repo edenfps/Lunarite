@@ -35,6 +35,21 @@ internal sealed partial class TestSuite
             "launcher patch server: manifest paths, content-based versions, per-address MMO IP and FullFile.txt sizes/CRCs");
     }
 
+    // Windows XP/Vista launchers read the website's news page from the patch server over plain HTTP.
+    private void PatchLauncherPageMirror()
+    {
+        var page = new Uri("https://example.test/launcher.html");
+        string html = "<a href=\"index.html#features\">g</a><a href=\"https://discord.gg/x\">d</a><img src=\"img/a.png\">";
+        string rewritten = Lunarite.Network.LauncherPageMirror.Rewrite(html, page);
+        Check(rewritten.Contains("href=\"https://example.test/index.html#features\"") && rewritten.Contains("href=\"https://discord.gg/x\"")
+                && rewritten.Contains("src=\"img/a.png\""),
+            "launcher page mirror: site links become absolute, images stay on the patch server");
+        var offline = new Lunarite.Network.LauncherPageMirror("http://127.0.0.1:1/launcher.html",
+            new System.Net.Http.HttpClient { Timeout = TimeSpan.FromSeconds(2) });
+        Check(offline.Page() == null && offline.Image("../secret.png") == null,
+            "launcher page mirror: unreachable site gives no page (plain notice instead); image names can't hold paths");
+    }
+
     private void PatchBaseClient()
     {
         string root = Path.Combine(Path.GetTempPath(), $"huxley-patch-base-{Environment.ProcessId}");

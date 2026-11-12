@@ -39,6 +39,9 @@ namespace Lunarite.Network;
 // one, so HUXLEY_GAME_PUBLIC_IP overrides it, as it does the game address the Agent advertises.
 public sealed class PatchServer : IDisposable
 {
+    // Windows XP/Vista launchers get the website's news page from here over plain HTTP (LauncherPageMirror).
+    private readonly LauncherPageMirror _launcherPage = new(Environment.GetEnvironmentVariable("HUXLEY_LAUNCHER_PAGE"));
+
     public const string PatchDir = "/huxley/Patch/Korea/Service/City/";
     public const string FullDir = "/huxley/Full/Korea/Service/City/";
     public const string BaseVersion = "00000012";
@@ -633,6 +636,13 @@ public sealed class PatchServer : IDisposable
                 else
                     WriteFile(stream, Locate(file, korean, gm), started);
             }
+            else if (path.Equals("/launcher.html", StringComparison.OrdinalIgnoreCase))
+            {
+                if (_launcherPage.Page() is { } page) WriteBytes(stream, 200, page, "text/html; charset=utf-8", started);
+                else WriteText(stream, 200, NoticeHtml, "text/html", started);
+            }
+            else if (path.StartsWith("/img/", StringComparison.OrdinalIgnoreCase) && _launcherPage.Image(path[5..]) is { } image)
+                WriteBytes(stream, 200, image.Body, image.Type, started);
             else if (path.Equals("/notice", StringComparison.OrdinalIgnoreCase) || path == "/")
                 WriteText(stream, 200, NoticeHtml, "text/html", started);
             else
