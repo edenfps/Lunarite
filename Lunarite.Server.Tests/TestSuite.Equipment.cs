@@ -173,6 +173,56 @@ internal sealed partial class TestSuite
             "server op122 serializes PID plus the exact five-byte skill-slot permutation");
     }
 
+    // Socket skills follow the player (PlayerStore.Sockets): into the new armor on a swap, else back to the bag.
+    private void SocketsFollowPlayer()
+    {
+        const int pid = 920311;
+        // Two armor pieces of one part whose first socket has the same shape, a skill of that shape, and a piece of
+        // that part without sockets.
+        var armorRows = Enumerable.Range(200000, 50000).Select(id => _itemCatalog.Get(id))
+            .Where(d => d != null && d.ArmorPart.Length > 0).Select(d => d!).ToList();
+        var pair = armorRows.Where(d => d.SkillSocketShapes.Count > 0)
+            .GroupBy(d => (d.ArmorPart, Shape: d.SkillSocketShapes[0]))
+            .Select(g => (g.Key, Items: g.Take(2).ToList(),
+                Skill: Enumerable.Range(300000, 99999).FirstOrDefault(id => _itemCatalog.Get(id) is { } k && k.SkillItemShape == g.Key.Shape)))
+            .First(x => x.Items.Count == 2 && x.Skill != 0);
+        int first = pair.Items[0].EntryIndex, other = pair.Items[1].EntryIndex, skill = pair.Skill;
+        int noSocket = armorRows.FirstOrDefault(d => d.ArmorPart == pair.Key.ArmorPart && d.SkillSocketShapes.Count == 0)?.EntryIndex ?? 0;
+        byte part = (byte)WardrobeManager.PartOf(pair.Items[0]);
+        ResetCharacter(pid);
+        var list = _playerStore.GetInventory(pid, () => []);
+        list.Clear();
+        list.Add(new PlayerStore.GenericItem { InventoryIndex = InventoryType.Armor, InventoryCell = part, ItemId = first, Skill = skill, Durability = 100 });
+        list.Add(new PlayerStore.GenericItem { InventoryIndex = InventoryType.Skill, InventoryCell = part, ItemId = skill });
+        list.Add(new PlayerStore.GenericItem { InventoryIndex = InventoryType.Main, InventoryCell = 5, ItemId = other, Durability = 100 });
+        list.Add(new PlayerStore.GenericItem { InventoryIndex = InventoryType.Main, InventoryCell = 6, ItemId = noSocket, Durability = 100 });
+        list.Add(new PlayerStore.GenericItem { InventoryIndex = InventoryType.Main, InventoryCell = 7, ItemId = first, Skill = skill, Durability = 100 });
+        PlayerStore.GenericItem? At(byte inven, byte cell) =>
+            _playerStore.GetInventory(pid, () => []).FirstOrDefault(i => i.InventoryIndex == inven && i.InventoryCell == cell);
+
+        // Swap to a piece with a matching socket: the skill moves in, its item stays in its SKILL cell.
+        bool swapped = _playerStore.SwapSlots(pid, InventoryType.Armor, part, InventoryType.Main, 5);
+        var moved = _playerStore.ReleaseSockets(pid, 5, part);
+        Check(other != 0 && swapped && moved.Count == 1 && moved[0].Transferred
+                && At(InventoryType.Armor, part)?.Skill == skill && At(InventoryType.Main, 5)?.Skill == 0
+                && At(InventoryType.Skill, part)?.ItemId == skill,
+            "armor swap moves the old piece's socket skill into the new piece's matching socket");
+
+        // Swap to a piece without sockets: the skill comes back to the bag.
+        swapped = _playerStore.SwapSlots(pid, InventoryType.Armor, part, InventoryType.Main, 6);
+        var popped = _playerStore.ReleaseSockets(pid, 6, part);
+        Check(noSocket != 0 && swapped && popped.Count == 1 && !popped[0].Transferred && popped[0].FromSkillCell == part
+                && popped[0].ToMainCell is byte back && At(InventoryType.Main, back)?.ItemId == skill
+                && At(InventoryType.Main, 6)?.Skill == 0 && At(InventoryType.Skill, part) == null,
+            "a skill with no matching socket on the new armor returns to a free MAIN cell");
+
+        // Armor already in the bag with a skill (from before): the one-time migration returns it.
+        int returned = _playerStore.MigrateLooseArmorSockets();
+        Check(returned >= 1 && At(InventoryType.Main, 7)?.Skill == 0
+                && _playerStore.GetInventory(pid, () => []).Count(i => i.InventoryIndex == InventoryType.Main && i.ItemId == skill) == 2,
+            "armor outside the ARMOR slots keeps no socket skills after the migration");
+    }
+
     private void PeerArmorAndQuestAcquisition()
     {
         Check(_addPlayerBytes.Length == 83

@@ -139,6 +139,7 @@ static class Program
         // consumed but never committed; give the items back.
         questEntryReservationStore.RefundAbandoned();
         playerStore.MigrateArmorSprays();
+        playerStore.MigrateLooseArmorSockets();
         playerStore.MigrateCorruptMissionDurability();
         if (Environment.GetEnvironmentVariable("QUEST_CATALOG_AUDIT") == "1")
         {

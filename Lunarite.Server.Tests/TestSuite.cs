@@ -179,6 +179,7 @@ internal sealed partial class TestSuite : IAsyncDisposable
         VehiclesAndRecipes();
         CraftingAndSockets();
         SkillEquip();
+        SocketsFollowPlayer();
         NatPackets();
         NatReportsAndCoopPermissions();
         OfflineSquadSetup();

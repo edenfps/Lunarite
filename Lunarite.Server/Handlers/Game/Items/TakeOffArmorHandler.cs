@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -35,11 +36,14 @@ public static class TakeOffArmorHandler
         int itemIdBefore = _playerStore.GetInventory(pid, () => [])
             .FirstOrDefault(item => item.InventoryIndex == InventoryType.Armor && item.InventoryCell == armorCell)?.ItemId ?? 0;
         bool moved = false; byte mainCell = 0xFF;
+        List<PlayerStore.SocketMove> socketMoves = [];
         _multiStoreTransaction.Run(() =>
         {
             moved = _playerStore.TryTakeOff(pid, InventoryType.Armor, armorCell, requestedMainCell,
                 out mainCell, out _);
             if (moved && itemIdBefore > 0) _itemManager.SynchronizeQuestPickupObjective(pid, itemIdBefore);
+            // Its socket skills come back to the bag (PlayerStore.Sockets); op71 below carries the emptied sockets.
+            if (moved) socketMoves = _playerStore.ReleaseSockets(pid, mainCell, null);
         });
         var item = moved
             ? _playerStore.GetInventory(pid, () => [])
@@ -59,6 +63,7 @@ public static class TakeOffArmorHandler
             Skill1 = item?.Skill1 ?? 0,
             Durability = item?.WireDurability ?? 0
         });
+        if (item != null && socketMoves.Count > 0) EquipArmorHandler.SendSocketMoves(client, pid, socketMoves, null, null);
         if (item != null)
         {
             _cityManager.BroadcastPresence(client, new EquipArmorOther { Pid = pid, Part = armorCell, ItemId = 0 });

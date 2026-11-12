@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 
 using Microsoft.Extensions.DependencyInjection;
@@ -59,12 +60,15 @@ public static class EquipArmorHandler
             .FirstOrDefault(x => x.InventoryIndex == InventoryType.Armor && x.InventoryCell == armorCell)?.ItemId ?? 0;
         var data = source == null ? null : _itemCatalog.Get(source.ItemId);
         byte result = _equipmentRules.ValidateArmor(pid, armorCell, mainCell, source, data);
+        List<PlayerStore.SocketMove> socketMoves = [];
         if (result == 0)
             _multiStoreTransaction.Run(() =>
             {
                 result = _playerStore.SwapSlots(pid, InventoryType.Armor, armorCell, InventoryType.Main, mainCell)
                     ? (byte)0 : (byte)1;
                 if (result == 0) _itemManager.SynchronizeQuestPickupObjectives(pid, [source!.ItemId, replacedItemId]);
+                // Socket skills stay with the player: into the new piece, or back to the bag (PlayerStore.Sockets).
+                if (result == 0 && replacedItemId != 0) socketMoves = _playerStore.ReleaseSockets(pid, mainCell, armorCell);
             });
         bool moved = result == 0;
         client.SendPacket(new EquipArmor
@@ -73,6 +77,7 @@ public static class EquipArmorHandler
             ArmorCell = armorCell,
             MainCell = mainCell
         });
+        if (moved && socketMoves.Count > 0) SendSocketMoves(client, pid, socketMoves, armorCell, mainCell);
         if (moved)
         {
             if (_playerStore.TryBindEquipped(pid, InventoryType.Armor, armorCell, out byte armorState))
@@ -90,8 +95,33 @@ public static class EquipArmorHandler
             if (equippedArmor != null)
                 _cityManager.BroadcastPresence(client, equippedArmor);
         }
-        _logger.LogInformation("[Items] PID {0} armor equip MAIN[{1}] -> ARMOR[{2}], result={3}.",
-            pid, mainCell, armorCell, result);
+        _logger.LogInformation("[Items] PID {0} armor equip MAIN[{1}] -> ARMOR[{2}], result={3}, sockets moved {4}.",
+            pid, mainCell, armorCell, result, socketMoves.Count);
         return true;
+    }
+
+    // The client swapped its own copies on op67, so the records that changed are sent again: the new piece (skills
+    // moved in), the old piece now in MAIN (skills gone) and each skill that came back to the bag. op82 refuses an
+    // occupied cell, so a changed cell is emptied first (op81).
+    internal static void SendSocketMoves(Client client, int pid, List<PlayerStore.SocketMove> moves, byte? armorCell, byte? oldMainCell)
+    {
+        var inventory = _playerStore.GetInventory(pid, () => []);
+        void Refresh(byte inven, byte cell)
+        {
+            var item = inventory.FirstOrDefault(i => i.InventoryIndex == inven && i.InventoryCell == cell);
+            if (item == null) return;
+            client.SendPacket(new RemoveItem { InventoryIndex = inven, Cell = cell });
+            ItemManager.SendInventoryItem(client, item);
+        }
+        if (armorCell is byte armor && moves.Any(m => m.Transferred)) Refresh(InventoryType.Armor, armor);
+        if (oldMainCell is byte main) Refresh(InventoryType.Main, main);
+        foreach (var move in moves.Where(m => !m.Transferred))
+        {
+            if (move.FromSkillCell is byte skillCell)
+                client.SendPacket(new RemoveItem { InventoryIndex = InventoryType.Skill, Cell = skillCell });
+            var returned = move.ToMainCell is byte to
+                ? inventory.FirstOrDefault(i => i.InventoryIndex == InventoryType.Main && i.InventoryCell == to) : null;
+            if (returned != null) ItemManager.SendInventoryItem(client, returned);
+        }
     }
 }
