@@ -74,6 +74,9 @@ internal sealed partial class TestSuite
             && BattleInstanceManager.BattlefieldBotOptions(48, null, "8") == ""
             && BattleInstanceManager.BattlefieldBotOptions(48, "1", "0") == "",
             "Battlefield bots: off by default, eight a side when on, never more than half the field");
+        Check(_itemCatalog.Get(603042)?.PermitSell == true && _itemCatalog.Get(603042)?.SellPrice > 0
+            && Lunarite.Resources.ItemCatalog.IsSellableQuestPickup(603042, 30) && !Lunarite.Resources.ItemCatalog.IsSellableQuestPickup(871904, 30),
+            "collected quest items can be sold; quest-given items keep their table rule");
         const int PlayedPid = 77_001;
         long playedBefore = _playerStore.GetProgress(PlayedPid).PlayedSeconds;
         _playerStore.AddPlayedSeconds([PlayedPid, 0, -1], 60);

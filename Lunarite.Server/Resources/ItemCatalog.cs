@@ -78,6 +78,12 @@ public sealed class ItemCatalog
         lock (_lock) return _items.Values.ToArray();
     }
 
+    // Collected quest items (603000-603999) carry a sell price but bPermitSell=false, and nothing takes them at
+    // turn-in, so they piled up as junk. They can be sold (decided 2026-11-10); the client gets the same flag from
+    // LunariteMenuGame. Items a quest hands out (its own index, RemoveItems) are not in this range.
+    public static bool IsSellableQuestPickup(int itemId, int sellPrice) =>
+        itemId is >= 603000 and <= 603999 && sellPrice > 0;
+
     public IReadOnlyList<Item> PayItems
     {
         get
@@ -178,6 +184,7 @@ public sealed class ItemCatalog
                     if (IsArmorClass(pending.ClassName)) ApplyArmorTuneUpDefaults(pending);
                     if (IsArmorClass(pending.ClassName) || IsWeaponClass(pending.ClassName))
                         ApplyTuneUpCostDefaults(pending);
+                    if (IsSellableQuestPickup(pending.EntryIndex, pending.SellPrice)) pending.PermitSell = true;
                     var item = new Item(pending.EntryIndex, pending.Price, pending.SellPrice,
                         Math.Max(1, pending.MaxCollapseCount), pending.EquipLevel, pending.EquipRank, pending.ItemGrade,
                         pending.Repairable, pending.Vehicle,
