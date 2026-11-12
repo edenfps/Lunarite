@@ -42,6 +42,7 @@ internal sealed partial class TestSuite
         Check(wardrobe.CollectFrom(holder.Pid) == 3, "wardrobe collects every armor piece held, not weapons");
         Check(wardrobe.CollectFrom(holder.Pid) == 0, "wardrobe collecting again adds nothing");
         const int other = WardrobeManager.OtherRace;
+        WardrobeManager.CrossRaceLooks = true; // the switch is off on the live server; these checks cover the code behind it
         int[] bothHelmets = new[] { enforcerHelmet, avengerHelmet }.OrderBy(x => x)
             .SelectMany(x => new[] { x, x | other }).ToArray();
         Check(wardrobe.Available(sameSpecies.Pid, 0).SequenceEqual(bothHelmets),
@@ -90,5 +91,11 @@ internal sealed partial class TestSuite
         Check(WardrobeManager.IsCommand("/wardrobe list") && WardrobeManager.IsCommand("/WARDROBE")
             && !WardrobeManager.IsCommand("/wardrobes") && !WardrobeManager.IsCommand("hello /wardrobe"),
             "wardrobe chat commands are recognised exactly");
+        WardrobeManager.CrossRaceLooks = false;
+        store.SetLook(sameSpecies.Pid, 0, enforcerHelmet | other);
+        Check(!wardrobe.Available(sameSpecies.Pid, 0).Any(WardrobeManager.IsOtherRace)
+                && wardrobe.Shown(sameSpecies.Pid, 0, enforcerHelmet2) == enforcerHelmet,
+            "cross-race looks off: none offered, a stored one shows as the item's own-race version");
+        store.SetLook(sameSpecies.Pid, 0, WardrobeStore.OwnArmor);
     }
 }

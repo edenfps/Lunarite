@@ -31,6 +31,9 @@ public sealed class WardrobeManager
     private const string Prefix = "/wardrobe";
     private const int IdsPerLine = 24;
     public const int OtherRace = 1 << 30;
+    // Off (user, 2026-11-11: "keep Sapiens / Alternative clothing separate"). Stored other-race looks show as the item's
+    // own-race version. The client support stays in LunariteMenus.
+    public static bool CrossRaceLooks = false;
 
     // Head items whose other-race mesh clips too much on this wearer (docs/wardrobe/head-audit.md: needs over 6 % size or
     // never fits). Key: wearer species TypeIndex; value: item IDs (from the MeshLinks resource names) not offered cross-race.
@@ -159,7 +162,7 @@ public sealed class WardrobeManager
         {
             if (_itemCatalog.Get(id) is not { } data || PartOf(data) != part) continue;
             result.Add(id);
-            if (CrossAllowed(species, id)) result.Add(id | OtherRace);
+            if (CrossRaceLooks && CrossAllowed(species, id)) result.Add(id | OtherRace);
         }
         return result;
     }
@@ -173,6 +176,7 @@ public sealed class WardrobeManager
         if (look == WardrobeStore.HiddenHelmet) return part == 0;
         if (look < 0) return false;
         int item = ItemOf(look);
+        if (IsOtherRace(look) && !CrossRaceLooks) return false;
         if (IsOtherRace(look) && !CrossAllowed(_characterStore.Get(pid)?.Index ?? 0, item)) return false;
         return KeyFor(pid) is { } key && _wardrobeStore.Has(key, item)
             && _itemCatalog.Get(item) is { } data && PartOf(data) == part;
@@ -183,7 +187,7 @@ public sealed class WardrobeManager
     public int Shown(int pid, int part, int realItemId)
     {
         if (realItemId == 0 || part < 0 || part >= WardrobeStore.PartCount) return realItemId;
-        int look = _wardrobeStore.Looks(pid)[part];
+        int look = CrossRaceLooks ? _wardrobeStore.Looks(pid)[part] : ItemOf(_wardrobeStore.Looks(pid)[part]);
         if (look == WardrobeStore.OwnArmor || !IsValidLook(pid, part, look)) return realItemId;
         return look == WardrobeStore.HiddenHelmet ? 0 : ItemOf(look);
     }
@@ -253,7 +257,7 @@ public sealed class WardrobeManager
     private void SendList(Client client, int pid)
     {
         Send(client, Prefix + " begin");
-        Send(client, Prefix + " looks " + string.Join(' ', _wardrobeStore.Looks(pid)));
+        Send(client, Prefix + " looks " + string.Join(' ', _wardrobeStore.Looks(pid).Select(x => CrossRaceLooks ? x : ItemOf(x))));
         for (int part = 0; part < WardrobeStore.PartCount; part++)
         {
             var ids = Available(pid, part);
