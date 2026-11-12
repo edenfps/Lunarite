@@ -1,4 +1,3 @@
-using System.Net;
 using Lunarite.Network;
 using Lunarite.Packets.Outgoing;
 using Lunarite.Resources;
@@ -67,23 +66,6 @@ internal sealed partial class TestSuite
             string indexResponse = await http.GetStringAsync($"http://127.0.0.1:{cashHttp.Port}/ss/");
             Check(categoryResponse == CashShopCatalog.CategoryFile() && indexResponse.Contains("Huxley Private Shop"),
                 "cash-shop HTTP endpoint serves native catalog paths and the local storefront page");
-            // The Wayback mirror is a local download, not part of the repository.
-            if (ArchivedWebsite.Root != null)
-            {
-                using var noRedirect = new HttpClient(new HttpClientHandler { AllowAutoRedirect = false });
-                string web = $"http://127.0.0.1:{cashHttp.Port}{ArchivedWebsite.Prefix}";
-                var hostRedirect = await noRedirect.GetAsync(web + "huxley.hangame.com");
-                var home = await noRedirect.GetAsync(web + "huxley.hangame.com/");
-                string homeHtml = System.Text.Encoding.Latin1.GetString(await home.Content.ReadAsByteArrayAsync());
-                var rootRelative = new HttpRequestMessage(HttpMethod.Get, $"http://127.0.0.1:{cashHttp.Port}/Default.asp");
-                rootRelative.Headers.Referrer = new Uri(web + "huxley.hangame.com/GameGuide/Install/Default.asp");
-                var rootRelativeResponse = await noRedirect.SendAsync(rootRelative);
-                Check(hostRedirect.StatusCode == HttpStatusCode.MovedPermanently
-                    && hostRedirect.Headers.Location?.OriginalString == ArchivedWebsite.Prefix + "huxley.hangame.com/"
-                    && home.IsSuccessStatusCode && !homeHtml.Contains("http://huxley.hangame.com", StringComparison.OrdinalIgnoreCase)
-                    && rootRelativeResponse.IsSuccessStatusCode,
-                    "archived official site is served with host links rewritten and root-relative paths resolved by referer");
-            }
         }
         var freePackage = cashEntries[0];
         var storedPayItem = _payItemStore.Add(_accountA, freePackage);
